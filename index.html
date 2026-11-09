@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>9GUESS — ¡La Fiesta de los Números!</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎉</text></svg>" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{ -webkit-tap-highlight-color: transparent; }
+  html{ scroll-behavior: smooth; }
+  body{
+    font-family:'Baloo 2', 'Fredoka', ui-rounded, system-ui, sans-serif;
+    background: linear-gradient(120deg, #4f46e5 0%, #7c3aed 25%, #9333ea 50%, #ec4899 75%, #4f46e5 100%);
+    background-size: 300% 300%;
+    animation: bgShift 16s ease infinite;
+    min-height: 100dvh;
+    color:#fff;
+    overflow-x:hidden;
+  }
+  @keyframes bgShift{ 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
+
+  .logo-text{
+    font-family:'Fredoka', sans-serif;
+    font-weight:700;
+    letter-spacing:-.03em;
+    background:linear-gradient(180deg,#fef9c3 0%,#fde047 28%,#fbbf24 52%,#fb7185 78%,#f43f5e 100%);
+    -webkit-background-clip:text; background-clip:text;
+    color:transparent;
+    filter: drop-shadow(0 4px 0 #7c2d12) drop-shadow(0 8px 0 rgba(88,28,135,.85)) drop-shadow(0 16px 26px rgba(0,0,0,.4));
+  }
+  .logo-main{ font-size: clamp(4.5rem, 20vw, 8.5rem); line-height:.85; }
+
+  .glass{
+    background: rgba(255,255,255,.12);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border:1px solid rgba(255,255,255,.28);
+    box-shadow: 0 24px 60px -12px rgba(46,16,101,.6);
+  }
+
+  .blob{ position:absolute; border-radius:50%; filter:blur(70px); opacity:.38; animation: drift 18s ease-in-out infinite; }
+  @keyframes drift{ 0%,100%{ transform:translate(0,0) scale(1); } 33%{ transform:translate(35px,-45px) scale(1.15); } 66%{ transform:translate(-30px,30px) scale(.9); } }
+
+  .btn-3d{
+    position:relative; display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+    border-radius:9999px; font-weight:800; letter-spacing:.01em; user-select:none; cursor:pointer;
+    border:2px solid rgba(255,255,255,.35);
+    transition: transform .08s ease, box-shadow .08s ease, filter .2s ease;
+  }
+  .btn-3d:hover{ filter:brightness(1.07); }
+  .btn-3d:active{ transform: translateY(6px) scale(.985); }
+  .btn-party{
+    color:#fff;
+    background:linear-gradient(180deg,#fb7185 0%,#f43f5e 42%,#db2777 100%);
+    box-shadow: 0 8px 0 #9d174d, 0 18px 30px -8px rgba(0,0,0,.55);
+    text-shadow: 0 2px 0 rgba(0,0,0,.25);
+  }
+  .btn-party:active{ box-shadow: 0 2px 0 #9d174d, 0 6px 12px -4px rgba(0,0,0,.5); }
+  .btn-yellow{
+    color:#4c1d95;
+    background:linear-gradient(180deg,#fef08a,#facc15 52%,#f59e0b);
+    box-shadow: 0 7px 0 #b45309, 0 16px 26px -8px rgba(0,0,0,.45);
+  }
+  .btn-yellow:active{ box-shadow: 0 2px 0 #b45309, 0 6px 10px -4px rgba(0,0,0,.4); }
+  .btn-cyan{
+    color:#083344;
+    background:linear-gradient(180deg,#a5f3fc,#06b6d4 55%,#0891b2);
+    box-shadow: 0 7px 0 #155e75, 0 16px 26px -8px rgba(0,0,0,.45);
+  }
+  .btn-cyan:active{ box-shadow: 0 2px 0 #155e75, 0 6px 10px -4px rgba(0,0,0,.4); }
+
+  .key{
+    position:relative; display:flex; align-items:center; justify-content:center;
+    height: clamp(2.9rem, 9vw, 3.6rem); border-radius:1.1rem;
+    font-size: clamp(1.35rem, 5vw, 1.75rem); font-weight:800; overflow:hidden;
+    background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(233,213,255,.96));
+    color:#6b21a8;
+    box-shadow: 0 6px 0 #9333ea, 0 10px 18px -4px rgba(0,0,0,.4);
+    border:1px solid rgba(255,255,255,.85);
+    transition: transform .07s, box-shadow .07s, filter .15s;
+    cursor:pointer; user-select:none;
+  }
+  .key:hover{ filter:brightness(1.05); }
+  .key:active{ transform: translateY(5px); box-shadow: 0 1px 0 #9333ea, 0 4px 8px -4px rgba(0,0,0,.4); }
+  .key-enter{
+    background:linear-gradient(180deg,#6ee7b7,#10b981 58%,#059669);
+    color:#022c22;
+    box-shadow: 0 6px 0 #047857, 0 10px 18px -4px rgba(0,0,0,.4);
+  }
+  .key-enter:active{ box-shadow: 0 1px 0 #047857, 0 4px 8px -4px rgba(0,0,0,.4); }
+  .key-del{
+    background:linear-gradient(180deg,#fda4af,#f43f5e 58%,#e11d48);
+    color:#fff;
+    box-shadow: 0 6px 0 #9f1239, 0 10px 18px -4px rgba(0,0,0,.4);
+  }
+  .key-del:active{ box-shadow: 0 1px 0 #9f1239, 0 4px 8px -4px rgba(0,0,0,.4); }
+  .ripple{
+    position:absolute; width:12px; height:12px; border-radius:50%;
+    background:rgba(168,85,247,.45); transform:translate(-50%,-50%) scale(0);
+    animation: rippleAnim .5s ease-out forwards; pointer-events:none;
+  }
+  @keyframes rippleAnim{ to{ transform:translate(-50%,-50%) scale(16); opacity:0; } }
+
+  .cursor-blink{ animation: blink 1s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .animate-float{ animation: floaty 3.6s ease-in-out infinite; }
+  @keyframes floaty{ 0%,100%{ transform:translateY(0) rotate(-2deg); } 50%{ transform:translateY(-14px) rotate(3deg); } }
+  .animate-bounce-slow{ animation: bounceSlow 1.9s ease-in-out infinite; }
+  @keyframes bounceSlow{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-9px); } }
+
+  .pop-in{ animation: popIn .42s cubic-bezier(.2,.9,.3,1.25) both; }
+  @keyframes popIn{ 0%{ transform:scale(.72) translateY(24px); opacity:0; } 60%{ transform:scale(1.03); } 100%{ transform:scale(1); opacity:1; } }
+  .card-in{ animation: cardIn .38s ease-out both; }
+  @keyframes cardIn{ 0%{ transform:scale(.94) translateY(18px); opacity:.2; } 100%{ transform:scale(1) translateY(0); opacity:1; } }
+  .shake{ animation: shake .42s ease-in-out; }
+  @keyframes shake{ 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-9px); } 40%{ transform:translateX(9px); } 60%{ transform:translateX(-6px); } 80%{ transform:translateX(6px); } }
+
+  .round-chip{
+    width:1.8rem; height:1.8rem; border-radius:9999px; display:flex; align-items:center; justify-content:center;
+    font-size:.72rem; font-weight:800; background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.28); color:rgba(255,255,255,.6);
+    transition: all .3s ease; flex-shrink:0;
+  }
+  .round-chip.done{
+    background:linear-gradient(135deg,#10b981,#06b6d4); color:#fff;
+    border-color:rgba(255,255,255,.5); box-shadow:0 0 12px rgba(16,185,129,.7);
+  }
+  .round-chip.done.perfect{
+    background:linear-gradient(135deg,#facc15,#f59e0b); color:#4c1d95;
+    box-shadow:0 0 16px rgba(250,204,21,.95);
+  }
+  .round-chip.current{
+    background:linear-gradient(135deg,#facc15,#f43f5e); color:#fff;
+    transform:scale(1.22); border-color:rgba(255,255,255,.7);
+    animation: pulseChip 1.1s ease-in-out infinite;
+  }
+  @keyframes pulseChip{
+    0%,100%{ box-shadow:0 0 0 3px rgba(255,255,255,.5), 0 0 14px rgba(250,204,21,.7); }
+    50%{ box-shadow:0 0 0 6px rgba(255,255,255,.12), 0 0 24px rgba(244,63,94,.95); }
+  }
+
+  .timer-danger{ animation: dangerPulse .5s ease-in-out infinite; }
+  @keyframes dangerPulse{
+    0%,100%{ transform:scale(1); filter:drop-shadow(0 0 0 rgba(244,63,94,0)); }
+    50%{ transform:scale(1.08); filter:drop-shadow(0 0 14px rgba(244,63,94,.95)); }
+  }
+
+  .podium-step{
+    border-radius:1rem 1rem .55rem .55rem;
+    box-shadow: inset 0 3px 0 rgba(255,255,255,.45), 0 14px 34px -8px rgba(0,0,0,.55);
+    border:1px solid rgba(255,255,255,.35);
+  }
+
+  .summary-chip{
+    display:inline-flex; align-items:center; gap:.3rem; font-size:.72rem; font-weight:800;
+    padding:.32rem .58rem; border-radius:9999px; background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.25); color:rgba(255,255,255,.88);
+  }
+  .summary-chip b{ color:#fde047; }
+  .summary-chip.perfect{ background:linear-gradient(135deg,#facc15,#f43f5e); color:#fff; border-color:rgba(255,255,255,.6); }
+  .summary-chip.perfect b{ color:#fff; }
+
+  #toast{ left:50%; bottom:2rem; opacity:0; transform:translate(-50%,20px); transition:opacity .3s ease, transform .3s ease; pointer-events:none; }
+  #toast.toast-show{ opacity:1; transform:translate(-50%,0); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+</style>
+</head>
+<body class="relative">
+
+<canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none" style="z-index:60;"></canvas>
+
+<div class="fixed inset-0 overflow-hidden pointer-events-none" style="z-index:0;" aria-hidden="true">
+  <div class="blob" style="width:420px;height:420px;background:#facc15;top:-130px;left:-110px;"></div>
+  <div class="blob" style="width:380px;height:380px;background:#06b6d4;bottom:-130px;right:-90px;animation-delay:-6s;"></div>
+  <div class="blob" style="width:320px;height:320px;background:#f43f5e;top:42%;left:52%;animation-delay:-11s;"></div>
+</div>
+
+<button id="muteBtn" aria-label="Silenciar sonido" class="fixed top-3 right-3 z-[70] glass rounded-full w-11 h-11 text-xl flex items-center justify-center hover:scale-110 transition">🔊</button>
+
+<main class="relative z-10 min-h-[100dvh] flex items-center justify-center px-4 py-8">
+
+  <!-- ================= LOBBY ================= -->
+  <section id="screen-lobby" class="screen relative w-full max-w-xl mx-auto text-center">
+    <span class="hidden sm:inline-block absolute -top-8 left-0 text-4xl animate-float">🎲</span>
+    <span class="hidden sm:inline-block absolute top-6 right-0 text-3xl animate-float" style="animation-delay:-1s;">🍿</span>
+    <span class="hidden sm:inline-block absolute bottom-44 left-0 text-3xl animate-float" style="animation-delay:-2s;">🎈</span>
+    <span class="hidden sm:inline-block absolute bottom-40 right-0 text-3xl animate-float" style="animation-delay:-.6s;">🕹️</span>
+    <span class="hidden sm:inline-block absolute top-1/2 left-2 text-2xl animate-float" style="animation-delay:-1.6s;">⭐</span>
+
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-xs sm:text-sm tracking-widest mb-6">
+      ✨ PARTY GAME EDITION ✨
+    </div>
+    <h1 class="logo-text logo-main">9GUESS</h1>
+    <p class="mt-4 text-2xl sm:text-3xl font-extrabold text-yellow-200" style="text-shadow:0 3px 0 rgba(91,33,182,.9);">¡Calcula, adivina y compite!</p>
+    <p class="mt-2 text-white/80 font-semibold">9 rondas · 20 segundos · 1 campeón 🏆</p>
+
+    <button id="startBtn" class="btn-3d btn-party mt-8 w-full sm:w-auto px-10 py-5 text-2xl sm:text-3xl animate-bounce-slow">
+      🎊 ¡COMENZAR LA FIESTA!
+    </button>
+
+    <div class="mt-7 flex flex-wrap items-center justify-center gap-2 text-sm font-bold">
+      <span class="glass px-4 py-2 rounded-full">🏆 Récord: <span id="bestScore">0</span> pts</span>
+      <span class="glass px-4 py-2 rounded-full">🎯 9 rondas</span>
+      <span class="glass px-4 py-2 rounded-full">⚡ Arcade</span>
+    </div>
+    <p class="mt-6 text-xs text-white/60 font-semibold">Toca los números, confía en tu instinto y ¡llévate el trofeo!</p>
+  </section>
+
+  <!-- ================= GAME ================= -->
+  <section id="screen-game" class="screen w-full max-w-xl mx-auto hidden">
+    <div class="flex items-center justify-between gap-2 mb-3">
+      <button id="homeBtn" aria-label="Salir al inicio" class="glass rounded-full w-11 h-11 flex items-center justify-center text-lg hover:scale-110 transition">🏠</button>
+      <div class="glass rounded-full px-5 py-2 flex items-center gap-2 font-extrabold">
+        <span class="text-yellow-300 text-lg">⭐</span>
+        <span id="scoreValue">0</span>
+        <span class="text-white/60 text-[10px] tracking-widest">PTS</span>
+      </div>
+      <div id="timerWrap" class="relative w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] shrink-0">
+        <svg viewBox="0 0 80 80" class="w-full h-full" style="transform:rotate(-90deg);">
+          <circle cx="40" cy="40" r="34" stroke="rgba(255,255,255,.18)" stroke-width="8" fill="none"></circle>
+          <circle id="timerRing" cx="40" cy="40" r="34" stroke="#facc15" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="213.63" stroke-dashoffset="0" style="transition:stroke-dashoffset .1s linear, stroke .3s ease;"></circle>
+        </svg>
+        <div id="timerText" class="absolute inset-0 flex items-center justify-center text-2xl font-extrabold" style="text-shadow:0 2px 0 rgba(0,0,0,.3);">20</div>
+      </div>
+    </div>
+
+    <div id="roundChips" class="flex items-center justify-center gap-1 sm:gap-1.5 mb-4"></div>
+
+    <div id="questionCard" class="glass rounded-3xl p-4 sm:p-6 border-2 border-white/30">
+      <div class="flex items-center justify-between mb-2">
+        <span id="roundLabel" class="text-[11px] sm:text-xs font-extrabold tracking-[.2em] text-yellow-300">RONDA 1 / 9</span>
+        <span id="roundEmoji" class="text-3xl animate-float">🎯</span>
+      </div>
+      <h2 id="questionText" class="text-lg sm:text-2xl font-extrabold leading-snug min-h-[3.5rem]">Cargando pregunta…</h2>
+
+      <div id="answerBox" class="mt-4 rounded-2xl bg-[#2e1065]/55 border border-white/15 px-4 py-3 text-center">
+        <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-white/60">Tu apuesta</div>
+        <div class="flex items-center justify-center gap-1 leading-none">
+          <span id="answerValue" class="text-5xl sm:text-6xl font-extrabold text-yellow-300" style="text-shadow:0 4px 0 rgba(91,33,182,.8);">0</span>
+          <span class="cursor-blink text-3xl sm:text-4xl font-black text-pink-300 mb-1">|</span>
+        </div>
+        <div id="answerUnit" class="text-xs sm:text-sm font-bold text-white/70 -mt-1">unidades</div>
+      </div>
+
+      <div id="keypad" class="mt-4 grid grid-cols-3 gap-2 sm:gap-3 select-none">
+        <button class="key" data-key="1">1</button>
+        <button class="key" data-key="2">2</button>
+        <button class="key" data-key="3">3</button>
+        <button class="key" data-key="4">4</button>
+        <button class="key" data-key="5">5</button>
+        <button class="key" data-key="6">6</button>
+        <button class="key" data-key="7">7</button>
+        <button class="key" data-key="8">8</button>
+        <button class="key" data-key="9">9</button>
+        <button class="key key-del" data-key="del" aria-label="Borrar">⌫</button>
+        <button class="key" data-key="0">0</button>
+        <button class="key key-enter" data-key="enter" aria-label="Confirmar">✓</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RESULTS ================= -->
+  <section id="screen-results" class="screen w-full max-w-xl mx-auto hidden text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-xs tracking-widest mb-3">
+      🎉 ¡LO HAS PETADO! 🎉
+    </div>
+    <h2 class="logo-text" style="font-size:clamp(2.5rem,12vw,4.5rem);line-height:1;">¡FIN DE LA FIESTA!</h2>
+
+    <div class="glass rounded-3xl p-5 sm:p-6 mt-4">
+      <div id="rankEmoji" class="text-5xl mb-1">👑</div>
+      <div class="text-xs font-extrabold uppercase tracking-[.3em] text-yellow-300">Tu rango</div>
+      <h3 id="rankTitle" class="text-3xl sm:text-4xl font-extrabold text-yellow-200" style="text-shadow:0 3px 0 rgba(91,33,182,.8);">Adivino Supremo</h3>
+      <div class="mt-2 flex items-baseline justify-center gap-2">
+        <span id="finalScore" class="text-5xl font-extrabold text-white">0</span>
+        <span class="font-extrabold text-white/70">PTS</span>
+      </div>
+      <p id="rankMsg" class="text-sm font-semibold text-white/80 mt-1"></p>
+
+      <div class="mt-5 flex items-end justify-center gap-2 h-40">
+        <div class="podium-step flex-1 max-w-[7.5rem] h-24 bg-gradient-to-b from-cyan-400/80 to-cyan-600/80 p-2 flex flex-col items-center justify-end">
+          <div class="text-2xl">🎯</div>
+          <div class="text-[10px] font-extrabold text-white/80 uppercase tracking-wider">Exactos</div>
+          <div id="exactCount" class="text-xl font-extrabold">0</div>
+        </div>
+        <div class="podium-step flex-1 max-w-[9rem] h-36 bg-gradient-to-b from-yellow-300 to-amber-500 p-2 flex flex-col items-center justify-end text-[#4c1d95] shadow-2xl">
+          <div id="podiumEmoji" class="text-4xl">🏆</div>
+          <div class="text-[10px] font-extrabold uppercase tracking-wider">1º · ¡Tú!</div>
+          <div id="podiumScore" class="text-lg font-extrabold leading-tight">0 pts</div>
+        </div>
+        <div class="podium-step flex-1 max-w-[7.5rem] h-20 bg-gradient-to-b from-pink-400/80 to-pink-600/80 p-2 flex flex-col items-center justify-end">
+          <div class="text-2xl">🔥</div>
+          <div class="text-[10px] font-extrabold text-white/80 uppercase tracking-wider">Mejor ronda</div>
+          <div id="bestRound" class="text-xl font-extrabold">0</div>
+        </div>
+      </div>
+
+      <div id="roundSummary" class="flex flex-wrap justify-center gap-1.5 mt-5"></div>
+    </div>
+
+    <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
+      <button id="replayBtn" class="btn-3d btn-yellow px-7 py-4 text-lg">🔁 ¡JUGAR OTRA PARTIDA!</button>
+      <button id="shareBtn" class="btn-3d btn-cyan px-7 py-4 text-lg">📣 COMPARTIR MARCADOR</button>
+    </div>
+  </section>
+</main>
+
+<!-- ================= FEEDBACK MODAL ================= -->
+<div id="feedbackModal" class="hidden fixed inset-0 z-[65] flex items-center justify-center px-4 py-10">
+  <div class="absolute inset-0 bg-[#1e1b4b]/70 backdrop-blur-md"></div>
+  <div id="feedbackCard" class="relative w-full max-w-sm rounded-3xl bg-white text-[#3b0764] p-6 pt-5 text-center pop-in border-4 border-white/70" style="box-shadow:0 30px 80px -12px rgba(0,0,0,.65);">
+    <div class="-mt-16 mx-auto w-20 h-20 rounded-full flex items-center justify-center bg-gradient-to-br from-yellow-200 via-pink-300 to-fuchsia-500 border-4 border-white shadow-xl">
+      <span id="fbEmoji" class="text-5xl">🎯</span>
+    </div>
+    <h3 id="fbTitle" class="mt-3 text-2xl font-extrabold leading-tight text-fuchsia-600">¡BOOM!</h3>
+    <p id="fbMsg" class="mt-1 text-sm font-semibold text-purple-900/70">...</p>
+
+    <div class="mt-4 grid grid-cols-2 gap-2 text-left">
+      <div class="rounded-2xl bg-purple-100 px-3 py-2">
+        <div class="text-[10px] font-extrabold uppercase tracking-widest text-purple-400">Tu apuesta</div>
+        <div id="fbGuess" class="text-base font-extrabold text-purple-800 leading-tight">0</div>
+      </div>
+      <div class="rounded-2xl bg-emerald-100 px-3 py-2">
+        <div class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-500">Respuesta</div>
+        <div id="fbAnswer" class="text-base font-extrabold text-emerald-700 leading-tight">0</div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div id="fbPoints" class="text-5xl font-extrabold leading-none text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-pink-500">+0</div>
+      <div id="fbBonus" class="mt-1 text-[11px] font-bold text-fuchsia-400">⚡ Bonus por rapidez</div>
+      <div id="fbFact" class="mt-2 text-[11px] font-semibold text-purple-400 italic">💡 ...</div>
+    </div>
+
+    <button id="nextBtn" class="btn-3d btn-party mt-5 w-full py-4 text-lg">Siguiente ronda 🚀</button>
+  </div>
+</div>
+
+<div id="toast" class="fixed z-[80] glass px-5 py-3 rounded-full font-extrabold text-sm text-center max-w-[90vw]"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  const TOTAL_ROUNDS = 9;
+  const ROUND_TIME = 20;
+  const RING_CIRC = 2 * Math.PI * 34;
+  const STORAGE_KEY = 'guess9_best_v1';
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const QUESTIONS = [
+    { emoji:'🦴', q:'¿Cuántos huesos tiene el cuerpo de una persona adulta?', a:206, unit:'huesos', fact:'Un bebé nace con unos 300 huesos que se van fusionando.' },
+    { emoji:'🐆', q:'¿Cuál es la velocidad máxima de un guepardo?', a:110, unit:'km/h', fact:'Solo mantiene ese sprint durante unos 400 metros.' },
+    { emoji:'🗼', q:'¿Cuántos metros mide la Torre Eiffel con sus antenas?', a:330, unit:'metros', fact:'Pesa más de 10.000 toneladas de hierro.' },
+    { emoji:'🌍', q:'¿Cuántos países están reconocidos por la ONU?', a:195, unit:'países', fact:'193 son miembros y 2 son estados observadores.' },
+    { emoji:'❤️', q:'¿Cuántas veces late un corazón humano al día?', a:100000, unit:'latidos', fact:'A unos 70 latidos por minuto, ¡más de 2.500 millones en una vida!' },
+    { emoji:'🐢', q:'¿Cuántos años puede vivir una tortuga gigante?', a:150, unit:'años', fact:'Algunos ejemplares han llegado a los 180 años.' },
+    { emoji:'💧', q:'¿Cuántos mililitros de saliva producimos al día?', a:1500, unit:'ml', fact:'Suficiente para llenar una botella y media.' },
+    { emoji:'🌋', q:'¿Cuántos volcanes activos hay en el mundo?', a:1500, unit:'volcanes', fact:'Unos 500 han entrado en erupción en tiempos históricos.' },
+    { emoji:'⚡', q:'¿Cuántos kilómetros recorre la luz en un segundo?', a:299792, unit:'km', fact:'¡Podría dar 7,5 vueltas a la Tierra en un solo segundo!' },
+    { emoji:'🦈', q:'¿Cuántos dientes tiene a la vez un tiburón blanco?', a:300, unit:'dientes', fact:'Los pierde y los reemplaza durante toda su vida.' },
+    { emoji:'🌙', q:'¿Cuántos días tarda la Luna en orbitar la Tierra?', a:27, unit:'días', fact:'Un poco más de 27 días, concretamente 27,3.' },
+    { emoji:'🎬', q:'¿Cuántas películas se estrenan al año en el mundo?', a:11000, unit:'películas', fact:'Y eso sin contar las producciones de plataformas.' },
+    { emoji:'🏃', q:'¿Cuántos metros mide una maratón?', a:42195, unit:'metros', fact:'42,195 kilómetros exactos de puro sufrimiento.' },
+    { emoji:'🐜', q:'¿Cuántas especies de hormigas existen?', a:15000, unit:'especies', fact:'Solo conocemos una parte de todas las que hay.' },
+    { emoji:'🌊', q:'¿Qué profundidad tiene la Fosa de las Marianas?', a:11000, unit:'metros', fact:'Cabe el Everest entero y todavía sobra espacio.' }
+  ];
+
+  const state = {
+    round: 0,
+    score: 0,
+    results: [],
+    questions: [],
+    current: null,
+    guess: '',
+    timeLeft: ROUND_TIME,
+    timerId: null,
+    lastTick: ROUND_TIME,
+    answered: false
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const nf = new Intl.NumberFormat('es-ES');
+  let muted = false;
+  let pointRAF = null;
+
+  /* ================= WEB AUDIO ================= */
+  let audioCtx = null;
+
+  function getCtx(){
+    if(!audioCtx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return null;
+      audioCtx = new AC();
+    }
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function unlockAudio(){
+    try{ getCtx(); }catch(err){}
+  }
+
+  function tone(freq, dur = 0.15, type = 'sine', delay = 0, vol = 0.12){
+    if(muted) return;
+    try{
+      const ctx = getCtx();
+      if(!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const t = ctx.currentTime + delay;
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + dur + 0.03);
+    }catch(err){}
+  }
+
+  const sfxClick  = () => tone(720, .07, 'triangle', 0, .05);
+  const sfxDigit  = () => tone(1040, .05, 'square', 0, .028);
+  const sfxDelete = () => tone(320, .07, 'sawtooth', 0, .035);
+  const sfxTick   = () => tone(1500, .045, 'square', 0, .04);
+  const sfxFail   = () => [392, 329.63, 261.63].forEach((f, i) => tone(f, .16, 'sawtooth', i * .1, .05));
+  const sfxSuccess = () => [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, .14, 'triangle', i * .075, .1));
+  const sfxExact = () => { [523.25, 659.25, 783.99, 1046.5, 1318.51].forEach((f, i) => tone(f, .18, 'triangle', i * .08, .12)); tone(1567.98, .5, 'sine', .42, .08); };
+  const sfxStart = () => [392, 523.25, 659.25, 783.99].forEach((f, i) => tone(f, .12, 'square', i * .09, .06));
+  const sfxWin   = () => [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.51].forEach((f, i) => tone(f, .2, 'triangle', i * .12, .1));
+
+  /* ================= CONFETTI (Canvas nativo) ================= */
+  const canvas = $('confettiCanvas');
+  const cctx = canvas.getContext('2d');
+  const CONFETTI_COLORS = ['#f43f5e', '#facc15', '#06b6d4', '#10b981', '#a855f7', '#ec4899', '#ffffff', '#fb923c'];
+  let particles = [];
+  let confettiRAF = null;
+
+  function sizeCanvas(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  sizeCanvas();
+  window.addEventListener('resize', sizeCanvas);
+
+  function startConfettiLoop(){
+    if(confettiRAF === null) confettiRAF = requestAnimationFrame(confettiLoop);
+  }
+
+  function spawnConfetti(count, originX, originY){
+    if(reduceMotion) return;
+    for(let i = 0; i < count; i++){
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 3 + Math.random() * 9;
+      particles.push({
+        x: originX + (Math.random() - .5) * 30,
+        y: originY + (Math.random() - .5) * 20,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 2,
+        size: 6 + Math.random() * 8,
+        rot: Math.random() * Math.PI * 2,
+        vr: (Math.random() - .5) * .32,
+        color: CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0],
+        shape: Math.random() < .35 ? 'circle' : 'rect',
+        life: 1,
+        decay: .005 + Math.random() * .007,
+        wobble: Math.random() * Math.PI * 2
+      });
+    }
+    startConfettiLoop();
+  }
+
+  function confettiLoop(){
+    cctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    for(let i = particles.length - 1; i >= 0; i--){
+      const p = particles[i];
+      p.vy += .16;
+      p.vx *= .994;
+      p.vy *= .994;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+      p.life -= p.decay;
+      p.wobble += .12;
+      if(p.life <= 0 || p.y > window.innerHeight + 70){ particles.splice(i, 1); continue; }
+      cctx.save();
+      cctx.globalAlpha = Math.max(0, Math.min(1, p.life));
+      cctx.translate(p.x + Math.sin(p.wobble) * 8, p.y);
+      cctx.rotate(p.rot);
+      cctx.fillStyle = p.color;
+      if(p.shape === 'circle'){
+        cctx.beginPath();
+        cctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+        cctx.fill();
+      } else {
+        cctx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * .66);
+      }
+      cctx.restore();
+    }
+    if(particles.length){
+      confettiRAF = requestAnimationFrame(confettiLoop);
+    } else {
+      confettiRAF = null;
+      cctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    }
+  }
+
+  function celebrate(power = 1){
+    if(reduceMotion) return;
+    const bursts = Math.max(2, Math.round(3 * power));
+    for(let i = 0; i < bursts; i++){
+      setTimeout(() => {
+        spawnConfetti(Math.round(45 * power), window.innerWidth * (.2 + Math.random() * .6), window.innerHeight * (.28 + Math.random() * .22));
+      }, i * 110);
+    }
+    setTimeout(() => {
+      spawnConfetti(Math.round(40 * power), window.innerWidth * .06, window.innerHeight * .82);
+      spawnConfetti(Math.round(40 * power), window.innerWidth * .94, window.innerHeight * .82);
+    }, 60);
+  }
+
+  /* ================= HELPERS ================= */
+  function shuffle(arr){
+    for(let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    const target = $(id);
+    target.classList.remove('hidden');
+    target.classList.remove('pop-in');
+    void target.offsetWidth;
+    target.classList.add('pop-in');
+  }
+
+  function updateBest(){
+    const best = Number(localStorage.getItem(STORAGE_KEY) || 0);
+    $('bestScore').textContent = nf.format(best);
+  }
+
+  let toastTimer = null;
+  function showToast(msg){
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('toast-show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('toast-show'), 2600);
+  }
+
+  function getRank(score){
+    if(score >= 8000) return { title:'Adivino Supremo', emoji:'👑', msg:'¡Has rozado la perfección! El universo te teme.' };
+    if(score >= 6000) return { title:'Calculadora Humana', emoji:'🧠', msg:'¡Precisión de otro nivel! Ni una hoja de cálculo te gana.' };
+    if(score >= 4000) return { title:'Oráculo de Barrio', emoji:'🔮', msg:'Tus predicciones ya merecen su propia consulta.' };
+    if(score >= 2000) return { title:'Aprendiz de Vidente', emoji:'🌱', msg:'Vas por buen camino... ¡el futuro es tuyo!' };
+    return { title:'Turista Perdido', emoji:'🧭', msg:'Te has paseado por todos los números... ¡pero qué bien te lo has pasado!' };
+  }
+
+  /* ================= CHIPS ================= */
+  function buildChips(){
+    const wrap = $('roundChips');
+    wrap.innerHTML = '';
+    for(let i = 0; i < TOTAL_ROUNDS; i++){
+      const chip = document.createElement('span');
+      chip.className = 'round-chip';
+      chip.textContent = String(i + 1);
+      wrap.appendChild(chip);
+    }
+  }
+
+  function updateChips(){
+    const chips = document.querySelectorAll('.round-chip');
+    chips.forEach((chip, i) => {
+      chip.className = 'round-chip';
+      chip.textContent = String(i + 1);
+      chip.title = '';
+      if(i < state.results.length){
+        const r = state.results[i];
+        chip.classList.add('done');
+        chip.textContent = '✓';
+        chip.title = 'Ronda ' + (i + 1) + ': ' + nf.format(r.points) + ' pts';
+        if(r.diff === 0) chip.classList.add('perfect');
+      } else if(i === state.round && !state.answered){
+        chip.classList.add('current');
+      }
+    });
+  }
+
+  /* ================= TIMER ================= */
+  function startTimer(){
+    stopTimer();
+    state.timeLeft = ROUND_TIME;
+    state.lastTick = Math.ceil(ROUND_TIME);
+    updateTimerUI();
+    state.timerId = setInterval(() => {
+      if(state.answered) return;
+      state.timeLeft = Math.max(0, state.timeLeft - .1);
+      const secs = Math.ceil(state.timeLeft);
+      if(secs <= 4 && secs > 0 && secs !== state.lastTick){
+        sfxTick();
+        state.lastTick = secs;
+      }
+      updateTimerUI();
+      if(state.timeLeft <= 0){
+        stopTimer();
+        submitGuess(true);
+      }
+    }, 100);
+  }
+
+  function stopTimer(){
+    if(state.timerId){ clearInterval(state.timerId); state.timerId = null; }
+  }
+
+  function updateTimerUI(){
+    const ratio = state.timeLeft / ROUND_TIME;
+    $('timerRing').style.strokeDashoffset = String(RING_CIRC * (1 - ratio));
+    const secs = Math.ceil(state.timeLeft);
+    $('timerText').textContent = String(secs);
+    const danger = state.timeLeft <= 4;
+    $('timerWrap').classList.toggle('timer-danger', danger);
+    $('timerRing').style.stroke = danger ? '#fb7185' : (state.timeLeft <= 8 ? '#fbbf24' : '#facc15');
+    $('timerText').style.color = danger ? '#fecdd3' : '#ffffff';
+  }
+
+  /* ================= GAME FLOW ================= */
+  function startGame(){
+    unlockAudio();
+    sfxStart();
+    state.questions = shuffle([...QUESTIONS]).slice(0, TOTAL_ROUNDS);
+    state.round = 0;
+    state.score = 0;
+    state.results = [];
+    state.answered = false;
+    state.guess = '';
+    $('feedbackModal').classList.add('hidden');
+    $('scoreValue').textContent = '0';
+    buildChips();
+    showScreen('screen-game');
+    loadRound();
+  }
+
+  function loadRound(){
+    state.current = state.questions[state.round];
+    state.guess = '';
+    state.answered = false;
+    $('roundLabel').textContent = 'RONDA ' + (state.round + 1) + ' / ' + TOTAL_ROUNDS;
+    $('roundEmoji').textContent = state.current.emoji;
+    $('questionText').textContent = state.current.q;
+    $('answerUnit').textContent = state.current.unit;
+    $('answerValue').textContent = '0';
+    renderAnswer();
+    updateChips();
+    const card = $('questionCard');
+    card.classList.remove('card-in');
+    void card.offsetWidth;
+    card.classList.add('card-in');
+    startTimer();
+  }
+
+  function renderAnswer(){
+    const raw = state.guess === '' ? '0' : state.guess;
+    $('answerValue').textContent = raw.length > 3 ? nf.format(parseInt(raw, 10)) : raw;
+  }
+
+  function pressKey(k){
+    if(state.answered) return;
+
+    if(k === 'enter'){
+      if(state.guess === ''){
+        showToast('¡Escribe un número primero! 🤔');
+        sfxDelete();
+        const box = $('answerBox');
+        box.classList.remove('shake');
+        void box.offsetWidth;
+        box.classList.add('shake');
+        setTimeout(() => box.classList.remove('shake'), 450);
+        return;
+      }
+      submitGuess(false);
+      return;
+    }
+
+    if(k === 'del'){
+      if(state.guess !== '') state.guess = state.guess.slice(0, -1);
+      sfxDelete();
+      renderAnswer();
+      return;
+    }
+
+    if(!/^[0-9]$/.test(k)) return;
+    let g = state.guess;
+    if(g === '0') g = '';
+    if(g.length >= 7) return;
+    state.guess = g + k;
+    sfxDigit();
+    renderAnswer();
+  }
+
+  function scoreGuess(guess, answer, timeLeft){
+    const diff = Math.abs(guess - answer);
+    const rel = diff / Math.max(1, Math.abs(answer));
+    const base = diff === 0 ? 1000 : Math.round(1000 * Math.exp(-rel * 5));
+    let speed = Math.round(timeLeft * 5);
+    if(diff === 0) speed += 200;
+    return { diff, rel, base, speed, points: base + speed };
+  }
+
+  function submitGuess(timeout = false){
+    if(state.answered) return;
+    state.answered = true;
+    stopTimer();
+    const q = state.current;
+    const hasGuess = state.guess !== '';
+    const guess = hasGuess ? parseInt(state.guess, 10) : 0;
+    const res = scoreGuess(guess, q.a, state.timeLeft);
+    state.score += res.points;
+    state.results.push({ guess, answer: q.a, points: res.points, diff: res.diff, rel: res.rel, timeout });
+    $('scoreValue').textContent = nf.format(state.score);
+    updateChips();
+    showFeedback({ guess, q, res, timeout, hasGuess });
+  }
+
+  function showFeedback({ guess, q, res, timeout, hasGuess }){
+    let emoji, title, msg, color;
+
+    if(timeout){
+      emoji = '⏰';
+      title = '¡TIEMPO AGOTADO!';
+      msg = hasGuess ? 'El reloj te pilló... ¡pero tu apuesta ha contado!' : 'El reloj te pilló sin apuesta. ¡La próxima vez más rápido!';
+      color = '#e11d48';
+    } else if(res.diff === 0){
+      emoji = '🎯';
+      title = '¡BOOM! ¡CLAVADÍSIMO!';
+      msg = '¡Perfecto! Eres una máquina de adivinar.';
+      color = '#db2777';
+    } else if(res.rel <= .05){
+      emoji = '🤏';
+      title = '¡CASI, CASI!';
+      msg = 'Te has rozado con la respuesta. ¡Qué puntería!';
+      color = '#db2777';
+    } else if(res.rel <= .2){
+      emoji = '🔥';
+      title = '¡MUY CERCA!';
+      msg = '¡Buen ojo! La respuesta estaba a la vuelta de la esquina.';
+      color = '#db2777';
+    } else if(res.rel <= .5){
+      if(guess > q.a){
+        emoji = '🚀';
+        title = '¡TE PASASTE POR MUCHO!';
+        msg = 'Ups... te has ido a la estratosfera. 😅';
+      } else {
+        emoji = '🐢';
+        title = '¡TE QUEDASTE CORTO!';
+        msg = 'Casi llegas... ¡pero faltaba un trecho! 😜';
+      }
+      color = '#7c3aed';
+    } else {
+      emoji = guess > q.a ? '🛸' : '🧭';
+      title = '¡TURISTA PERDIDO!';
+      msg = guess > q.a ? 'Te has ido a otra galaxia. ¡La próxima es tuya!' : 'Te has quedado a mitad de camino. ¡A por la revancha!';
+      color = '#7c3aed';
+    }
+
+    $('fbEmoji').textContent = emoji;
+    $('fbTitle').textContent = title;
+    $('fbTitle').style.color = color;
+    $('fbMsg').textContent = msg;
+    $('fbGuess').textContent = nf.format(guess) + ' ' + q.unit;
+    $('fbAnswer').textContent = nf.format(q.a) + ' ' + q.unit;
+    $('fbFact').textContent = '💡 ' + q.fact;
+    $('fbBonus').textContent = res.speed > 0 ? ('⚡ +' + nf.format(res.speed) + ' de bonus por rapidez') : 'Sin bonus de velocidad';
+    $('nextBtn').textContent = state.round === TOTAL_ROUNDS - 1 ? 'Ver resultados 🏁' : 'Siguiente ronda 🚀';
+
+    const modal = $('feedbackModal');
+    modal.classList.remove('hidden');
+    const card = $('feedbackCard');
+    card.classList.remove('pop-in');
+    void card.offsetWidth;
+    card.classList.add('pop-in');
+
+    animatePoints(res.points, res.diff === 0);
+
+    if(!timeout && res.diff === 0){
+      sfxExact();
+      celebrate(1.3);
+    } else if(!timeout && res.rel <= .1){
+      sfxSuccess();
+      celebrate(.8);
+    } else if(!timeout && res.rel <= .25){
+      sfxSuccess();
+    } else {
+      sfxFail();
+    }
+  }
+
+  function animatePoints(target, perfect){
+    if(pointRAF){ cancelAnimationFrame(pointRAF); pointRAF = null; }
+    const el = $('fbPoints');
+    el.className = 'text-5xl font-extrabold leading-none text-transparent bg-clip-text ' +
+      (perfect ? 'bg-gradient-to-r from-amber-500 via-pink-500 to-fuchsia-600' : 'bg-gradient-to-r from-fuchsia-600 to-pink-500');
+    const start = performance.now();
+    const dur = 700;
+    function frame(now){
+      const p = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = '+' + nf.format(Math.round(target * eased));
+      if(p < 1){ pointRAF = requestAnimationFrame(frame); }
+      else { el.textContent = '+' + nf.format(target); pointRAF = null; }
+    }
+    pointRAF = requestAnimationFrame(frame);
+  }
+
+  function nextRound(){
+    $('feedbackModal').classList.add('hidden');
+    if(pointRAF){ cancelAnimationFrame(pointRAF); pointRAF = null; }
+    if(state.round >= TOTAL_ROUNDS - 1){ showResults(); return; }
+    state.round++;
+    loadRound();
+  }
+
+  function showResults(){
+    stopTimer();
+    const rank = getRank(state.score);
+    $('rankEmoji').textContent = rank.emoji;
+    $('rankTitle').textContent = rank.title;
+    $('rankMsg').textContent = rank.msg;
+    $('podiumEmoji').textContent = rank.emoji;
+    $('podiumScore').textContent = nf.format(state.score) + ' pts';
+
+    const best = state.results.length ? Math.max(...state.results.map(r => r.points)) : 0;
+    const exact = state.results.filter(r => r.diff === 0).length;
+    $('bestRound').textContent = nf.format(best);
+    $('exactCount').textContent = String(exact);
+
+    const summary = $('roundSummary');
+    summary.innerHTML = '';
+    state.results.forEach((r, i) => {
+      const badge = document.createElement('span');
+      badge.className = 'summary-chip' + (r.diff === 0 ? ' perfect' : '');
+      badge.innerHTML = '<b>R' + (i + 1) + '</b> ' + nf.format(r.points);
+      summary.appendChild(badge);
+    });
+
+    const bestSaved = Number(localStorage.getItem(STORAGE_KEY) || 0);
+    if(state.score > bestSaved) localStorage.setItem(STORAGE_KEY, String(state.score));
+
+    animateFinalScore(state.score);
+    showScreen('screen-results');
+    updateBest();
+    sfxWin();
+    celebrate(1.5);
+    setTimeout(() => celebrate(1), 900);
+  }
+
+  function animateFinalScore(target){
+    const el = $('finalScore');
+    const start = performance.now();
+    const dur = 900;
+    function frame(now){
+      const p = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = nf.format(Math.round(target * eased));
+      if(p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  async function shareScore(){
+    const rank = getRank(state.score);
+    const text = '🎉 ¡He hecho ' + nf.format(state.score) + ' puntos en 9GUESS! Mi rango: ' + rank.emoji + ' ' + rank.title + '. ¿Puedes superarme? 🚀';
+    if(navigator.share){
+      try{
+        await navigator.share({ title:'9GUESS — Party Game', text, url: location.href });
+        return;
+      }catch(err){
+        if(err && err.name === 'AbortError') return;
+      }
+    }
+    try{
+      await navigator.clipboard.writeText(text + ' ' + location.href);
+      showToast('📋 ¡Marcador copiado al portapapeles!');
+    }catch(err){
+      showToast('📣 ' + text);
+    }
+  }
+
+  /* ================= EVENTS ================= */
+  $('startBtn').addEventListener('click', startGame);
+  $('replayBtn').addEventListener('click', startGame);
+  $('shareBtn').addEventListener('click', shareScore);
+
+  $('nextBtn').addEventListener('click', () => {
+    sfxClick();
+    nextRound();
+  });
+
+  $('homeBtn').addEventListener('click', () => {
+    if(state.answered || window.confirm('¿Seguro que quieres salir de la fiesta?')){
+      stopTimer();
+      showScreen('screen-lobby');
+      updateBest();
+    }
+  });
+
+  $('muteBtn').addEventListener('click', () => {
+    muted = !muted;
+    $('muteBtn').textContent = muted ? '🔇' : '🔊';
+    if(!muted){ unlockAudio(); sfxClick(); }
+  });
+
+  $('keypad').addEventListener('pointerdown', (e) => {
+    const btn = e.target.closest('.key');
+    if(!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const x = (e.clientX || rect.left + rect.width / 2) - rect.left;
+    const y = (e.clientY || rect.top + rect.height / 2) - rect.top;
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 520);
+  });
+
+  $('keypad').addEventListener('click', (e) => {
+    const btn = e.target.closest('.key');
+    if(!btn) return;
+    pressKey(btn.dataset.key);
+  });
+
+  window.addEventListener('keydown', (e) => {
+    const modalVisible = !$('feedbackModal').classList.contains('hidden');
+    if(modalVisible){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        sfxClick();
+        nextRound();
+      }
+      return;
+    }
+    if($('screen-game').classList.contains('hidden')) return;
+    if(/^[0-9]$/.test(e.key)){
+      e.preventDefault();
+      pressKey(e.key);
+    } else if(e.key === 'Backspace'){
+      e.preventDefault();
+      pressKey('del');
+    } else if(e.key === 'Enter'){
+      e.preventDefault();
+      pressKey('enter');
+    }
+  });
+
+  document.addEventListener('pointerdown', unlockAudio, { once:true });
+
+  updateBest();
+})();
+</script>
+</body>
+</html>

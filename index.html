@@ -2,9 +2,17 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>9GUESS — ¡La Fiesta de los Números!</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎉</text></svg>" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>9GUESS — ¡El party game de las 9 respuestas!</title>
+<meta name="description" content="9GUESS: el party game de las 9 respuestas. Pasa el móvil, adivina categorías, usa comodines y compite con tus amigos." />
+<meta name="theme-color" content="#7c3aed" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="9GUESS" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="manifest" href="manifest.json" />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +28,14 @@
     min-height: 100dvh;
     color:#fff;
     overflow-x:hidden;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+  #muteBtn{
+    top: max(.75rem, env(safe-area-inset-top, 0px));
+    right: max(.75rem, env(safe-area-inset-right, 0px));
   }
   @keyframes bgShift{ 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
 
@@ -32,7 +48,7 @@
     color:transparent;
     filter: drop-shadow(0 4px 0 #7c2d12) drop-shadow(0 8px 0 rgba(88,28,135,.85)) drop-shadow(0 16px 26px rgba(0,0,0,.4));
   }
-  .logo-main{ font-size: clamp(4.5rem, 20vw, 8.5rem); line-height:.85; }
+  .logo-main{ font-size: clamp(3.6rem, 16vw, 6.5rem); line-height:.85; }
 
   .glass{
     background: rgba(255,255,255,.12);
@@ -53,6 +69,7 @@
   }
   .btn-3d:hover{ filter:brightness(1.07); }
   .btn-3d:active{ transform: translateY(6px) scale(.985); }
+  .btn-3d:disabled{ opacity:.5; cursor:not-allowed; filter:grayscale(.4); }
   .btn-party{
     color:#fff;
     background:linear-gradient(180deg,#fb7185 0%,#f43f5e 42%,#db2777 100%);
@@ -72,77 +89,51 @@
     box-shadow: 0 7px 0 #155e75, 0 16px 26px -8px rgba(0,0,0,.45);
   }
   .btn-cyan:active{ box-shadow: 0 2px 0 #155e75, 0 6px 10px -4px rgba(0,0,0,.4); }
-
-  .key{
-    position:relative; display:flex; align-items:center; justify-content:center;
-    height: clamp(2.9rem, 9vw, 3.6rem); border-radius:1.1rem;
-    font-size: clamp(1.35rem, 5vw, 1.75rem); font-weight:800; overflow:hidden;
-    background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(233,213,255,.96));
-    color:#6b21a8;
-    box-shadow: 0 6px 0 #9333ea, 0 10px 18px -4px rgba(0,0,0,.4);
-    border:1px solid rgba(255,255,255,.85);
-    transition: transform .07s, box-shadow .07s, filter .15s;
-    cursor:pointer; user-select:none;
-  }
-  .key:hover{ filter:brightness(1.05); }
-  .key:active{ transform: translateY(5px); box-shadow: 0 1px 0 #9333ea, 0 4px 8px -4px rgba(0,0,0,.4); }
-  .key-enter{
-    background:linear-gradient(180deg,#6ee7b7,#10b981 58%,#059669);
-    color:#022c22;
-    box-shadow: 0 6px 0 #047857, 0 10px 18px -4px rgba(0,0,0,.4);
-  }
-  .key-enter:active{ box-shadow: 0 1px 0 #047857, 0 4px 8px -4px rgba(0,0,0,.4); }
-  .key-del{
-    background:linear-gradient(180deg,#fda4af,#f43f5e 58%,#e11d48);
+  .btn-ghost{
     color:#fff;
-    box-shadow: 0 6px 0 #9f1239, 0 10px 18px -4px rgba(0,0,0,.4);
+    background:rgba(255,255,255,.12);
+    border:2px solid rgba(255,255,255,.3);
+    box-shadow: 0 6px 0 rgba(76,29,149,.55);
   }
-  .key-del:active{ box-shadow: 0 1px 0 #9f1239, 0 4px 8px -4px rgba(0,0,0,.4); }
-  .ripple{
-    position:absolute; width:12px; height:12px; border-radius:50%;
-    background:rgba(168,85,247,.45); transform:translate(-50%,-50%) scale(0);
-    animation: rippleAnim .5s ease-out forwards; pointer-events:none;
-  }
-  @keyframes rippleAnim{ to{ transform:translate(-50%,-50%) scale(16); opacity:0; } }
+  .btn-ghost:active{ box-shadow: 0 1px 0 rgba(76,29,149,.55); }
 
-  .cursor-blink{ animation: blink 1s steps(1) infinite; }
-  @keyframes blink{ 50%{ opacity:0; } }
+  .avatar{
+    border-radius:9999px; display:flex; align-items:center; justify-content:center;
+    border:3px solid rgba(255,255,255,.75); box-shadow: 0 10px 24px -6px rgba(0,0,0,.5), inset 0 3px 0 rgba(255,255,255,.35);
+    flex-shrink:0;
+  }
 
-  .animate-float{ animation: floaty 3.6s ease-in-out infinite; }
-  @keyframes floaty{ 0%,100%{ transform:translateY(0) rotate(-2deg); } 50%{ transform:translateY(-14px) rotate(3deg); } }
-  .animate-bounce-slow{ animation: bounceSlow 1.9s ease-in-out infinite; }
-  @keyframes bounceSlow{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-9px); } }
+  .mode-card{
+    border-radius:1.25rem; padding:.8rem .7rem; text-align:left; cursor:pointer;
+    background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.22);
+    transition: all .22s ease;
+  }
+  .mode-card:hover{ background:rgba(255,255,255,.14); transform:translateY(-2px); }
+  .mode-card.selected{
+    background:linear-gradient(150deg, rgba(250,204,21,.28), rgba(244,63,94,.24));
+    border-color:#fde047;
+    box-shadow: 0 0 0 3px rgba(250,204,21,.22), 0 14px 30px -10px rgba(0,0,0,.55);
+    transform:translateY(-2px);
+  }
 
-  .pop-in{ animation: popIn .42s cubic-bezier(.2,.9,.3,1.25) both; }
-  @keyframes popIn{ 0%{ transform:scale(.72) translateY(24px); opacity:0; } 60%{ transform:scale(1.03); } 100%{ transform:scale(1); opacity:1; } }
-  .card-in{ animation: cardIn .38s ease-out both; }
-  @keyframes cardIn{ 0%{ transform:scale(.94) translateY(18px); opacity:.2; } 100%{ transform:scale(1) translateY(0); opacity:1; } }
-  .shake{ animation: shake .42s ease-in-out; }
-  @keyframes shake{ 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-9px); } 40%{ transform:translateX(9px); } 60%{ transform:translateX(-6px); } 80%{ transform:translateX(6px); } }
+  .seg-btn{
+    flex:1; padding:.55rem .4rem; border-radius:.9rem; font-weight:800; font-size:.9rem;
+    background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.18);
+    color:rgba(255,255,255,.75); transition:all .2s ease; cursor:pointer;
+  }
+  .seg-btn:hover{ background:rgba(255,255,255,.15); }
+  .seg-btn.active{
+    background:linear-gradient(180deg,#fef08a,#facc15 60%,#f59e0b);
+    color:#4c1d95; border-color:rgba(255,255,255,.7);
+    box-shadow:0 4px 0 #b45309, 0 10px 18px -6px rgba(0,0,0,.5);
+  }
 
-  .round-chip{
-    width:1.8rem; height:1.8rem; border-radius:9999px; display:flex; align-items:center; justify-content:center;
-    font-size:.72rem; font-weight:800; background:rgba(255,255,255,.15);
-    border:1px solid rgba(255,255,255,.28); color:rgba(255,255,255,.6);
-    transition: all .3s ease; flex-shrink:0;
+  .player-input{
+    flex:1; min-width:0; border-radius:.85rem; padding:.55rem .8rem;
+    background:rgba(255,255,255,.93); color:#3b0764; font-weight:800; font-size:.9rem;
+    border:2px solid rgba(255,255,255,.4); outline:none;
   }
-  .round-chip.done{
-    background:linear-gradient(135deg,#10b981,#06b6d4); color:#fff;
-    border-color:rgba(255,255,255,.5); box-shadow:0 0 12px rgba(16,185,129,.7);
-  }
-  .round-chip.done.perfect{
-    background:linear-gradient(135deg,#facc15,#f59e0b); color:#4c1d95;
-    box-shadow:0 0 16px rgba(250,204,21,.95);
-  }
-  .round-chip.current{
-    background:linear-gradient(135deg,#facc15,#f43f5e); color:#fff;
-    transform:scale(1.22); border-color:rgba(255,255,255,.7);
-    animation: pulseChip 1.1s ease-in-out infinite;
-  }
-  @keyframes pulseChip{
-    0%,100%{ box-shadow:0 0 0 3px rgba(255,255,255,.5), 0 0 14px rgba(250,204,21,.7); }
-    50%{ box-shadow:0 0 0 6px rgba(255,255,255,.12), 0 0 24px rgba(244,63,94,.95); }
-  }
+  .player-input:focus{ border-color:#fde047; box-shadow:0 0 0 4px rgba(250,204,21,.35); }
 
   .timer-danger{ animation: dangerPulse .5s ease-in-out infinite; }
   @keyframes dangerPulse{
@@ -150,20 +141,141 @@
     50%{ transform:scale(1.08); filter:drop-shadow(0 0 14px rgba(244,63,94,.95)); }
   }
 
+  .slot{
+    position:relative; min-height:3.55rem; border-radius:.9rem; padding:.35rem .4rem;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    border:2px dashed rgba(255,255,255,.25); background:rgba(255,255,255,.08);
+    transition: all .25s ease; overflow:hidden;
+  }
+  .slot .slot-num{ font-size:1.35rem; font-weight:800; color:rgba(255,255,255,.35); line-height:1; }
+  .slot .slot-lock{ font-size:.6rem; opacity:.7; margin-top:.15rem; }
+  .slot .slot-answer{ font-size:.66rem; line-height:1.15; font-weight:800; overflow-wrap:anywhere; }
+  .slot .slot-check{ font-size:.55rem; opacity:.9; margin-top:.1rem; }
+  .slot.hinted{
+    border-style:solid; border-color:rgba(253,224,71,.8);
+    background:linear-gradient(160deg, rgba(250,204,21,.24), rgba(251,146,60,.18));
+    box-shadow:0 0 14px rgba(250,204,21,.35);
+  }
+  .slot.hinted .slot-hint{ font-size:1rem; font-weight:800; color:#fef08a; letter-spacing:.06em; }
+  .slot.hinted .slot-len{ font-size:.55rem; color:rgba(255,255,255,.7); font-weight:700; }
+  .slot.found{
+    border-style:solid; border-color:rgba(255,255,255,.6);
+    background:linear-gradient(160deg,#34d399,#10b981 60%,#059669);
+    box-shadow:0 0 18px rgba(16,185,129,.65), inset 0 2px 0 rgba(255,255,255,.35);
+    animation: slotPop .4s cubic-bezier(.2,.9,.3,1.3) both;
+  }
+  .slot.found .slot-answer{ color:#fff; text-shadow:0 1px 0 rgba(0,0,0,.25); }
+  .slot.missed{
+    border-style:solid; border-color:rgba(251,113,133,.55);
+    background:linear-gradient(160deg, rgba(244,63,94,.3), rgba(190,24,93,.22));
+  }
+  .slot.missed .slot-answer{ color:#fecdd3; }
+  @keyframes slotPop{
+    0%{ transform:scale(.7) rotate(-4deg); }
+    65%{ transform:scale(1.08) rotate(2deg); }
+    100%{ transform:scale(1) rotate(0); }
+  }
+
+  .presenter-answer{
+    position:relative; display:flex; align-items:center; justify-content:space-between; gap:.35rem;
+    min-height:2.55rem; border-radius:.8rem; padding:.4rem .5rem; text-align:left;
+    font-size:.68rem; font-weight:800; line-height:1.12; color:#fff;
+    background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3);
+    transition:background .15s ease, border-color .15s ease, transform .08s ease;
+    overflow-wrap:anywhere;
+  }
+  .presenter-answer:hover{ background:rgba(255,255,255,.22); }
+  .presenter-answer:active{ transform:scale(.97); }
+  .presenter-answer .check{ font-size:.72rem; opacity:.9; }
+  .presenter-answer.found{
+    background:linear-gradient(160deg,#34d399,#10b981 60%,#059669);
+    border-color:rgba(255,255,255,.65); color:#fff;
+    box-shadow:0 0 14px rgba(16,185,129,.4);
+  }
+  .presenter-answer:not(.found):disabled{ opacity:.45; }
+  .presenter-answer:disabled{ cursor:default; }
+  .presenter-answer.hint-pulse{ animation:hintPulse 1s ease-in-out 3; border-color:#fde047; }
+  @keyframes hintPulse{
+    0%,100%{ box-shadow:0 0 0 0 rgba(253,224,71,0); }
+    50%{ box-shadow:0 0 0 4px rgba(253,224,71,.45); }
+  }
+
+  .presenter-trap{
+    border-radius:9999px; padding:.3rem .55rem; font-size:.62rem; font-weight:800;
+    color:#ffe4e6; background:rgba(244,63,94,.22); border:1px solid rgba(251,113,133,.45);
+    transition:all .15s ease;
+  }
+  .presenter-trap:hover{ background:rgba(244,63,94,.35); }
+  .presenter-trap:active{ transform:scale(.96); }
+  .presenter-trap.used{ opacity:.4; text-decoration:line-through; background:rgba(244,63,94,.12); }
+  .presenter-trap:disabled{ cursor:not-allowed; }
+
+  .power-btn{
+    position:relative; border-radius:1rem; padding:.45rem .3rem .5rem;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.05rem;
+    font-size:.66rem; font-weight:800; color:#4c1d95;
+    background:linear-gradient(180deg,#fef9c3,#fde047 60%,#fbbf24);
+    box-shadow:0 4px 0 #b45309, 0 8px 16px -6px rgba(0,0,0,.45);
+    border:1px solid rgba(255,255,255,.7); cursor:pointer;
+    transition:transform .07s, box-shadow .07s, filter .2s;
+  }
+  .power-btn[data-power="time"]{ background:linear-gradient(180deg,#cffafe,#22d3ee 60%,#0891b2); color:#083344; box-shadow:0 4px 0 #155e75, 0 8px 16px -6px rgba(0,0,0,.45); }
+  .power-btn[data-power="spark"]{ background:linear-gradient(180deg,#fbcfe8,#f472b6 55%,#db2777); color:#fff; box-shadow:0 4px 0 #9d174d, 0 8px 16px -6px rgba(0,0,0,.45); }
+  .power-btn:active{ transform:translateY(4px); }
+  .power-btn:disabled{ opacity:.38; filter:grayscale(.6); cursor:not-allowed; transform:none; }
+  .power-emoji{ font-size:1.1rem; line-height:1; }
+  .power-count{
+    position:absolute; top:-.35rem; right:-.3rem; min-width:1.15rem; height:1.15rem;
+    border-radius:9999px; background:#4c1d95; color:#fde047; font-size:.62rem;
+    display:flex; align-items:center; justify-content:center; border:2px solid #fff;
+    box-shadow:0 2px 6px rgba(0,0,0,.4);
+  }
+
+  .streak-badge{
+    background:linear-gradient(180deg,#fb923c,#f43f5e);
+    border:1px solid rgba(255,255,255,.5);
+    box-shadow:0 0 14px rgba(244,63,94,.55);
+    animation: streakPulse 1s ease-in-out infinite;
+  }
+  @keyframes streakPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.06); } }
+
+  .flash{
+    position:fixed; left:50%; top:5rem; z-index:75; pointer-events:none;
+    transform:translate(-50%,-14px) scale(.9); opacity:0;
+    transition:opacity .22s ease, transform .22s ease;
+    padding:.55rem 1.1rem; border-radius:9999px; font-weight:800; font-size:.9rem;
+    max-width:90vw; text-align:center; border:2px solid rgba(255,255,255,.45);
+    box-shadow:0 12px 30px rgba(0,0,0,.4);
+  }
+  .flash.show{ opacity:1; transform:translate(-50%,0) scale(1); }
+  .flash-correct{ background:linear-gradient(180deg,#34d399,#059669); color:#fff; }
+  .flash-trap{ background:linear-gradient(180deg,#fb7185,#be123c); color:#fff; }
+  .flash-info{ background:linear-gradient(180deg,#fde047,#f59e0b); color:#4c1d95; }
+  .flash-dup{ background:linear-gradient(180deg,#67e8f9,#0891b2); color:#083344; }
+
   .podium-step{
     border-radius:1rem 1rem .55rem .55rem;
     box-shadow: inset 0 3px 0 rgba(255,255,255,.45), 0 14px 34px -8px rgba(0,0,0,.55);
     border:1px solid rgba(255,255,255,.35);
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    padding:.5rem .35rem; text-align:center;
+  }
+  .rank-row{
+    display:flex; align-items:center; gap:.6rem; padding:.55rem .7rem;
+    border-radius:1rem; background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.18);
   }
 
-  .summary-chip{
-    display:inline-flex; align-items:center; gap:.3rem; font-size:.72rem; font-weight:800;
-    padding:.32rem .58rem; border-radius:9999px; background:rgba(255,255,255,.14);
-    border:1px solid rgba(255,255,255,.25); color:rgba(255,255,255,.88);
-  }
-  .summary-chip b{ color:#fde047; }
-  .summary-chip.perfect{ background:linear-gradient(135deg,#facc15,#f43f5e); color:#fff; border-color:rgba(255,255,255,.6); }
-  .summary-chip.perfect b{ color:#fff; }
+  .animate-float{ animation: floaty 3.6s ease-in-out infinite; }
+  @keyframes floaty{ 0%,100%{ transform:translateY(0) rotate(-2deg); } 50%{ transform:translateY(-12px) rotate(3deg); } }
+  .animate-bounce-slow{ animation: bounceSlow 1.9s ease-in-out infinite; }
+  @keyframes bounceSlow{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-8px); } }
+
+  .pop-in{ animation: popIn .42s cubic-bezier(.2,.9,.3,1.25) both; }
+  @keyframes popIn{ 0%{ transform:scale(.72) translateY(24px); opacity:0; } 60%{ transform:scale(1.03); } 100%{ transform:scale(1); opacity:1; } }
+  .card-in{ animation: cardIn .38s ease-out both; }
+  @keyframes cardIn{ 0%{ transform:scale(.96) translateY(16px); opacity:.2; } 100%{ transform:scale(1) translateY(0); opacity:1; } }
+  .shake{ animation: shake .42s ease-in-out; }
+  @keyframes shake{ 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-9px); } 40%{ transform:translateX(9px); } 60%{ transform:translateX(-6px); } 80%{ transform:translateX(6px); } }
 
   #toast{ left:50%; bottom:2rem; opacity:0; transform:translate(-50%,20px); transition:opacity .3s ease, transform .3s ease; pointer-events:none; }
   #toast.toast-show{ opacity:1; transform:translate(-50%,0); }
@@ -185,213 +297,994 @@
 
 <button id="muteBtn" aria-label="Silenciar sonido" class="fixed top-3 right-3 z-[70] glass rounded-full w-11 h-11 text-xl flex items-center justify-center hover:scale-110 transition">🔊</button>
 
-<main class="relative z-10 min-h-[100dvh] flex items-center justify-center px-4 py-8">
+<main class="relative z-10 min-h-[100dvh] flex items-start sm:items-center justify-center px-4 py-6">
 
-  <!-- ================= LOBBY ================= -->
-  <section id="screen-lobby" class="screen relative w-full max-w-xl mx-auto text-center">
-    <span class="hidden sm:inline-block absolute -top-8 left-0 text-4xl animate-float">🎲</span>
-    <span class="hidden sm:inline-block absolute top-6 right-0 text-3xl animate-float" style="animation-delay:-1s;">🍿</span>
-    <span class="hidden sm:inline-block absolute bottom-44 left-0 text-3xl animate-float" style="animation-delay:-2s;">🎈</span>
-    <span class="hidden sm:inline-block absolute bottom-40 right-0 text-3xl animate-float" style="animation-delay:-.6s;">🕹️</span>
-    <span class="hidden sm:inline-block absolute top-1/2 left-2 text-2xl animate-float" style="animation-delay:-1.6s;">⭐</span>
-
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-xs sm:text-sm tracking-widest mb-6">
-      ✨ PARTY GAME EDITION ✨
+  <!-- ================= HOME ================= -->
+  <section id="screen-home" class="screen w-full max-w-lg mx-auto text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[10px] sm:text-xs tracking-widest mb-4">
+      ✨ PARTY GAME · PASS &amp; PLAY ✨
     </div>
     <h1 class="logo-text logo-main">9GUESS</h1>
-    <p class="mt-4 text-2xl sm:text-3xl font-extrabold text-yellow-200" style="text-shadow:0 3px 0 rgba(91,33,182,.9);">¡Calcula, adivina y compite!</p>
-    <p class="mt-2 text-white/80 font-semibold">9 rondas · 20 segundos · 1 campeón 🏆</p>
+    <p class="mt-3 text-xl sm:text-2xl font-extrabold text-yellow-200" style="text-shadow:0 3px 0 rgba(91,33,182,.9);">¡Pasa el móvil, adivina y compite!</p>
+    <p class="mt-1 text-sm text-white/75 font-semibold">Dos formas de jugar: presenta o responde. Encuentra 9 respuestas antes de que el reloj llegue a cero.</p>
 
-    <button id="startBtn" class="btn-3d btn-party mt-8 w-full sm:w-auto px-10 py-5 text-2xl sm:text-3xl animate-bounce-slow">
+    <div class="glass rounded-3xl p-4 sm:p-5 mt-5 text-left">
+      <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-yellow-300 mb-2">Dos dinámicas de juego</div>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="rounded-2xl bg-white/10 border border-white/20 p-3">
+          <div class="text-2xl">🎤</div>
+          <div class="font-extrabold text-sm leading-tight mt-1">Presentador</div>
+          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">Uno lee y marca. Otro responde en voz alta.</div>
+        </div>
+        <div class="rounded-2xl bg-white/10 border border-white/20 p-3">
+          <div class="text-2xl">⌨️</div>
+          <div class="font-extrabold text-sm leading-tight mt-1">Individual</div>
+          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">Cada jugador escribe sus respuestas en secreto.</div>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-center gap-1.5 text-[9px] font-extrabold text-white/60 flex-wrap">
+        <span>🎯 9 respuestas</span><span class="text-yellow-300">·</span>
+        <span>⚠️ Trampas</span><span class="text-yellow-300">·</span>
+        <span>🃏 Comodines</span><span class="text-yellow-300">·</span>
+        <span>🔥 Rachas</span>
+      </div>
+    </div>
+
+    <div id="resumeCard" class="hidden glass rounded-3xl p-4 mt-5 text-left border-2 border-cyan-300/40">
+      <div class="flex items-start justify-between gap-2">
+        <div class="min-w-0">
+          <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-cyan-200">💾 Partida guardada</div>
+          <div id="resumeInfo" class="text-sm font-extrabold text-white mt-0.5 truncate">Turno 1 de 4 · Ronda 1 de 2</div>
+          <div id="resumeSavedAt" class="text-[9px] font-semibold text-white/60 mt-0.5"></div>
+        </div>
+        <button id="discardSaveBtn" type="button" class="shrink-0 w-8 h-8 rounded-full bg-white/10 border border-white/25 text-white/70 hover:bg-rose-500/40 hover:text-white transition" aria-label="Descartar partida guardada">🗑️</button>
+      </div>
+      <button id="resumeBtn" type="button" class="btn-3d btn-cyan mt-3 w-full px-6 py-3 text-base">
+        ▶️ CONTINUAR PARTIDA
+      </button>
+      <p class="mt-2 text-[9px] font-semibold text-white/50 text-center">Solo se guarda una partida. Empezar una nueva la borrará.</p>
+    </div>
+
+    <button id="homeStartBtn" type="button" class="btn-3d btn-party mt-5 w-full px-8 py-4 text-xl sm:text-2xl animate-bounce-slow">
+      🎊 EMPEZAR A JUGAR
+    </button>
+    <button id="homeHowBtn" type="button" class="btn-3d btn-cyan mt-3 w-full px-8 py-3.5 text-lg">
+      📖 INSTRUCCIONES
+    </button>
+    <button id="installBtn" type="button" class="mt-3 inline-flex items-center gap-2 text-[11px] font-extrabold text-white/75 hover:text-white underline underline-offset-4">
+      📲 Instalar como app
+    </button>
+    <p class="mt-4 text-[10px] text-white/50 font-semibold">Ideal para reuniones, viajes y romper el hielo 🧊</p>
+  </section>
+
+  <!-- ================= SETUP ================= -->
+  <section id="screen-setup" class="screen w-full max-w-lg mx-auto hidden text-center">
+    <div class="flex items-center justify-between gap-2 mb-4">
+      <button id="setupBackBtn" type="button" class="glass rounded-full px-3 py-1.5 text-[11px] font-extrabold text-white/80 hover:text-white">← Inicio</button>
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[9px] tracking-widest">
+        CONFIGURA TU PARTIDA
+      </div>
+      <div class="w-16"></div>
+    </div>
+    <h2 class="text-2xl sm:text-3xl font-extrabold text-yellow-200" style="text-shadow:0 3px 0 rgba(91,33,182,.85);">Prepara la fiesta</h2>
+    <p class="mt-1 text-xs text-white/70 font-semibold">Elige dinámica, puntuación y jugadores.</p>
+
+    <div class="glass rounded-3xl p-4 sm:p-5 mt-5 text-left">
+      <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-yellow-300 mb-2">1 · Dinámica de juego</div>
+      <div class="grid grid-cols-2 gap-2">
+        <button class="mode-card selected" data-dynamic="presenter" type="button">
+          <div class="text-2xl">🎤</div>
+          <div class="font-extrabold text-base leading-tight mt-1">Presentador</div>
+          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">Un jugador lee y marca; otro responde en voz alta. <b class="text-yellow-200">Por defecto</b>.</div>
+        </button>
+        <button class="mode-card" data-dynamic="individual" type="button">
+          <div class="text-2xl">⌨️</div>
+          <div class="font-extrabold text-base leading-tight mt-1">Individual</div>
+          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">Cada jugador escribe sus respuestas en un panel ciego.</div>
+        </button>
+      </div>
+
+      <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-yellow-300 mb-2 mt-5">2 · Puntuación</div>
+      <div class="grid grid-cols-2 gap-2">
+        <button class="mode-card selected" data-mode="fiesta" type="button">
+          <div class="text-2xl">🎉</div>
+          <div class="font-extrabold text-base leading-tight mt-1">Fiesta</div>
+          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">100 pts por acierto. Pura diversión, sin complicaciones.</div>
+        </button>
+        <button class="mode-card" data-mode="racha" type="button">
+          <div class="text-2xl">🔥</div>
+          <div class="font-extrabold text-base leading-tight mt-1">Racha</div>
+          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">Encadena aciertos y multiplica hasta x5. Un fallo corta la racha.</div>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between mt-5 mb-2">
+        <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-yellow-300">3 · Jugadores</div>
+        <div class="text-[10px] font-bold text-white/50">2 a 6</div>
+      </div>
+      <div id="playersList" class="space-y-2"></div>
+      <button id="addPlayerBtn" type="button" class="mt-2 w-full rounded-xl border-2 border-dashed border-white/30 py-2.5 font-extrabold text-xs text-white/80 hover:bg-white/10 transition">＋ AÑADIR JUGADOR</button>
+
+      <div class="grid grid-cols-2 gap-4 mt-5">
+        <div>
+          <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-1.5">Rondas por jugador</div>
+          <div class="flex gap-1.5" id="roundsGroup">
+            <button class="seg-btn" data-rounds="1" type="button">1</button>
+            <button class="seg-btn active" data-rounds="2" type="button">2</button>
+            <button class="seg-btn" data-rounds="3" type="button">3</button>
+          </div>
+        </div>
+        <div>
+          <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-1.5">Tiempo por turno</div>
+          <div class="flex gap-1.5" id="secondsGroup">
+            <button class="seg-btn" data-seconds="45" type="button">45s</button>
+            <button class="seg-btn active" data-seconds="60" type="button">60s</button>
+            <button class="seg-btn" data-seconds="90" type="button">90s</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button id="startBtn" type="button" class="btn-3d btn-party mt-5 w-full px-8 py-4 text-xl sm:text-2xl animate-bounce-slow">
       🎊 ¡COMENZAR LA FIESTA!
     </button>
+    <button id="setupHowBtn" type="button" class="mt-3 inline-flex items-center gap-2 text-[11px] font-extrabold text-white/75 hover:text-white underline underline-offset-4">
+      📖 Ver instrucciones
+    </button>
+  </section>
 
-    <div class="mt-7 flex flex-wrap items-center justify-center gap-2 text-sm font-bold">
-      <span class="glass px-4 py-2 rounded-full">🏆 Récord: <span id="bestScore">0</span> pts</span>
-      <span class="glass px-4 py-2 rounded-full">🎯 9 rondas</span>
-      <span class="glass px-4 py-2 rounded-full">⚡ Arcade</span>
+  <!-- ================= PASS ================= -->
+  <section id="screen-pass" class="screen w-full max-w-md mx-auto hidden text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[10px] tracking-widest mb-3">
+      📱 SIGUIENTE TURNO
     </div>
-    <p class="mt-6 text-xs text-white/60 font-semibold">Toca los números, confía en tu instinto y ¡llévate el trofeo!</p>
+    <div class="glass rounded-3xl p-6 mt-2">
+      <div id="passLabel" class="text-[11px] font-extrabold tracking-[.3em] text-white/70">PÁSALE EL MÓVIL A</div>
+      <div id="passAvatar" class="avatar w-28 h-28 mx-auto my-5 text-6xl"></div>
+      <h2 id="passName" class="text-3xl sm:text-4xl font-extrabold text-yellow-200 break-words" style="text-shadow:0 3px 0 rgba(91,33,182,.85);">Jugador 1</h2>
+      <p id="passMeta" class="text-xs font-bold text-white/70 mt-1">Turno 1 de 4 · Ronda 1 de 2</p>
+
+      <div id="passContestantCard" class="hidden mt-3 rounded-2xl bg-white/10 border border-white/20 px-3 py-2 flex items-center gap-2 text-left">
+        <div id="passContestantAvatar" class="avatar w-10 h-10 text-xl"></div>
+        <div class="min-w-0 leading-tight">
+          <div class="text-[9px] font-extrabold uppercase tracking-widest text-white/50">Concursante</div>
+          <div id="passContestantName" class="font-extrabold text-sm text-yellow-200 truncate">Jugador 1</div>
+        </div>
+      </div>
+
+      <p id="passInstruction" class="mt-3 text-[11px] font-semibold text-white/75 leading-snug"></p>
+
+      <div class="mt-4 grid grid-cols-2 gap-2">
+        <div class="rounded-2xl bg-white/10 border border-white/20 px-3 py-2">
+          <div id="passScoreLabel" class="text-[9px] font-extrabold uppercase tracking-widest text-white/50">Puntos</div>
+          <div id="passScore" class="text-lg font-extrabold text-yellow-300">0</div>
+        </div>
+        <div class="rounded-2xl bg-white/10 border border-white/20 px-3 py-2">
+          <div id="passPowersLabel" class="text-[9px] font-extrabold uppercase tracking-widest text-white/50">Comodines</div>
+          <div id="passPowers" class="text-sm font-extrabold text-cyan-300 mt-0.5">💡1 · ⏱️1 · 🃏1</div>
+        </div>
+      </div>
+
+      <button id="readyBtn" type="button" class="btn-3d btn-party mt-5 w-full py-4 text-xl">¡ESTOY LISTO! 🚀</button>
+      <button id="passExitBtn" type="button" class="mt-3 text-[10px] font-extrabold text-white/60 hover:text-white underline underline-offset-4">💾 Guardar y salir</button>
+    </div>
+    <p id="passFootNote" class="mt-4 text-xs text-white/60 font-semibold">Que los demás no miren... ¡o que miren y sufran! 😏</p>
   </section>
 
   <!-- ================= GAME ================= -->
   <section id="screen-game" class="screen w-full max-w-xl mx-auto hidden">
-    <div class="flex items-center justify-between gap-2 mb-3">
-      <button id="homeBtn" aria-label="Salir al inicio" class="glass rounded-full w-11 h-11 flex items-center justify-center text-lg hover:scale-110 transition">🏠</button>
-      <div class="glass rounded-full px-5 py-2 flex items-center gap-2 font-extrabold">
-        <span class="text-yellow-300 text-lg">⭐</span>
-        <span id="scoreValue">0</span>
-        <span class="text-white/60 text-[10px] tracking-widest">PTS</span>
+    <div class="flex items-center justify-between gap-2 mb-3 pr-12">
+      <div class="glass rounded-full pl-1.5 pr-3 py-1.5 flex items-center gap-2 min-w-0">
+        <div id="gameAvatar" class="avatar w-9 h-9 text-lg"></div>
+        <div class="min-w-0 text-left leading-tight">
+          <div id="gamePlayerName" class="font-extrabold text-sm truncate max-w-[6.5rem]">Jugador</div>
+          <div class="text-[10px] font-bold text-white/60"><span id="gamePlayerScore">0</span> pts</div>
+        </div>
       </div>
-      <div id="timerWrap" class="relative w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] shrink-0">
+
+      <div class="flex flex-col items-center">
+        <div id="turnLabel" class="glass rounded-full px-3 py-1 text-[10px] font-extrabold whitespace-nowrap">TURNO 1/4</div>
+        <button id="exitGameBtn" type="button" class="mt-1 text-[9px] font-extrabold text-white/60 hover:text-white underline underline-offset-2">⏸ Salir</button>
+        <div id="streakBadge" class="hidden mt-1 streak-badge rounded-full px-2 py-0.5 text-[10px] font-extrabold">🔥 x1</div>
+      </div>
+
+      <div id="timerWrap" class="relative w-16 h-16 shrink-0">
         <svg viewBox="0 0 80 80" class="w-full h-full" style="transform:rotate(-90deg);">
           <circle cx="40" cy="40" r="34" stroke="rgba(255,255,255,.18)" stroke-width="8" fill="none"></circle>
           <circle id="timerRing" cx="40" cy="40" r="34" stroke="#facc15" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="213.63" stroke-dashoffset="0" style="transition:stroke-dashoffset .1s linear, stroke .3s ease;"></circle>
         </svg>
-        <div id="timerText" class="absolute inset-0 flex items-center justify-center text-2xl font-extrabold" style="text-shadow:0 2px 0 rgba(0,0,0,.3);">20</div>
+        <div id="timerText" class="absolute inset-0 flex items-center justify-center text-2xl font-extrabold" style="text-shadow:0 2px 0 rgba(0,0,0,.3);">60</div>
       </div>
     </div>
 
-    <div id="roundChips" class="flex items-center justify-center gap-1 sm:gap-1.5 mb-4"></div>
+    <div id="presenterRoleBar" class="hidden glass rounded-2xl px-3 py-2 mb-2 text-[11px] font-extrabold text-center text-white/85"></div>
 
-    <div id="questionCard" class="glass rounded-3xl p-4 sm:p-6 border-2 border-white/30">
-      <div class="flex items-center justify-between mb-2">
-        <span id="roundLabel" class="text-[11px] sm:text-xs font-extrabold tracking-[.2em] text-yellow-300">RONDA 1 / 9</span>
-        <span id="roundEmoji" class="text-3xl animate-float">🎯</span>
+    <div id="categoryCard" class="glass rounded-3xl p-4 sm:p-5 border-2 border-white/30">
+      <div class="flex items-center justify-between mb-1">
+        <span id="categoryTag" class="text-[10px] font-extrabold tracking-[.2em] text-yellow-300">CATEGORÍA</span>
+        <span id="categoryEmoji" class="text-3xl animate-float">🌍</span>
       </div>
-      <h2 id="questionText" class="text-lg sm:text-2xl font-extrabold leading-snug min-h-[3.5rem]">Cargando pregunta…</h2>
+      <h2 id="categoryPrompt" class="text-lg sm:text-2xl font-extrabold leading-snug min-h-[3.2rem]">Nombra 9 respuestas…</h2>
 
-      <div id="answerBox" class="mt-4 rounded-2xl bg-[#2e1065]/55 border border-white/15 px-4 py-3 text-center">
-        <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-white/60">Tu apuesta</div>
-        <div class="flex items-center justify-center gap-1 leading-none">
-          <span id="answerValue" class="text-5xl sm:text-6xl font-extrabold text-yellow-300" style="text-shadow:0 4px 0 rgba(91,33,182,.8);">0</span>
-          <span class="cursor-blink text-3xl sm:text-4xl font-black text-pink-300 mb-1">|</span>
+      <div class="mt-2 flex items-center gap-2">
+        <div class="flex-1 h-2 rounded-full bg-white/15 overflow-hidden">
+          <div id="progressBar" class="h-full rounded-full transition-all duration-300" style="width:0%;background:linear-gradient(90deg,#facc15,#f43f5e,#a855f7);"></div>
         </div>
-        <div id="answerUnit" class="text-xs sm:text-sm font-bold text-white/70 -mt-1">unidades</div>
+        <span id="foundCount" class="text-xs font-extrabold text-yellow-300 whitespace-nowrap">0/9</span>
       </div>
 
-      <div id="keypad" class="mt-4 grid grid-cols-3 gap-2 sm:gap-3 select-none">
-        <button class="key" data-key="1">1</button>
-        <button class="key" data-key="2">2</button>
-        <button class="key" data-key="3">3</button>
-        <button class="key" data-key="4">4</button>
-        <button class="key" data-key="5">5</button>
-        <button class="key" data-key="6">6</button>
-        <button class="key" data-key="7">7</button>
-        <button class="key" data-key="8">8</button>
-        <button class="key" data-key="9">9</button>
-        <button class="key key-del" data-key="del" aria-label="Borrar">⌫</button>
-        <button class="key" data-key="0">0</button>
-        <button class="key key-enter" data-key="enter" aria-label="Confirmar">✓</button>
+      <div id="slotsGrid" class="grid grid-cols-3 gap-1.5 sm:gap-2 mt-3"></div>
+
+      <div id="presenterPanel" class="hidden mt-3">
+        <div class="flex items-center justify-between gap-2 mb-1.5">
+          <span class="text-[9px] font-extrabold uppercase tracking-[.2em] text-yellow-300">Toca las respuestas que diga</span>
+          <span class="text-[8px] font-bold text-white/50 whitespace-nowrap">Solo presentador</span>
+        </div>
+        <div id="presenterAnswers" class="grid grid-cols-2 gap-1.5"></div>
+
+        <div class="mt-3 rounded-2xl bg-rose-500/15 border border-rose-300/30 p-2">
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <span class="text-[9px] font-extrabold uppercase tracking-[.2em] text-rose-200">⚠️ Trampas · -75 pts</span>
+            <span id="presenterTrapCount" class="text-[9px] font-bold text-rose-200/80">0/0</span>
+          </div>
+          <div id="presenterTraps" class="flex flex-wrap gap-1.5"></div>
+          <p class="mt-1 text-[8px] text-rose-100/70 font-semibold">Toca una trampa si el concursante la dice.</p>
+        </div>
       </div>
+
+      <div class="grid grid-cols-3 gap-1.5 sm:gap-2 mt-3">
+        <button class="power-btn" data-power="hint" type="button">
+          <span class="power-emoji">💡</span><span>Pista</span><span id="hintCount" class="power-count">1</span>
+        </button>
+        <button class="power-btn" data-power="time" type="button">
+          <span class="power-emoji">⏱️</span><span>+10 seg</span><span id="timeCount" class="power-count">1</span>
+        </button>
+        <button class="power-btn" data-power="spark" type="button">
+          <span class="power-emoji">🃏</span><span>Chispa</span><span id="sparkCount" class="power-count">1</span>
+        </button>
+      </div>
+
+      <div id="soloInputRow" class="mt-3 flex gap-2">
+        <input id="answerInput" type="text" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" placeholder="Escribe una respuesta…" class="flex-1 min-w-0 rounded-xl border-2 border-white/40 bg-white/95 px-3.5 py-3 text-base font-extrabold text-[#3b0764] placeholder-purple-400 focus:outline-none focus:ring-4 focus:ring-yellow-300/60" />
+        <button id="submitAnswer" type="button" class="btn-3d btn-yellow px-4 py-3 text-sm shrink-0">AÑADIR ✓</button>
+      </div>
+      <p id="soloHintText" class="text-[9px] text-white/55 font-semibold mt-1.5 text-center">Enter para enviar · ⚠️ cuidado con las respuestas trampa</p>
     </div>
   </section>
 
   <!-- ================= RESULTS ================= -->
-  <section id="screen-results" class="screen w-full max-w-xl mx-auto hidden text-center">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-xs tracking-widest mb-3">
-      🎉 ¡LO HAS PETADO! 🎉
+  <section id="screen-results" class="screen w-full max-w-2xl mx-auto hidden text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[10px] tracking-widest mb-2">
+      🎉 ¡FIN DE LA FIESTA! 🎉
     </div>
-    <h2 class="logo-text" style="font-size:clamp(2.5rem,12vw,4.5rem);line-height:1;">¡FIN DE LA FIESTA!</h2>
+    <h2 id="resultsTitle" class="logo-text" style="font-size:clamp(2.3rem,10vw,4rem);line-height:1;">¡TENEMOS GANADOR!</h2>
 
-    <div class="glass rounded-3xl p-5 sm:p-6 mt-4">
-      <div id="rankEmoji" class="text-5xl mb-1">👑</div>
-      <div class="text-xs font-extrabold uppercase tracking-[.3em] text-yellow-300">Tu rango</div>
-      <h3 id="rankTitle" class="text-3xl sm:text-4xl font-extrabold text-yellow-200" style="text-shadow:0 3px 0 rgba(91,33,182,.8);">Adivino Supremo</h3>
-      <div class="mt-2 flex items-baseline justify-center gap-2">
-        <span id="finalScore" class="text-5xl font-extrabold text-white">0</span>
-        <span class="font-extrabold text-white/70">PTS</span>
+    <div class="glass rounded-3xl p-4 sm:p-6 mt-4">
+      <div id="winnerBanner" class="rounded-2xl px-4 py-2 bg-yellow-300/20 border border-yellow-200/40 font-extrabold text-yellow-100 text-sm sm:text-base">
+        👑 ¡Cargando resultados!
       </div>
-      <p id="rankMsg" class="text-sm font-semibold text-white/80 mt-1"></p>
 
-      <div class="mt-5 flex items-end justify-center gap-2 h-40">
-        <div class="podium-step flex-1 max-w-[7.5rem] h-24 bg-gradient-to-b from-cyan-400/80 to-cyan-600/80 p-2 flex flex-col items-center justify-end">
-          <div class="text-2xl">🎯</div>
-          <div class="text-[10px] font-extrabold text-white/80 uppercase tracking-wider">Exactos</div>
-          <div id="exactCount" class="text-xl font-extrabold">0</div>
+      <div id="podium" class="flex items-end justify-center gap-2 h-56 mt-4"></div>
+
+      <div class="grid grid-cols-2 gap-2 mt-4">
+        <div class="rounded-2xl bg-white/10 border border-white/20 px-3 py-2 text-left">
+          <div class="text-[9px] font-extrabold uppercase tracking-widest text-white/50">🎯 Más respuestas</div>
+          <div id="mostFound" class="font-extrabold text-sm text-white mt-0.5">—</div>
         </div>
-        <div class="podium-step flex-1 max-w-[9rem] h-36 bg-gradient-to-b from-yellow-300 to-amber-500 p-2 flex flex-col items-center justify-end text-[#4c1d95] shadow-2xl">
-          <div id="podiumEmoji" class="text-4xl">🏆</div>
-          <div class="text-[10px] font-extrabold uppercase tracking-wider">1º · ¡Tú!</div>
-          <div id="podiumScore" class="text-lg font-extrabold leading-tight">0 pts</div>
-        </div>
-        <div class="podium-step flex-1 max-w-[7.5rem] h-20 bg-gradient-to-b from-pink-400/80 to-pink-600/80 p-2 flex flex-col items-center justify-end">
-          <div class="text-2xl">🔥</div>
-          <div class="text-[10px] font-extrabold text-white/80 uppercase tracking-wider">Mejor ronda</div>
-          <div id="bestRound" class="text-xl font-extrabold">0</div>
+        <div class="rounded-2xl bg-white/10 border border-white/20 px-3 py-2 text-left">
+          <div class="text-[9px] font-extrabold uppercase tracking-widest text-white/50">🔥 Mejor racha</div>
+          <div id="bestStreak" class="font-extrabold text-sm text-white mt-0.5">—</div>
         </div>
       </div>
 
-      <div id="roundSummary" class="flex flex-wrap justify-center gap-1.5 mt-5"></div>
+      <div id="fullRanking" class="mt-4 space-y-2 text-left"></div>
     </div>
 
     <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
-      <button id="replayBtn" class="btn-3d btn-yellow px-7 py-4 text-lg">🔁 ¡JUGAR OTRA PARTIDA!</button>
-      <button id="shareBtn" class="btn-3d btn-cyan px-7 py-4 text-lg">📣 COMPARTIR MARCADOR</button>
+      <button id="replayBtn" type="button" class="btn-3d btn-yellow px-7 py-4 text-lg">🔁 ¡REVANCHA!</button>
+      <button id="shareBtn" type="button" class="btn-3d btn-cyan px-7 py-4 text-lg">📣 COMPARTIR</button>
     </div>
+    <button id="changeBtn" type="button" class="mt-3 text-xs font-extrabold text-white/70 underline underline-offset-4 hover:text-white">👥 Cambiar jugadores y ajustes</button>
   </section>
 </main>
 
-<!-- ================= FEEDBACK MODAL ================= -->
-<div id="feedbackModal" class="hidden fixed inset-0 z-[65] flex items-center justify-center px-4 py-10">
-  <div class="absolute inset-0 bg-[#1e1b4b]/70 backdrop-blur-md"></div>
-  <div id="feedbackCard" class="relative w-full max-w-sm rounded-3xl bg-white text-[#3b0764] p-6 pt-5 text-center pop-in border-4 border-white/70" style="box-shadow:0 30px 80px -12px rgba(0,0,0,.65);">
-    <div class="-mt-16 mx-auto w-20 h-20 rounded-full flex items-center justify-center bg-gradient-to-br from-yellow-200 via-pink-300 to-fuchsia-500 border-4 border-white shadow-xl">
-      <span id="fbEmoji" class="text-5xl">🎯</span>
-    </div>
-    <h3 id="fbTitle" class="mt-3 text-2xl font-extrabold leading-tight text-fuchsia-600">¡BOOM!</h3>
-    <p id="fbMsg" class="mt-1 text-sm font-semibold text-purple-900/70">...</p>
+<!-- ================= TURN SUMMARY ================= -->
+<div id="summaryModal" class="hidden fixed inset-0 z-[65] flex items-center justify-center px-4 py-8">
+  <div class="absolute inset-0 bg-[#1e1b4b]/75 backdrop-blur-md"></div>
+  <div id="summaryCard" class="relative w-full max-w-md rounded-3xl bg-white text-[#3b0764] p-5 sm:p-6 text-center pop-in border-4 border-white/70" style="box-shadow:0 30px 80px -12px rgba(0,0,0,.65);">
+    <div class="text-5xl mb-1" id="sumEmoji">⏰</div>
+    <h3 id="sumTitle" class="text-2xl font-extrabold text-fuchsia-600 leading-tight">¡SE ACABÓ EL TIEMPO!</h3>
+    <p id="sumSub" class="text-sm font-semibold text-purple-900/70 mt-1">...</p>
 
-    <div class="mt-4 grid grid-cols-2 gap-2 text-left">
-      <div class="rounded-2xl bg-purple-100 px-3 py-2">
-        <div class="text-[10px] font-extrabold uppercase tracking-widest text-purple-400">Tu apuesta</div>
-        <div id="fbGuess" class="text-base font-extrabold text-purple-800 leading-tight">0</div>
+    <div class="grid grid-cols-3 gap-2 mt-4">
+      <div class="rounded-2xl bg-purple-100 px-2 py-2">
+        <div class="text-[9px] font-extrabold uppercase tracking-widest text-purple-400">Puntos</div>
+        <div id="sumPoints" class="text-xl font-extrabold text-fuchsia-600">+0</div>
       </div>
-      <div class="rounded-2xl bg-emerald-100 px-3 py-2">
-        <div class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-500">Respuesta</div>
-        <div id="fbAnswer" class="text-base font-extrabold text-emerald-700 leading-tight">0</div>
+      <div class="rounded-2xl bg-emerald-100 px-2 py-2">
+        <div class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-500">Aciertos</div>
+        <div id="sumFound" class="text-xl font-extrabold text-emerald-600">0</div>
+      </div>
+      <div class="rounded-2xl bg-rose-100 px-2 py-2">
+        <div class="text-[9px] font-extrabold uppercase tracking-widest text-rose-400">Trampas</div>
+        <div id="sumTraps" class="text-xl font-extrabold text-rose-500">0</div>
       </div>
     </div>
 
-    <div class="mt-4">
-      <div id="fbPoints" class="text-5xl font-extrabold leading-none text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-pink-500">+0</div>
-      <div id="fbBonus" class="mt-1 text-[11px] font-bold text-fuchsia-400">⚡ Bonus por rapidez</div>
-      <div id="fbFact" class="mt-2 text-[11px] font-semibold text-purple-400 italic">💡 ...</div>
-    </div>
+    <div id="sumBonus" class="hidden mt-2 rounded-full bg-yellow-100 border border-yellow-300 px-3 py-1 text-[11px] font-extrabold text-amber-600"></div>
 
-    <button id="nextBtn" class="btn-3d btn-party mt-5 w-full py-4 text-lg">Siguiente ronda 🚀</button>
+    <div id="sumAnswers" class="grid grid-cols-3 gap-1.5 mt-4"></div>
+
+    <div class="mt-2 text-[10px] font-bold text-purple-400">🔥 Mejor racha del turno: <span id="sumStreak">x1</span></div>
+
+    <button id="sumNext" type="button" class="btn-3d btn-party mt-5 w-full py-4 text-lg">Pasar el móvil 🚀</button>
   </div>
 </div>
 
+<!-- ================= EXIT / SAVE GAME ================= -->
+<div id="exitModal" class="hidden fixed inset-0 z-[68] flex items-center justify-center px-4 py-8">
+  <div class="absolute inset-0 bg-[#1e1b4b]/75 backdrop-blur-md" data-close-exit></div>
+  <div class="relative w-full max-w-sm rounded-3xl bg-white text-[#3b0764] p-6 text-center pop-in border-4 border-white/70" style="box-shadow:0 30px 80px -12px rgba(0,0,0,.65);">
+    <div class="text-5xl">⏸️</div>
+    <h3 class="text-2xl font-extrabold text-fuchsia-600 mt-1">¿Salir de la partida?</h3>
+    <p id="exitModalText" class="text-sm font-semibold text-purple-900/70 mt-2 leading-relaxed">Puedes guardar el estado en este dispositivo y continuar más tarde. Solo se guarda una partida.</p>
+    <button id="saveExitBtn" type="button" class="btn-3d btn-party mt-5 w-full py-3.5 text-base">💾 Guardar y salir</button>
+    <button id="discardExitBtn" type="button" class="mt-3 w-full rounded-xl border-2 border-rose-200 bg-rose-50 py-2.5 text-sm font-extrabold text-rose-500 hover:bg-rose-100 transition">Salir sin guardar</button>
+    <button id="cancelExitBtn" type="button" class="mt-2 w-full py-2 text-xs font-extrabold text-purple-500 hover:text-purple-700 underline underline-offset-4">Seguir jugando</button>
+  </div>
+</div>
+
+<!-- ================= INSTALL HELP ================= -->
+<div id="installModal" class="hidden fixed inset-0 z-[68] flex items-center justify-center px-4 py-8">
+  <div class="absolute inset-0 bg-[#1e1b4b]/75 backdrop-blur-md" data-close-install></div>
+  <div class="relative w-full max-w-sm rounded-3xl bg-white text-[#3b0764] p-6 text-center pop-in border-4 border-white/70" style="box-shadow:0 30px 80px -12px rgba(0,0,0,.65);">
+    <div class="text-5xl">📲</div>
+    <h3 class="text-2xl font-extrabold text-fuchsia-600 mt-1">Instala 9GUESS</h3>
+    <p id="installHelp" class="text-sm font-semibold text-purple-900/70 mt-2 leading-relaxed">...</p>
+    <button id="installCloseBtn" type="button" class="btn-3d btn-party mt-5 w-full py-3 text-base">¡ENTENDIDO!</button>
+  </div>
+</div>
+
+<!-- ================= INSTRUCTIONS ================= -->
+<div id="instructionsModal" class="hidden fixed inset-0 z-[68] flex items-center justify-center px-4 py-8">
+  <div class="absolute inset-0 bg-[#1e1b4b]/75 backdrop-blur-md" data-close-instructions></div>
+  <div class="relative w-full max-w-lg max-h-[88vh] overflow-y-auto rounded-3xl bg-white text-[#3b0764] p-5 sm:p-6 text-left pop-in border-4 border-white/70" style="box-shadow:0 30px 80px -12px rgba(0,0,0,.65);">
+    <div class="flex items-center justify-between gap-3">
+      <h3 class="text-2xl font-extrabold text-fuchsia-600">Cómo se juega</h3>
+      <button id="instructionsCloseBtn" type="button" class="w-9 h-9 rounded-full bg-purple-100 text-purple-700 font-extrabold text-lg hover:bg-purple-200 transition" aria-label="Cerrar instrucciones">✕</button>
+    </div>
+
+    <div class="mt-3 space-y-2.5 text-[12px] font-semibold text-purple-900/80 leading-snug">
+      <div class="rounded-2xl bg-purple-50 px-3 py-2.5">
+        <div class="font-extrabold text-purple-900">🎯 Objetivo</div>
+        Encuentra <b>9 respuestas válidas</b> de la categoría antes de que se acabe el tiempo.
+      </div>
+      <div class="rounded-2xl bg-fuchsia-50 px-3 py-2.5">
+        <div class="font-extrabold text-fuchsia-700">🎤 Presentador · por defecto</div>
+        Un jugador hace de presentador: lee la pregunta en voz alta y toca en la lista cada respuesta que diga el concursante. El concursante responde sin mirar la pantalla. Si dice una trampa, el presentador la toca y restan 75 puntos.
+      </div>
+      <div class="rounded-2xl bg-cyan-50 px-3 py-2.5">
+        <div class="font-extrabold text-cyan-700">⌨️ Individual</div>
+        Cada jugador recibe el móvil y escribe sus respuestas en un panel ciego. Los demás no deben mirar.
+      </div>
+      <div class="rounded-2xl bg-amber-50 px-3 py-2.5">
+        <div class="font-extrabold text-amber-700">🔄 Turnos y presentadores</div>
+        Los turnos van rotando. En cada ronda cada jugador es concursante una vez y presentador otra vez. Si hay más jugadores, el presentador también rota para que todos presenten.
+      </div>
+      <div class="rounded-2xl bg-emerald-50 px-3 py-2.5">
+        <div class="font-extrabold text-emerald-700">🃏 Comodines y puntuación</div>
+        Cada jugador tiene 1 pista, 1 +10 s y 1 chispa por partida. Fiesta da 100 pts por acierto. Racha multiplica hasta x5, pero un fallo o una trampa corta la racha. El pleno perfecto da bonus.
+      </div>
+      <div class="rounded-2xl bg-cyan-50 px-3 py-2.5">
+        <div class="font-extrabold text-cyan-700">💾 Guardar y continuar</div>
+        Puedes salir de la partida y guardarla en este dispositivo para continuarla luego desde el inicio. Solo se guarda una partida.
+      </div>
+    </div>
+
+    <button id="instructionsPlayBtn" type="button" class="btn-3d btn-party mt-5 w-full py-3 text-base">¡ENTENDIDO!</button>
+  </div>
+</div>
+
+<div id="gameFlash" class="flash" role="status" aria-live="polite"></div>
 <div id="toast" class="fixed z-[80] glass px-5 py-3 rounded-full font-extrabold text-sm text-center max-w-[90vw]"></div>
 
 <script>
 (() => {
   'use strict';
 
-  const TOTAL_ROUNDS = 9;
-  const ROUND_TIME = 20;
+  const MAX_PLAYERS = 6;
+  const SLOTS = 9;
+  const STORAGE_KEY = 'guess9_setup_v2';
+  const SAVE_KEY = 'guess9_saved_game_v1';
+  const SAVE_VERSION = 1;
   const RING_CIRC = 2 * Math.PI * 34;
-  const STORAGE_KEY = 'guess9_best_v1';
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const QUESTIONS = [
-    { emoji:'🦴', q:'¿Cuántos huesos tiene el cuerpo de una persona adulta?', a:206, unit:'huesos', fact:'Un bebé nace con unos 300 huesos que se van fusionando.' },
-    { emoji:'🐆', q:'¿Cuál es la velocidad máxima de un guepardo?', a:110, unit:'km/h', fact:'Solo mantiene ese sprint durante unos 400 metros.' },
-    { emoji:'🗼', q:'¿Cuántos metros mide la Torre Eiffel con sus antenas?', a:330, unit:'metros', fact:'Pesa más de 10.000 toneladas de hierro.' },
-    { emoji:'🌍', q:'¿Cuántos países están reconocidos por la ONU?', a:195, unit:'países', fact:'193 son miembros y 2 son estados observadores.' },
-    { emoji:'❤️', q:'¿Cuántas veces late un corazón humano al día?', a:100000, unit:'latidos', fact:'A unos 70 latidos por minuto, ¡más de 2.500 millones en una vida!' },
-    { emoji:'🐢', q:'¿Cuántos años puede vivir una tortuga gigante?', a:150, unit:'años', fact:'Algunos ejemplares han llegado a los 180 años.' },
-    { emoji:'💧', q:'¿Cuántos mililitros de saliva producimos al día?', a:1500, unit:'ml', fact:'Suficiente para llenar una botella y media.' },
-    { emoji:'🌋', q:'¿Cuántos volcanes activos hay en el mundo?', a:1500, unit:'volcanes', fact:'Unos 500 han entrado en erupción en tiempos históricos.' },
-    { emoji:'⚡', q:'¿Cuántos kilómetros recorre la luz en un segundo?', a:299792, unit:'km', fact:'¡Podría dar 7,5 vueltas a la Tierra en un solo segundo!' },
-    { emoji:'🦈', q:'¿Cuántos dientes tiene a la vez un tiburón blanco?', a:300, unit:'dientes', fact:'Los pierde y los reemplaza durante toda su vida.' },
-    { emoji:'🌙', q:'¿Cuántos días tarda la Luna en orbitar la Tierra?', a:27, unit:'días', fact:'Un poco más de 27 días, concretamente 27,3.' },
-    { emoji:'🎬', q:'¿Cuántas películas se estrenan al año en el mundo?', a:11000, unit:'películas', fact:'Y eso sin contar las producciones de plataformas.' },
-    { emoji:'🏃', q:'¿Cuántos metros mide una maratón?', a:42195, unit:'metros', fact:'42,195 kilómetros exactos de puro sufrimiento.' },
-    { emoji:'🐜', q:'¿Cuántas especies de hormigas existen?', a:15000, unit:'especies', fact:'Solo conocemos una parte de todas las que hay.' },
-    { emoji:'🌊', q:'¿Qué profundidad tiene la Fosa de las Marianas?', a:11000, unit:'metros', fact:'Cabe el Everest entero y todavía sobra espacio.' }
+  const AVATARS = ['🦊', '🐼', '🦄', '🐸', '🐙', '🐯'];
+  const AVATAR_BG = [
+    'linear-gradient(135deg,#f43f5e,#fb7185)',
+    'linear-gradient(135deg,#06b6d4,#22d3ee)',
+    'linear-gradient(135deg,#a855f7,#d946ef)',
+    'linear-gradient(135deg,#10b981,#34d399)',
+    'linear-gradient(135deg,#f59e0b,#fbbf24)',
+    'linear-gradient(135deg,#ec4899,#f472b6)'
+  ];
+
+  const RANK_TITLES = [
+    { title: 'Adivino Supremo', emoji: '👑' },
+    { title: 'Cerebrito de la Fiesta', emoji: '🧠' },
+    { title: 'Oráculo de Barrio', emoji: '🔮' },
+    { title: 'Aprendiz de Vidente', emoji: '🌱' },
+    { title: 'Turista Perdido', emoji: '🧭' },
+    { title: 'Turista Perdido', emoji: '🧭' }
+  ];
+
+  const CATEGORIES = [
+    {
+      emoji: '🌍', tag: 'Geografía', prompt: 'Nombra 9 países de Sudamérica',
+      answers: ['Argentina', 'Bolivia', 'Brasil', 'Chile', 'Colombia', 'Ecuador', 'Guyana', 'Paraguay', 'Perú', 'Surinam', 'Uruguay', 'Venezuela'],
+      traps: ['México', 'Panamá', 'Costa Rica', 'Cuba', 'Guatemala', 'Honduras', 'Nicaragua'],
+      aliases: [['Peru', 'Perú'], ['Guayana', 'Guyana']]
+    },
+    {
+      emoji: '🗼', tag: 'Geografía', prompt: 'Nombra 9 capitales de Europa',
+      answers: ['Madrid', 'París', 'Roma', 'Berlín', 'Lisboa', 'Londres', 'Atenas', 'Viena', 'Ámsterdam', 'Bruselas', 'Estocolmo', 'Oslo', 'Copenhague', 'Dublín', 'Praga', 'Varsovia'],
+      traps: ['Nueva York', 'Tokio', 'Buenos Aires', 'El Cairo', 'Pekín', 'Sídney', 'Marrakech'],
+      aliases: [['Amsterdam', 'Ámsterdam'], ['London', 'Londres'], ['Berlin', 'Berlín']]
+    },
+    {
+      emoji: '🏅', tag: 'Deportes', prompt: 'Nombra 9 deportes olímpicos',
+      answers: ['Atletismo', 'Natación', 'Fútbol', 'Baloncesto', 'Voleibol', 'Tenis', 'Ciclismo', 'Gimnasia', 'Boxeo', 'Judo', 'Esgrima', 'Remo', 'Hockey', 'Golf', 'Rugby'],
+      traps: ['Ajedrez', 'Póker', 'Billar', 'Dardos', 'Bolos', 'Dominó'],
+      aliases: [['Basquetbol', 'Baloncesto'], ['Basquet', 'Baloncesto'], ['Football', 'Fútbol'], ['Soccer', 'Fútbol'], ['Gimnasia artistica', 'Gimnasia']]
+    },
+    {
+      emoji: '🏀', tag: 'Deportes', prompt: 'Nombra 9 equipos de la NBA',
+      answers: ['Lakers', 'Celtics', 'Warriors', 'Bulls', 'Heat', 'Knicks', 'Nets', 'Bucks', 'Suns', 'Mavericks', 'Spurs', 'Nuggets', 'Raptors', 'Clippers', 'Rockets'],
+      traps: ['Real Madrid', 'Barcelona', 'Manchester United', 'Yankees', 'Cowboys', 'Chiefs', 'PSG'],
+      aliases: [['Los Angeles Lakers', 'Lakers'], ['Boston Celtics', 'Celtics'], ['Golden State Warriors', 'Warriors'], ['Chicago Bulls', 'Bulls'], ['Miami Heat', 'Heat'], ['New York Knicks', 'Knicks'], ['Brooklyn Nets', 'Nets'], ['Milwaukee Bucks', 'Bucks'], ['Phoenix Suns', 'Suns'], ['Dallas Mavericks', 'Mavericks'], ['San Antonio Spurs', 'Spurs'], ['Denver Nuggets', 'Nuggets'], ['Toronto Raptors', 'Raptors'], ['Los Angeles Clippers', 'Clippers'], ['Houston Rockets', 'Rockets']]
+    },
+    {
+      emoji: '🏛️', tag: 'Historia', prompt: 'Nombra 9 personajes de la Antigüedad',
+      answers: ['Cleopatra', 'Julio César', 'Alejandro Magno', 'Sócrates', 'Platón', 'Aristóteles', 'Homero', 'Ramsés II', 'Tutankamón', 'Nerón', 'Augusto', 'Pericles', 'Heródoto', 'Pitágoras'],
+      traps: ['Napoleón', 'Einstein', 'Colón', 'Shakespeare', 'Gandhi', 'Lincoln', 'Juana de Arco'],
+      aliases: [['Julio Cesar', 'Julio César'], ['Alejandro', 'Alejandro Magno'], ['Ramses II', 'Ramsés II'], ['Ramses', 'Ramsés II'], ['Tutankamon', 'Tutankamón'], ['Herodoto', 'Heródoto'], ['Pitagoras', 'Pitágoras']]
+    },
+    {
+      emoji: '🏺', tag: 'Historia', prompt: 'Nombra 9 imperios de la historia',
+      answers: ['Imperio Romano', 'Imperio Otomano', 'Imperio Mongol', 'Imperio Persa', 'Imperio Egipcio', 'Imperio Bizantino', 'Imperio Azteca', 'Imperio Inca', 'Imperio Maya', 'Imperio Británico', 'Imperio Español', 'Imperio Francés', 'Imperio Ruso'],
+      traps: ['Imperio Galáctico', 'Imperio de la Moda', 'Imperio de Papel', 'Imperio Nazi', 'Imperio Americano', 'Imperio de los Sentidos'],
+      aliases: [['Romano', 'Imperio Romano'], ['Otomano', 'Imperio Otomano'], ['Mongol', 'Imperio Mongol'], ['Persa', 'Imperio Persa'], ['Egipcio', 'Imperio Egipcio'], ['Bizantino', 'Imperio Bizantino'], ['Azteca', 'Imperio Azteca'], ['Inca', 'Imperio Inca'], ['Maya', 'Imperio Maya'], ['Britanico', 'Imperio Británico'], ['Espanol', 'Imperio Español'], ['Frances', 'Imperio Francés'], ['Ruso', 'Imperio Ruso']]
+    },
+    {
+      emoji: '🍩', tag: 'Cultura Pop', prompt: 'Nombra 9 personajes de Los Simpson',
+      answers: ['Homer', 'Marge', 'Bart', 'Lisa', 'Maggie', 'Flanders', 'Milhouse', 'Krusty', 'Apu', 'Moe', 'Burns', 'Skinner', 'Barney', 'Ralph'],
+      traps: ['Peter Griffin', 'Rick Sanchez', 'Shrek', 'Batman', 'Bob Esponja', 'Eric Cartman', 'Mickey Mouse'],
+      aliases: [['Homer Simpson', 'Homer'], ['Marge Simpson', 'Marge'], ['Bart Simpson', 'Bart'], ['Lisa Simpson', 'Lisa'], ['Maggie Simpson', 'Maggie'], ['Ned Flanders', 'Flanders'], ['Montgomery Burns', 'Burns'], ['Sr. Burns', 'Burns'], ['Director Skinner', 'Skinner'], ['Ralph Wiggum', 'Ralph'], ['Barney Gumble', 'Barney']]
+    },
+    {
+      emoji: '🦸', tag: 'Cultura Pop', prompt: 'Nombra 9 superhéroes de Marvel',
+      answers: ['Spider-Man', 'Iron Man', 'Capitán América', 'Thor', 'Hulk', 'Viuda Negra', 'Ojo de Halcón', 'Doctor Strange', 'Black Panther', 'Wolverine', 'Deadpool', 'Ant-Man', 'Bruja Escarlata', 'Loki'],
+      traps: ['Superman', 'Batman', 'Wonder Woman', 'Flash', 'Aquaman', 'Green Lantern', 'Mujer Maravilla'],
+      aliases: [['Spiderman', 'Spider-Man'], ['Hombre Araña', 'Spider-Man'], ['Capitan America', 'Capitán América'], ['Black Widow', 'Viuda Negra'], ['Hawkeye', 'Ojo de Halcón'], ['Pantera Negra', 'Black Panther'], ['Scarlet Witch', 'Bruja Escarlata'], ['Ant Man', 'Ant-Man']]
+    },
+    {
+      emoji: '🏰', tag: 'Cine', prompt: 'Nombra 9 películas de Disney o Pixar',
+      answers: ['El Rey León', 'Toy Story', 'Frozen', 'Aladdín', 'La Sirenita', 'Coco', 'Buscando a Nemo', 'Up', 'Monstruos S.A.', 'Cars', 'Encanto', 'Moana', 'Mulán', 'Blancanieves'],
+      traps: ['Shrek', 'Minions', 'Ice Age', 'Cómo entrenar a tu dragón', 'Titanic', 'Avatar', 'Harry Potter'],
+      aliases: [['Rey Leon', 'El Rey León'], ['Sirenita', 'La Sirenita'], ['Nemo', 'Buscando a Nemo'], ['Monsters Inc', 'Monstruos S.A.'], ['Monsters, Inc.', 'Monstruos S.A.'], ['Blancanieves y los siete enanitos', 'Blancanieves']]
+    },
+    {
+      emoji: '🍿', tag: 'Cine', prompt: 'Nombra 9 sagas de películas',
+      answers: ['Star Wars', 'Harry Potter', 'El Señor de los Anillos', 'Toy Story', 'Rápido y Furioso', 'Misión Imposible', 'Piratas del Caribe', 'Jurassic Park', 'Spider-Man', 'Batman', 'Matrix', 'Indiana Jones', 'James Bond'],
+      traps: ['Friends', 'Breaking Bad', 'Stranger Things', 'Game of Thrones', 'The Office', 'Los Simpson', 'Merlí', 'La Casa de Papel'],
+      aliases: [['Rapido y Furioso', 'Rápido y Furioso'], ['Fast and Furious', 'Rápido y Furioso'], ['Señor de los Anillos', 'El Señor de los Anillos'], ['Mision Imposible', 'Misión Imposible'], ['Jurassic World', 'Jurassic Park'], ['007', 'James Bond'], ['Bond', 'James Bond'], ['Indiana', 'Indiana Jones']]
+    },
+    {
+      emoji: '🎮', tag: 'Videojuegos', prompt: 'Nombra 9 personajes de videojuegos',
+      answers: ['Mario', 'Luigi', 'Sonic', 'Link', 'Zelda', 'Pikachu', 'Pac-Man', 'Lara Croft', 'Kratos', 'Master Chief', 'Steve', 'Samus', 'Kirby', 'Donkey Kong'],
+      traps: ['Goku', 'Naruto', 'Batman', 'Shrek', 'Mickey Mouse', 'Bob Esponja', 'Iron Man'],
+      aliases: [['Pacman', 'Pac-Man'], ['Masterchief', 'Master Chief'], ['Donkeykong', 'Donkey Kong'], ['Princesa Zelda', 'Zelda'], ['Lara', 'Lara Croft']]
+    },
+    {
+      emoji: '🕹️', tag: 'Videojuegos', prompt: 'Nombra 9 juegos de Nintendo',
+      answers: ['Super Mario', 'Zelda', 'Pokémon', 'Kirby', 'Donkey Kong', 'Animal Crossing', 'Splatoon', 'Metroid', 'Star Fox', 'Pikmin', 'Fire Emblem', 'Mario Kart', 'Smash Bros', "Luigi's Mansion"],
+      traps: ['Halo', 'God of War', 'Minecraft', 'Fortnite', 'GTA', 'Call of Duty', 'The Last of Us', 'Crash Bandicoot', 'Spyro'],
+      aliases: [['Pokemon', 'Pokémon'], ['Mario', 'Super Mario'], ['The Legend of Zelda', 'Zelda'], ['Smash', 'Smash Bros'], ['Super Smash Bros', 'Smash Bros'], ['Luigis Mansion', "Luigi's Mansion"]]
+    },
+    {
+      emoji: '🍎', tag: 'Comida', prompt: 'Nombra 9 frutas',
+      answers: ['Manzana', 'Plátano', 'Naranja', 'Pera', 'Uva', 'Fresa', 'Sandía', 'Melón', 'Piña', 'Mango', 'Kiwi', 'Cereza', 'Limón', 'Aguacate'],
+      traps: ['Tomate', 'Zanahoria', 'Patata', 'Cebolla', 'Pepino', 'Brócoli', 'Lechuga'],
+      aliases: [['Platano', 'Plátano'], ['Sandia', 'Sandía'], ['Pina', 'Piña'], ['Limon', 'Limón'], ['Palta', 'Aguacate'], ['Anana', 'Piña']]
+    },
+    {
+      emoji: '🎸', tag: 'Música', prompt: 'Nombra 9 instrumentos musicales',
+      answers: ['Guitarra', 'Piano', 'Batería', 'Violín', 'Flauta', 'Trompeta', 'Saxofón', 'Bajo', 'Chelo', 'Arpa', 'Clarinete', 'Trombón', 'Acordeón', 'Ukelele'],
+      traps: ['Micrófono', 'Altavoz', 'Mesa', 'Cuchara', 'Nevera', 'Teclado de ordenador', 'Boli'],
+      aliases: [['Violin', 'Violín'], ['Bateria', 'Batería'], ['Saxofon', 'Saxofón'], ['Acordeon', 'Acordeón'], ['Violoncello', 'Chelo'], ['Contrabajo', 'Bajo']]
+    },
+    {
+      emoji: '🧪', tag: 'Ciencia', prompt: 'Nombra 9 elementos químicos',
+      answers: ['Hidrógeno', 'Oxígeno', 'Carbono', 'Nitrógeno', 'Hierro', 'Oro', 'Plata', 'Cobre', 'Helio', 'Sodio', 'Calcio', 'Potasio', 'Magnesio', 'Zinc'],
+      traps: ['Agua', 'Aire', 'Fuego', 'Tierra', 'ADN', 'Gravedad', 'Luz'],
+      aliases: [['Hidrogeno', 'Hidrógeno'], ['Oxigeno', 'Oxígeno'], ['Nitrogeno', 'Nitrógeno']]
+    },
+    {
+      emoji: '🗺️', tag: 'Geografía', prompt: 'Nombra 9 países de Asia',
+      answers: ['China', 'India', 'Japón', 'Corea del Sur', 'Tailandia', 'Vietnam', 'Indonesia', 'Filipinas', 'Pakistán', 'Bangladés', 'Nepal', 'Mongolia', 'Malasia', 'Singapur'],
+      traps: ['Egipto', 'Marruecos', 'Australia', 'Italia', 'Brasil', 'México', 'Nigeria'],
+      aliases: [['Japon', 'Japón'], ['Corea', 'Corea del Sur'], ['Pakistan', 'Pakistán'], ['Bangladesh', 'Bangladés']]
+    }
   ];
 
   const state = {
-    round: 0,
-    score: 0,
-    results: [],
-    questions: [],
-    current: null,
-    guess: '',
-    timeLeft: ROUND_TIME,
+    mode: 'fiesta',
+    dynamic: 'presenter',
+    rounds: 2,
+    seconds: 60,
+    players: [],
+    totalTurns: 0,
+    turnIndex: 0,
+    currentPlayerIndex: 0,
+    presenterIndex: null,
+    pool: [],
+    poolIndex: 0,
+    lastCategory: null,
+    cat: null,
+    slots: [],
+    foundSet: new Set(),
+    foundList: [],
+    usedTraps: new Set(),
+    presenterHint: null,
+    streak: 0,
+    turnPoints: 0,
+    turnFound: 0,
+    turnTraps: 0,
+    turnBestStreak: 0,
+    lastFoundSlot: -1,
+    timeLeft: 0,
     timerId: null,
-    lastTick: ROUND_TIME,
-    answered: false
+    lastTick: 0,
+    running: false,
+    resumePending: false
   };
 
   const $ = (id) => document.getElementById(id);
   const nf = new Intl.NumberFormat('es-ES');
   let muted = false;
-  let pointRAF = null;
+  let toastTimer = null;
+  let flashTimer = null;
+  let presenterHintTimer = null;
+  let deferredInstallPrompt = null;
 
-  /* ================= WEB AUDIO ================= */
+  function normalize(str){
+    return String(str || '')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/^(el|la|los|las|the)\s+/, '')
+      .replace(/[^a-z0-9]/g, '');
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+  }
+
+  const preparedCategories = CATEGORIES.map((c) => {
+    const lookup = new Map();
+    c.answers.forEach((a) => lookup.set(normalize(a), a));
+    (c.aliases || []).forEach(([alias, canonical]) => lookup.set(normalize(alias), canonical));
+    const trapSet = new Set(c.traps.map(normalize));
+    return Object.assign({}, c, { lookup, trapSet });
+  });
+
+  function shuffle(arr){
+    for(let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function createPlayer(name){
+    return { name: name, score: 0, found: 0, traps: 0, bestStreak: 0, hints: 1, time: 1, spark: 1 };
+  }
+
+  function resetPlayerStats(){
+    state.players.forEach((p) => {
+      p.score = 0; p.found = 0; p.traps = 0; p.bestStreak = 0;
+      p.hints = 1; p.time = 1; p.spark = 1;
+    });
+  }
+
+  function saveSetup(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        mode: state.mode,
+        dynamic: state.dynamic,
+        rounds: state.rounds,
+        seconds: state.seconds,
+        names: state.players.map((p) => p.name)
+      }));
+    }catch(err){}
+  }
+
+  function loadSetup(){
+    let saved = null;
+    try{ saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); }catch(err){}
+    if(saved && Array.isArray(saved.names) && saved.names.length >= 2){
+      state.mode = saved.mode === 'racha' ? 'racha' : 'fiesta';
+      state.dynamic = saved.dynamic === 'individual' ? 'individual' : 'presenter';
+      state.rounds = [1, 2, 3].indexOf(saved.rounds) >= 0 ? saved.rounds : 2;
+      state.seconds = [45, 60, 90].indexOf(saved.seconds) >= 0 ? saved.seconds : 60;
+      state.players = saved.names.slice(0, MAX_PLAYERS).map((n) => createPlayer(String(n || '').slice(0, 14)));
+      if(state.players.length < 2) state.players = [createPlayer('Jugador 1'), createPlayer('Jugador 2')];
+    } else {
+      state.players = [createPlayer('Jugador 1'), createPlayer('Jugador 2')];
+    }
+  }
+
+  /* ================= SAVED GAME ================= */
+  function findCategoryByPrompt(prompt){
+    return preparedCategories.find((c) => c.prompt === prompt) || null;
+  }
+
+  function saveCurrentGame(phase){
+    if(!state.players.length){ return null; }
+    const snapshot = {
+      version: SAVE_VERSION,
+      savedAt: Date.now(),
+      phase: phase === 'playing' ? 'playing' : 'pass',
+      mode: state.mode,
+      dynamic: state.dynamic,
+      rounds: state.rounds,
+      seconds: state.seconds,
+      players: state.players.map((p) => ({ ...p })),
+      totalTurns: state.totalTurns,
+      turnIndex: state.turnIndex,
+      currentPlayerIndex: state.currentPlayerIndex,
+      presenterIndex: state.presenterIndex,
+      pool: state.pool.map((c) => c.prompt),
+      poolIndex: state.poolIndex,
+      lastCategory: state.lastCategory ? state.lastCategory.prompt : null,
+      cat: null,
+      slots: [],
+      foundSet: [],
+      foundList: [],
+      usedTraps: [],
+      streak: 0,
+      turnPoints: 0,
+      turnFound: 0,
+      turnTraps: 0,
+      turnBestStreak: 0,
+      lastFoundSlot: -1,
+      timeLeft: 0,
+      lastTick: 0
+    };
+
+    if(phase === 'playing' && state.cat){
+      snapshot.cat = state.cat.prompt;
+      snapshot.slots = state.slots.map((s) => ({ ...s }));
+      snapshot.foundSet = [...state.foundSet];
+      snapshot.foundList = [...state.foundList];
+      snapshot.usedTraps = [...state.usedTraps];
+      snapshot.streak = state.streak;
+      snapshot.turnPoints = state.turnPoints;
+      snapshot.turnFound = state.turnFound;
+      snapshot.turnTraps = state.turnTraps;
+      snapshot.turnBestStreak = state.turnBestStreak;
+      snapshot.lastFoundSlot = state.lastFoundSlot;
+      snapshot.timeLeft = state.timeLeft;
+      snapshot.lastTick = state.lastTick;
+    }
+
+    try{
+      localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+      return snapshot;
+    }catch(err){
+      return null;
+    }
+  }
+
+  function loadSavedGame(){
+    let raw = null;
+    try{ raw = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); }catch(err){}
+    if(!raw || raw.version !== SAVE_VERSION) return null;
+    if(!Array.isArray(raw.players) || raw.players.length < 2 || raw.players.length > MAX_PLAYERS) return null;
+
+    const toNum = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
+    const players = raw.players.map((p, i) => {
+      const base = createPlayer(String((p && p.name) || ('Jugador ' + (i + 1))).slice(0, 14));
+      return {
+        ...base,
+        score: toNum(p && p.score, 0),
+        found: Math.max(0, toNum(p && p.found, 0)),
+        traps: Math.max(0, toNum(p && p.traps, 0)),
+        bestStreak: Math.max(0, toNum(p && p.bestStreak, 0)),
+        hints: Math.max(0, toNum(p && p.hints, 1)),
+        time: Math.max(0, toNum(p && p.time, 1)),
+        spark: Math.max(0, toNum(p && p.spark, 1))
+      };
+    });
+
+    const rounds = [1, 2, 3].indexOf(raw.rounds) >= 0 ? raw.rounds : 2;
+    const seconds = [45, 60, 90].indexOf(raw.seconds) >= 0 ? raw.seconds : 60;
+    const totalTurns = players.length * rounds;
+    const turnIndex = Number.isInteger(raw.turnIndex) && raw.turnIndex >= 0 && raw.turnIndex < totalTurns ? raw.turnIndex : null;
+    if(turnIndex === null) return null;
+
+    const pool = Array.isArray(raw.pool) ? raw.pool.map(findCategoryByPrompt).filter(Boolean) : [];
+    const lastCategory = raw.lastCategory ? findCategoryByPrompt(raw.lastCategory) : null;
+    const phase = raw.phase === 'playing' ? 'playing' : 'pass';
+    const saved = {
+      ...raw,
+      players,
+      rounds,
+      seconds,
+      totalTurns,
+      turnIndex,
+      mode: raw.mode === 'racha' ? 'racha' : 'fiesta',
+      dynamic: raw.dynamic === 'individual' ? 'individual' : 'presenter',
+      pool,
+      lastCategory,
+      phase
+    };
+
+    if(phase === 'playing'){
+      const cat = findCategoryByPrompt(raw.cat);
+      if(!cat || !Array.isArray(raw.slots) || raw.slots.length !== SLOTS) return null;
+      const validStates = new Set(['hidden', 'hinted', 'found']);
+      const slots = raw.slots.map((s) => {
+        if(!s || !validStates.has(s.state)) return null;
+        const copy = { state: s.state };
+        if(s.state === 'found') copy.answer = String(s.answer || '');
+        if(s.state === 'hinted') copy.hintAnswer = String(s.hintAnswer || '');
+        return copy;
+      });
+      if(slots.some((s) => !s)) return null;
+
+      const slotFound = slots.filter((s) => s.state === 'found' && s.answer).map((s) => s.answer);
+      const foundSet = new Set(slotFound.filter((a) => cat.answers.includes(a)));
+      const foundList = slotFound.filter((a) => foundSet.has(a));
+      const usedTraps = new Set(Array.isArray(raw.usedTraps) ? raw.usedTraps.map(String).filter((t) => cat.traps.includes(t)) : []);
+      const timeLeft = toNum(raw.timeLeft, 0);
+      if(timeLeft <= 0) return null;
+
+      saved.cat = cat;
+      saved.slots = slots;
+      saved.foundSet = foundSet;
+      saved.foundList = foundList;
+      saved.usedTraps = usedTraps;
+      saved.streak = Math.max(0, toNum(raw.streak, 0));
+      saved.turnPoints = toNum(raw.turnPoints, 0);
+      saved.turnFound = Math.max(0, toNum(raw.turnFound, 0));
+      saved.turnTraps = Math.max(0, toNum(raw.turnTraps, 0));
+      saved.turnBestStreak = Math.max(0, toNum(raw.turnBestStreak, 0));
+      saved.lastFoundSlot = Number.isInteger(raw.lastFoundSlot) ? raw.lastFoundSlot : -1;
+      saved.timeLeft = Math.min(timeLeft, seconds);
+      saved.lastTick = toNum(raw.lastTick, Math.ceil(saved.timeLeft));
+    } else {
+      saved.timeLeft = 0;
+      saved.lastTick = seconds;
+    }
+
+    return saved;
+  }
+
+  function clearSavedGame(){
+    try{ localStorage.removeItem(SAVE_KEY); }catch(err){}
+  }
+
+  function formatSavedAt(timestamp){
+    const t = Number(timestamp);
+    if(!t){ return ''; }
+    const diff = Math.max(0, Date.now() - t);
+    if(diff < 60000){ return 'Guardada hace un momento'; }
+    if(diff < 3600000){ return 'Guardada hace ' + Math.max(1, Math.floor(diff / 60000)) + ' min'; }
+    if(diff < 86400000){ return 'Guardada hace ' + Math.max(1, Math.floor(diff / 3600000)) + ' h'; }
+    return 'Guardada el ' + new Date(t).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+  }
+
+  function renderSavedGame(){
+    const card = $('resumeCard');
+    if(!card){ return; }
+    const saved = loadSavedGame();
+    if(!saved){
+      card.classList.add('hidden');
+      return;
+    }
+    const n = saved.players.length;
+    const round = Math.floor(saved.turnIndex / n) + 1;
+    $('resumeInfo').textContent = 'Turno ' + (saved.turnIndex + 1) + '/' + saved.totalTurns +
+      ' · Ronda ' + round + '/' + saved.rounds +
+      ' · ' + saved.players.map((p) => p.name).join(', ');
+    $('resumeSavedAt').textContent = formatSavedAt(saved.savedAt) + (saved.phase === 'playing' ? ' · a mitad de turno' : ' · entre turnos');
+    card.classList.remove('hidden');
+  }
+
+  function resumeSavedGame(){
+    const saved = loadSavedGame();
+    if(!saved){
+      showToast('No hay ninguna partida guardada 😕');
+      renderSavedGame();
+      return;
+    }
+    stopTimer();
+    state.players = saved.players.map((p) => ({ ...p }));
+    state.mode = saved.mode;
+    state.dynamic = saved.dynamic;
+    state.rounds = saved.rounds;
+    state.seconds = saved.seconds;
+    state.totalTurns = saved.totalTurns;
+    state.turnIndex = saved.turnIndex;
+    state.pool = saved.pool.length ? saved.pool.slice() : shuffle(preparedCategories.slice());
+    state.poolIndex = saved.pool.length ? Math.min(Math.max(0, Number(saved.poolIndex) || 0), saved.pool.length) : 0;
+    state.lastCategory = saved.lastCategory || null;
+    state.cat = saved.cat || null;
+    state.slots = saved.slots ? saved.slots.map((s) => ({ ...s })) : [];
+    state.foundSet = saved.foundSet ? new Set(saved.foundSet) : new Set();
+    state.foundList = saved.foundList ? saved.foundList.slice() : [];
+    state.usedTraps = saved.usedTraps ? new Set(saved.usedTraps) : new Set();
+    state.presenterHint = null;
+    clearTimeout(presenterHintTimer);
+    state.streak = saved.streak || 0;
+    state.turnPoints = saved.turnPoints || 0;
+    state.turnFound = saved.turnFound || 0;
+    state.turnTraps = saved.turnTraps || 0;
+    state.turnBestStreak = saved.turnBestStreak || 0;
+    state.lastFoundSlot = Number.isInteger(saved.lastFoundSlot) ? saved.lastFoundSlot : -1;
+    state.timeLeft = saved.timeLeft || 0;
+    state.lastTick = saved.lastTick || 0;
+    state.running = false;
+    state.ended = false;
+    state.resumePending = saved.phase === 'playing';
+    $('summaryModal').classList.add('hidden');
+    $('exitModal').classList.add('hidden');
+    $('installModal').classList.add('hidden');
+    $('instructionsModal').classList.add('hidden');
+    saveSetup();
+    renderPlayersSetup();
+    syncSetupUI();
+    prepareTurn();
+    showToast(saved.phase === 'playing' ? '💾 Partida cargada. Pulsa listo para continuar el turno.' : '💾 Partida cargada. Pulsa listo para empezar el turno.');
+  }
+
+  let exitWasRunning = false;
+  let exitPhase = 'pass';
+
+  function activeSavePhase(){
+    return (state.running || state.resumePending) ? 'playing' : 'pass';
+  }
+
+  function openExitModal(){
+    if(!state.players.length){ return; }
+    const gameVisible = !$('screen-game').classList.contains('hidden');
+    if(gameVisible && (!state.running || state.ended)){ return; }
+    const phase = activeSavePhase();
+    exitPhase = phase;
+    exitWasRunning = state.running;
+    if(state.running){
+      state.running = false;
+      stopTimer();
+      updatePowerButtons();
+    }
+    const hasSaved = !!loadSavedGame();
+    const tail = hasSaved ? ' Si sales sin guardar, se perderá el progreso desde el último guardado.' : ' Si sales sin guardar, no podrás continuar esta partida.';
+    $('exitModalText').textContent = (phase === 'playing'
+      ? 'Se guardará el turno actual con el tiempo restante para continuar más tarde.'
+      : 'Se guardará la partida entre turnos para continuar más tarde.') + ' Solo se guarda una partida.' + tail;
+    $('exitModal').classList.remove('hidden');
+  }
+
+  function cancelExit(){
+    $('exitModal').classList.add('hidden');
+    if(exitWasRunning && !state.ended && !state.running){
+      state.running = true;
+      startTimer();
+      updatePowerButtons();
+    }
+    exitWasRunning = false;
+  }
+
+  function saveAndExit(){
+    const phase = exitPhase;
+    if(state.running){
+      state.running = false;
+      stopTimer();
+    }
+    clearTimeout(presenterHintTimer);
+    state.presenterHint = null;
+    const saved = saveCurrentGame(phase);
+    $('exitModal').classList.add('hidden');
+    exitWasRunning = false;
+    if(!saved){
+      showToast('No se pudo guardar la partida 😕');
+      return;
+    }
+    state.running = false;
+    state.ended = false;
+    state.resumePending = false;
+    showScreen('screen-home');
+    showToast(phase === 'playing' ? '💾 Partida guardada. Puedes continuarla desde el inicio.' : '💾 Partida guardada para el próximo turno.');
+  }
+
+  function discardAndExit(){
+    const hadSave = !!loadSavedGame();
+    $('exitModal').classList.add('hidden');
+    exitWasRunning = false;
+    state.running = false;
+    state.ended = false;
+    state.resumePending = false;
+    stopTimer();
+    clearTimeout(presenterHintTimer);
+    state.presenterHint = null;
+    showScreen('screen-home');
+    showToast(hadSave ? 'Saliste sin guardar. La partida guardada sigue disponible.' : 'Partida descartada. No se ha guardado.');
+  }
+
+  /* ================= UI HELPERS ================= */
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach((s) => s.classList.add('hidden'));
+    const target = $(id);
+    target.classList.remove('hidden');
+    target.classList.remove('pop-in');
+    void target.offsetWidth;
+    target.classList.add('pop-in');
+    if(id === 'screen-home'){ renderSavedGame(); }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showToast(msg){
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('toast-show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('toast-show'), 2400);
+  }
+
+  function showFlash(msg, type){
+    const f = $('gameFlash');
+    f.textContent = msg;
+    f.className = 'flash flash-' + (type || 'info') + ' show';
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(() => { f.className = 'flash flash-' + (type || 'info'); }, 1700);
+  }
+
+  function renderPlayersSetup(){
+    const wrap = $('playersList');
+    wrap.innerHTML = '';
+    state.players.forEach((p, i) => {
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-2';
+      row.innerHTML =
+        '<div class="avatar w-10 h-10 text-xl" style="background:' + AVATAR_BG[i % AVATAR_BG.length] + '">' + AVATARS[i % AVATARS.length] + '</div>' +
+        '<input class="player-input" maxlength="14" value="' + escapeHtml(p.name) + '" aria-label="Nombre del jugador ' + (i + 1) + '" />' +
+        '<button type="button" class="remove-player w-9 h-9 rounded-full bg-white/10 border border-white/25 text-white/80 font-extrabold hover:bg-rose-500/40 transition" aria-label="Quitar jugador"' + (state.players.length <= 2 ? ' disabled style="opacity:.35;cursor:not-allowed"' : '') + '>✕</button>';
+      const input = row.querySelector('input');
+      input.addEventListener('input', () => { state.players[i].name = input.value; });
+      const remove = row.querySelector('.remove-player');
+      remove.addEventListener('click', () => {
+        if(state.players.length <= 2) return;
+        state.players.splice(i, 1);
+        renderPlayersSetup();
+        sfxClick();
+      });
+      wrap.appendChild(row);
+    });
+    const addBtn = $('addPlayerBtn');
+    addBtn.disabled = state.players.length >= MAX_PLAYERS;
+    addBtn.classList.toggle('opacity-40', state.players.length >= MAX_PLAYERS);
+    addBtn.classList.toggle('cursor-not-allowed', state.players.length >= MAX_PLAYERS);
+  }
+
+  function syncSetupUI(){
+    document.querySelectorAll('[data-dynamic]').forEach((b) => b.classList.toggle('selected', b.dataset.dynamic === state.dynamic));
+    document.querySelectorAll('[data-mode]').forEach((b) => b.classList.toggle('selected', b.dataset.mode === state.mode));
+    document.querySelectorAll('[data-rounds]').forEach((b) => b.classList.toggle('active', Number(b.dataset.rounds) === state.rounds));
+    document.querySelectorAll('[data-seconds]').forEach((b) => b.classList.toggle('active', Number(b.dataset.seconds) === state.seconds));
+  }
+
+  /* ================= AUDIO ================= */
   let audioCtx = null;
 
   function getCtx(){
@@ -404,44 +1297,47 @@
     return audioCtx;
   }
 
-  function unlockAudio(){
-    try{ getCtx(); }catch(err){}
-  }
+  function unlockAudio(){ try{ getCtx(); }catch(err){} }
 
-  function tone(freq, dur = 0.15, type = 'sine', delay = 0, vol = 0.12){
+  function tone(freq, dur, type, delay, vol){
     if(muted) return;
     try{
       const ctx = getCtx();
       if(!ctx) return;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      const t = ctx.currentTime + delay;
-      osc.type = type;
+      const t = ctx.currentTime + (delay || 0);
+      osc.type = type || 'sine';
       osc.frequency.setValueAtTime(freq, t);
       gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+      gain.gain.exponentialRampToValueAtTime(vol || .1, t + .012);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start(t);
-      osc.stop(t + dur + 0.03);
+      osc.stop(t + dur + .03);
     }catch(err){}
   }
 
-  const sfxClick  = () => tone(720, .07, 'triangle', 0, .05);
-  const sfxDigit  = () => tone(1040, .05, 'square', 0, .028);
-  const sfxDelete = () => tone(320, .07, 'sawtooth', 0, .035);
-  const sfxTick   = () => tone(1500, .045, 'square', 0, .04);
-  const sfxFail   = () => [392, 329.63, 261.63].forEach((f, i) => tone(f, .16, 'sawtooth', i * .1, .05));
-  const sfxSuccess = () => [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, .14, 'triangle', i * .075, .1));
-  const sfxExact = () => { [523.25, 659.25, 783.99, 1046.5, 1318.51].forEach((f, i) => tone(f, .18, 'triangle', i * .08, .12)); tone(1567.98, .5, 'sine', .42, .08); };
-  const sfxStart = () => [392, 523.25, 659.25, 783.99].forEach((f, i) => tone(f, .12, 'square', i * .09, .06));
-  const sfxWin   = () => [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.51].forEach((f, i) => tone(f, .2, 'triangle', i * .12, .1));
+  const sfxClick = () => tone(720, .07, 'triangle', 0, .045);
+  const sfxPower = () => { tone(880, .09, 'triangle', 0, .07); tone(1174.66, .12, 'triangle', .07, .06); };
+  const sfxWrong = () => tone(220, .16, 'sawtooth', 0, .045);
+  const sfxTrap = () => { tone(180, .22, 'sawtooth', 0, .08); tone(120, .3, 'square', .12, .06); };
+  const sfxTick = () => tone(1500, .045, 'square', 0, .04);
+  const sfxStart = () => [392, 523.25, 659.25, 783.99].forEach((f, i) => tone(f, .12, 'square', i * .09, .055));
+  const sfxTimeUp = () => [523.25, 440, 349.23, 261.63].forEach((f, i) => tone(f, .2, 'triangle', i * .11, .07));
+  const sfxPleno = () => { [523.25, 659.25, 783.99, 1046.5, 1318.51].forEach((f, i) => tone(f, .2, 'triangle', i * .09, .1)); tone(1567.98, .55, 'sine', .5, .07); };
+  const sfxWin = () => [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.51].forEach((f, i) => tone(f, .2, 'triangle', i * .12, .09));
 
-  /* ================= CONFETTI (Canvas nativo) ================= */
+  function sfxCorrect(streak){
+    const mult = Math.pow(2, Math.min(streak, 8) / 12);
+    [523.25, 659.25, 783.99].forEach((f, i) => tone(f * mult, .12, 'triangle', i * .055, .08));
+  }
+
+  /* ================= CONFETTI ================= */
   const canvas = $('confettiCanvas');
   const cctx = canvas.getContext('2d');
-  const CONFETTI_COLORS = ['#f43f5e', '#facc15', '#06b6d4', '#10b981', '#a855f7', '#ec4899', '#ffffff', '#fb923c'];
+  const COLORS = ['#f43f5e', '#facc15', '#06b6d4', '#10b981', '#a855f7', '#ec4899', '#ffffff', '#fb923c'];
   let particles = [];
   let confettiRAF = null;
 
@@ -456,31 +1352,31 @@
   sizeCanvas();
   window.addEventListener('resize', sizeCanvas);
 
-  function startConfettiLoop(){
+  function startConfetti(){
     if(confettiRAF === null) confettiRAF = requestAnimationFrame(confettiLoop);
   }
 
-  function spawnConfetti(count, originX, originY){
+  function spawnConfetti(count, x, y){
     if(reduceMotion) return;
     for(let i = 0; i < count; i++){
       const angle = Math.random() * Math.PI * 2;
       const speed = 3 + Math.random() * 9;
       particles.push({
-        x: originX + (Math.random() - .5) * 30,
-        y: originY + (Math.random() - .5) * 20,
+        x: x + (Math.random() - .5) * 24,
+        y: y + (Math.random() - .5) * 18,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - 2,
         size: 6 + Math.random() * 8,
         rot: Math.random() * Math.PI * 2,
         vr: (Math.random() - .5) * .32,
-        color: CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0],
+        color: COLORS[(Math.random() * COLORS.length) | 0],
         shape: Math.random() < .35 ? 'circle' : 'rect',
         life: 1,
-        decay: .005 + Math.random() * .007,
+        decay: .006 + Math.random() * .007,
         wobble: Math.random() * Math.PI * 2
       });
     }
-    startConfettiLoop();
+    startConfetti();
   }
 
   function confettiLoop(){
@@ -510,116 +1406,376 @@
       }
       cctx.restore();
     }
-    if(particles.length){
-      confettiRAF = requestAnimationFrame(confettiLoop);
-    } else {
-      confettiRAF = null;
-      cctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    }
+    if(particles.length){ confettiRAF = requestAnimationFrame(confettiLoop); }
+    else { confettiRAF = null; cctx.clearRect(0, 0, window.innerWidth, window.innerHeight); }
   }
 
-  function celebrate(power = 1){
+  function celebrate(power){
+    const p = power || 1;
     if(reduceMotion) return;
-    const bursts = Math.max(2, Math.round(3 * power));
+    const bursts = Math.max(2, Math.round(3 * p));
     for(let i = 0; i < bursts; i++){
       setTimeout(() => {
-        spawnConfetti(Math.round(45 * power), window.innerWidth * (.2 + Math.random() * .6), window.innerHeight * (.28 + Math.random() * .22));
+        spawnConfetti(Math.round(45 * p), window.innerWidth * (.2 + Math.random() * .6), window.innerHeight * (.28 + Math.random() * .22));
       }, i * 110);
     }
     setTimeout(() => {
-      spawnConfetti(Math.round(40 * power), window.innerWidth * .06, window.innerHeight * .82);
-      spawnConfetti(Math.round(40 * power), window.innerWidth * .94, window.innerHeight * .82);
+      spawnConfetti(Math.round(40 * p), window.innerWidth * .06, window.innerHeight * .82);
+      spawnConfetti(Math.round(40 * p), window.innerWidth * .94, window.innerHeight * .82);
     }, 60);
   }
 
-  /* ================= HELPERS ================= */
-  function shuffle(arr){
-    for(let i = arr.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+  /* ================= INSTALL (PWA) ================= */
+  function isStandalone(){
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+  }
+
+  function updateInstallButton(){
+    const btn = $('installBtn');
+    if(!btn) return;
+    btn.classList.toggle('hidden', isStandalone());
+  }
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    updateInstallButton();
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    updateInstallButton();
+    showToast('📲 ¡9GUESS instalada!');
+  });
+
+  function openInstallHelp(){
+    const ua = navigator.userAgent || '';
+    const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isAndroid = /Android/i.test(ua);
+    $('installHelp').innerHTML = isIOS
+      ? 'Toca el botón <b>Compartir</b> de Safari y elige <b>Añadir a pantalla de inicio</b>. Después pulsa <b>Añadir</b>.'
+      : isAndroid
+        ? 'Abre el menú <b>⋮</b> de Chrome y elige <b>Instalar aplicación</b> o <b>Añadir a pantalla de inicio</b>.'
+        : 'Busca el icono de instalar en la barra de direcciones o la opción <b>Instalar aplicación</b> en el menú del navegador.';
+    $('installModal').classList.remove('hidden');
+  }
+
+  function promptInstall(){
+    if(deferredInstallPrompt){
+      const prompt = deferredInstallPrompt;
+      deferredInstallPrompt = null;
+      prompt.prompt();
+      prompt.userChoice.then((choice) => {
+        if(choice && choice.outcome === 'accepted') showToast('📲 Instalando 9GUESS...');
+      }).catch(() => {});
+      return;
     }
-    return arr;
+    openInstallHelp();
   }
 
-  function showScreen(id){
-    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    const target = $(id);
-    target.classList.remove('hidden');
-    target.classList.remove('pop-in');
-    void target.offsetWidth;
-    target.classList.add('pop-in');
+  function openInstructions(){
+    $('instructionsModal').classList.remove('hidden');
   }
 
-  function updateBest(){
-    const best = Number(localStorage.getItem(STORAGE_KEY) || 0);
-    $('bestScore').textContent = nf.format(best);
+  function closeInstructions(){
+    $('instructionsModal').classList.add('hidden');
   }
 
-  let toastTimer = null;
-  function showToast(msg){
-    const t = $('toast');
-    t.textContent = msg;
-    t.classList.add('toast-show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('toast-show'), 2600);
-  }
+  /* ================= SETUP EVENTS ================= */
+  document.querySelectorAll('[data-dynamic]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.dynamic = btn.dataset.dynamic;
+      syncSetupUI();
+      sfxClick();
+    });
+  });
 
-  function getRank(score){
-    if(score >= 8000) return { title:'Adivino Supremo', emoji:'👑', msg:'¡Has rozado la perfección! El universo te teme.' };
-    if(score >= 6000) return { title:'Calculadora Humana', emoji:'🧠', msg:'¡Precisión de otro nivel! Ni una hoja de cálculo te gana.' };
-    if(score >= 4000) return { title:'Oráculo de Barrio', emoji:'🔮', msg:'Tus predicciones ya merecen su propia consulta.' };
-    if(score >= 2000) return { title:'Aprendiz de Vidente', emoji:'🌱', msg:'Vas por buen camino... ¡el futuro es tuyo!' };
-    return { title:'Turista Perdido', emoji:'🧭', msg:'Te has paseado por todos los números... ¡pero qué bien te lo has pasado!' };
-  }
+  document.querySelectorAll('[data-mode]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.mode = btn.dataset.mode;
+      syncSetupUI();
+      sfxClick();
+    });
+  });
 
-  /* ================= CHIPS ================= */
-  function buildChips(){
-    const wrap = $('roundChips');
-    wrap.innerHTML = '';
-    for(let i = 0; i < TOTAL_ROUNDS; i++){
-      const chip = document.createElement('span');
-      chip.className = 'round-chip';
-      chip.textContent = String(i + 1);
-      wrap.appendChild(chip);
+  document.querySelectorAll('[data-rounds]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.rounds = Number(btn.dataset.rounds);
+      syncSetupUI();
+      sfxClick();
+    });
+  });
+
+  document.querySelectorAll('[data-seconds]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.seconds = Number(btn.dataset.seconds);
+      syncSetupUI();
+      sfxClick();
+    });
+  });
+
+  $('addPlayerBtn').addEventListener('click', () => {
+    if(state.players.length >= MAX_PLAYERS){
+      showToast('Máximo 6 jugadores 😅');
+      return;
     }
-  }
+    state.players.push(createPlayer('Jugador ' + (state.players.length + 1)));
+    renderPlayersSetup();
+    sfxClick();
+  });
 
-  function updateChips(){
-    const chips = document.querySelectorAll('.round-chip');
-    chips.forEach((chip, i) => {
-      chip.className = 'round-chip';
-      chip.textContent = String(i + 1);
-      chip.title = '';
-      if(i < state.results.length){
-        const r = state.results[i];
-        chip.classList.add('done');
-        chip.textContent = '✓';
-        chip.title = 'Ronda ' + (i + 1) + ': ' + nf.format(r.points) + ' pts';
-        if(r.diff === 0) chip.classList.add('perfect');
-      } else if(i === state.round && !state.answered){
-        chip.classList.add('current');
-      }
+  $('homeStartBtn').addEventListener('click', () => {
+    sfxClick();
+    if(loadSavedGame() && !confirm('Ya tienes una partida guardada. Si empiezas una nueva, se borrará. ¿Continuar?')){ return; }
+    showScreen('screen-setup');
+  });
+  $('setupBackBtn').addEventListener('click', () => { sfxClick(); showScreen('screen-home'); });
+  $('homeHowBtn').addEventListener('click', () => { sfxClick(); openInstructions(); });
+  $('setupHowBtn').addEventListener('click', () => { sfxClick(); openInstructions(); });
+
+  $('resumeBtn').addEventListener('click', () => { sfxClick(); resumeSavedGame(); });
+  $('discardSaveBtn').addEventListener('click', () => {
+    if(!loadSavedGame()){ renderSavedGame(); return; }
+    if(confirm('¿Descartar la partida guardada? No se podrá recuperar.')){
+      clearSavedGame();
+      renderSavedGame();
+      showToast('🗑️ Partida guardada eliminada');
+    }
+  });
+  $('exitGameBtn').addEventListener('click', () => { sfxClick(); openExitModal(); });
+  $('passExitBtn').addEventListener('click', () => { sfxClick(); openExitModal(); });
+  $('saveExitBtn').addEventListener('click', () => { sfxClick(); saveAndExit(); });
+  $('discardExitBtn').addEventListener('click', () => { sfxClick(); discardAndExit(); });
+  $('cancelExitBtn').addEventListener('click', cancelExit);
+  $('exitModal').addEventListener('click', (e) => {
+    if(e.target.hasAttribute('data-close-exit')) cancelExit();
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && !$('exitModal').classList.contains('hidden')){ cancelExit(); }
+  });
+  $('instructionsCloseBtn').addEventListener('click', closeInstructions);
+  $('instructionsPlayBtn').addEventListener('click', closeInstructions);
+  $('instructionsModal').addEventListener('click', (e) => {
+    if(e.target.hasAttribute('data-close-instructions')) closeInstructions();
+  });
+
+  $('installBtn').addEventListener('click', promptInstall);
+  $('installCloseBtn').addEventListener('click', () => $('installModal').classList.add('hidden'));
+  $('installModal').addEventListener('click', (e) => {
+    if(e.target.hasAttribute('data-close-install')) $('installModal').classList.add('hidden');
+  });
+
+  $('muteBtn').addEventListener('click', () => {
+    muted = !muted;
+    $('muteBtn').textContent = muted ? '🔇' : '🔊';
+    if(!muted){ unlockAudio(); sfxClick(); }
+  });
+
+  $('startBtn').addEventListener('click', () => startGame());
+  $('readyBtn').addEventListener('click', () => startTurn());
+  $('submitAnswer').addEventListener('click', submitAnswer);
+  $('answerInput').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){ e.preventDefault(); submitAnswer(); }
+  });
+  $('sumNext').addEventListener('click', () => { sfxClick(); nextTurn(); });
+  $('replayBtn').addEventListener('click', () => startGame());
+  $('shareBtn').addEventListener('click', shareResults);
+  $('changeBtn').addEventListener('click', () => {
+    stopTimer();
+    state.running = false;
+    renderPlayersSetup();
+    syncSetupUI();
+    showScreen('screen-setup');
+  });
+
+  document.querySelectorAll('[data-power]').forEach((btn) => {
+    btn.addEventListener('click', () => usePower(btn.dataset.power));
+  });
+
+  document.addEventListener('pointerdown', unlockAudio, { once: true });
+
+  loadSetup();
+  renderPlayersSetup();
+  syncSetupUI();
+  updateInstallButton();
+  renderSavedGame();
+
+  if('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
     });
   }
 
-  /* ================= TIMER ================= */
+  /* ================= GAME FLOW ================= */
+  function startGame(){
+    unlockAudio();
+    clearSavedGame();
+    state.resumePending = false;
+    state.players.forEach((p, i) => {
+      p.name = String(p.name || '').trim() || ('Jugador ' + (i + 1));
+      p.name = p.name.slice(0, 14);
+    });
+    saveSetup();
+    resetPlayerStats();
+    state.totalTurns = state.players.length * state.rounds;
+    state.turnIndex = 0;
+    state.pool = shuffle(preparedCategories.slice());
+    state.poolIndex = 0;
+    state.lastCategory = null;
+    state.cat = null;
+    state.presenterIndex = null;
+    state.usedTraps = new Set();
+    state.presenterHint = null;
+    clearTimeout(presenterHintTimer);
+    state.running = false;
+    state.ended = false;
+    $('summaryModal').classList.add('hidden');
+    $('installModal').classList.add('hidden');
+    $('instructionsModal').classList.add('hidden');
+    $('exitModal').classList.add('hidden');
+    sfxStart();
+    prepareTurn();
+  }
+
+  function prepareTurn(){
+    const idx = state.turnIndex % state.players.length;
+    state.currentPlayerIndex = idx;
+    const p = state.players[idx];
+    const n = state.players.length;
+    const round = Math.floor(state.turnIndex / n) + 1;
+    const isPresenter = state.dynamic === 'presenter';
+    const offset = isPresenter ? ((round - 1) % (n - 1)) + 1 : 0;
+    state.presenterIndex = isPresenter ? (idx + offset) % n : null;
+    const presenter = isPresenter ? state.players[state.presenterIndex] : null;
+    const holder = presenter || p;
+
+    $('passAvatar').textContent = AVATARS[holder === p ? idx % AVATARS.length : state.presenterIndex % AVATARS.length];
+    $('passAvatar').style.background = AVATAR_BG[holder === p ? idx % AVATAR_BG.length : state.presenterIndex % AVATAR_BG.length];
+    $('passName').textContent = holder.name;
+    $('passLabel').textContent = isPresenter ? 'PÁSALE EL MÓVIL AL PRESENTADOR' : 'PÁSALE EL MÓVIL A';
+    $('passMeta').textContent = 'Turno ' + (state.turnIndex + 1) + ' de ' + state.totalTurns + ' · Ronda ' + round + ' de ' + state.rounds +
+      (state.resumePending ? ' · ⏱️ ' + Math.max(1, Math.ceil(state.timeLeft)) + 's guardados' : '');
+    $('passScore').textContent = nf.format(p.score) + ' pts';
+    $('passPowers').textContent = '💡' + p.hints + ' · ⏱️' + p.time + ' · 🃏' + p.spark;
+
+    $('passContestantCard').classList.toggle('hidden', !isPresenter);
+    if(isPresenter){
+      $('passContestantAvatar').textContent = AVATARS[idx % AVATARS.length];
+      $('passContestantAvatar').style.background = AVATAR_BG[idx % AVATAR_BG.length];
+      $('passContestantName').textContent = p.name;
+      $('passScoreLabel').textContent = 'Puntos concursante';
+      $('passPowersLabel').textContent = 'Comodines concursante';
+      $('passInstruction').innerHTML = '🎤 <b>' + escapeHtml(presenter.name) + '</b>, lee la pregunta y toca las respuestas que diga <b>' + escapeHtml(p.name) + '</b>. 🙋 <b>' + escapeHtml(p.name) + '</b>, responde sin mirar la pantalla.';
+      $('passFootNote').textContent = 'Solo el presentador mira la pantalla. ¡Sin trampas! 😏';
+    } else {
+      $('passScoreLabel').textContent = 'Puntos';
+      $('passPowersLabel').textContent = 'Comodines';
+      $('passInstruction').textContent = 'Responde en secreto y escribe tus respuestas. ¡No enseñes la pantalla!';
+      $('passFootNote').textContent = 'Que los demás no miren... ¡o que miren y sufran! 😏';
+    }
+
+    showScreen('screen-pass');
+  }
+
+  function pickCategory(){
+    if(state.poolIndex >= state.pool.length){
+      state.pool = shuffle(preparedCategories.slice());
+      state.poolIndex = 0;
+      if(state.pool.length > 1 && state.pool[0] === state.lastCategory){
+        const tmp = state.pool[0];
+        state.pool[0] = state.pool[1];
+        state.pool[1] = tmp;
+      }
+    }
+    const cat = state.pool[state.poolIndex++];
+    state.lastCategory = cat;
+    return cat;
+  }
+
+  function startTurn(){
+    unlockAudio();
+    const p = state.players[state.currentPlayerIndex];
+    const isPresenter = state.dynamic === 'presenter';
+    const presenter = isPresenter ? state.players[state.presenterIndex] : null;
+    const resuming = state.resumePending && state.cat && Array.isArray(state.slots) && state.slots.length === SLOTS;
+    state.resumePending = false;
+    if(!resuming){
+      state.cat = pickCategory();
+      state.slots = Array.from({ length: SLOTS }, () => ({ state: 'hidden' }));
+      state.foundSet = new Set();
+      state.foundList = [];
+      state.usedTraps = new Set();
+      state.streak = 0;
+      state.turnPoints = 0;
+      state.turnFound = 0;
+      state.turnTraps = 0;
+      state.turnBestStreak = 0;
+      state.lastFoundSlot = -1;
+      state.timeLeft = state.seconds;
+      state.lastTick = state.seconds;
+    } else if(!(state.timeLeft > 0)){
+      state.timeLeft = state.seconds;
+      state.lastTick = state.seconds;
+    }
+    state.presenterHint = null;
+    clearTimeout(presenterHintTimer);
+    state.running = true;
+    state.ended = false;
+
+    $('gameAvatar').textContent = AVATARS[state.currentPlayerIndex % AVATARS.length];
+    $('gameAvatar').style.background = AVATAR_BG[state.currentPlayerIndex % AVATAR_BG.length];
+    $('gamePlayerName').textContent = p.name;
+    $('gamePlayerScore').textContent = nf.format(p.score);
+    $('turnLabel').textContent = 'TURNO ' + (state.turnIndex + 1) + '/' + state.totalTurns;
+    $('categoryTag').textContent = state.cat.tag.toUpperCase();
+    $('categoryEmoji').textContent = state.cat.emoji;
+    $('categoryPrompt').textContent = state.cat.prompt;
+    $('answerInput').value = '';
+    $('answerInput').disabled = isPresenter;
+    $('submitAnswer').disabled = isPresenter;
+
+    $('presenterRoleBar').classList.toggle('hidden', !isPresenter);
+    $('presenterRoleBar').innerHTML = isPresenter
+      ? '🎤 <b>' + escapeHtml(presenter.name) + '</b> presenta · 🙋 <b>' + escapeHtml(p.name) + '</b> responde'
+      : '';
+    $('slotsGrid').classList.toggle('hidden', isPresenter);
+    $('presenterPanel').classList.toggle('hidden', !isPresenter);
+    $('soloInputRow').classList.toggle('hidden', isPresenter);
+    $('soloHintText').classList.toggle('hidden', isPresenter);
+
+    renderSlots();
+    if(isPresenter){
+      renderPresenterAnswers();
+      renderPresenterTraps();
+    }
+    updateProgress();
+    updatePowerButtons();
+    updateStreakBadge();
+    updateTimerUI();
+    showScreen('screen-game');
+    startTimer();
+    sfxStart();
+    if(resuming){ showFlash('💾 Turno recuperado', 'info'); }
+
+    if(!isPresenter && window.matchMedia('(pointer: fine)').matches){
+      setTimeout(() => { if(state.running) $('answerInput').focus(); }, 250);
+    }
+  }
+
   function startTimer(){
     stopTimer();
-    state.timeLeft = ROUND_TIME;
-    state.lastTick = Math.ceil(ROUND_TIME);
-    updateTimerUI();
     state.timerId = setInterval(() => {
-      if(state.answered) return;
+      if(!state.running) return;
       state.timeLeft = Math.max(0, state.timeLeft - .1);
       const secs = Math.ceil(state.timeLeft);
-      if(secs <= 4 && secs > 0 && secs !== state.lastTick){
+      if(secs <= 10 && secs > 0 && secs !== state.lastTick){
         sfxTick();
         state.lastTick = secs;
       }
       updateTimerUI();
       if(state.timeLeft <= 0){
         stopTimer();
-        submitGuess(true);
+        endTurn('time');
       }
     }, 100);
   }
@@ -629,348 +1785,519 @@
   }
 
   function updateTimerUI(){
-    const ratio = state.timeLeft / ROUND_TIME;
+    const ratio = Math.max(0, Math.min(1, state.timeLeft / state.seconds));
     $('timerRing').style.strokeDashoffset = String(RING_CIRC * (1 - ratio));
-    const secs = Math.ceil(state.timeLeft);
-    $('timerText').textContent = String(secs);
-    const danger = state.timeLeft <= 4;
+    $('timerText').textContent = String(Math.max(0, Math.ceil(state.timeLeft)));
+    const danger = state.timeLeft <= 5;
+    const warn = state.timeLeft <= 15;
     $('timerWrap').classList.toggle('timer-danger', danger);
-    $('timerRing').style.stroke = danger ? '#fb7185' : (state.timeLeft <= 8 ? '#fbbf24' : '#facc15');
+    $('timerRing').style.stroke = danger ? '#fb7185' : (warn ? '#fbbf24' : '#facc15');
     $('timerText').style.color = danger ? '#fecdd3' : '#ffffff';
   }
 
-  /* ================= GAME FLOW ================= */
-  function startGame(){
-    unlockAudio();
-    sfxStart();
-    state.questions = shuffle([...QUESTIONS]).slice(0, TOTAL_ROUNDS);
-    state.round = 0;
-    state.score = 0;
-    state.results = [];
-    state.answered = false;
-    state.guess = '';
-    $('feedbackModal').classList.add('hidden');
-    $('scoreValue').textContent = '0';
-    buildChips();
-    showScreen('screen-game');
-    loadRound();
+  function renderSlots(){
+    const grid = $('slotsGrid');
+    grid.innerHTML = '';
+    state.slots.forEach((slot, i) => {
+      const el = document.createElement('div');
+      el.className = 'slot';
+      if(slot.state === 'hinted'){
+        el.classList.add('hinted');
+        const ans = slot.hintAnswer || '';
+        el.innerHTML = '<div class="slot-hint">' + escapeHtml(ans.charAt(0).toUpperCase() || '?') + '···</div><div class="slot-len">' + ans.length + ' letras</div>';
+      } else if(slot.state === 'found'){
+        el.classList.add('found');
+        el.innerHTML = '<div class="slot-answer">' + escapeHtml(slot.answer) + '</div><div class="slot-check">✓</div>';
+      } else {
+        el.innerHTML = '<div class="slot-num">' + (i + 1) + '</div><div class="slot-lock">🔒</div>';
+      }
+      el.dataset.index = String(i);
+      grid.appendChild(el);
+    });
   }
 
-  function loadRound(){
-    state.current = state.questions[state.round];
-    state.guess = '';
-    state.answered = false;
-    $('roundLabel').textContent = 'RONDA ' + (state.round + 1) + ' / ' + TOTAL_ROUNDS;
-    $('roundEmoji').textContent = state.current.emoji;
-    $('questionText').textContent = state.current.q;
-    $('answerUnit').textContent = state.current.unit;
-    $('answerValue').textContent = '0';
-    renderAnswer();
-    updateChips();
-    const card = $('questionCard');
-    card.classList.remove('card-in');
+  function renderPresenterAnswers(){
+    if(!state.cat) return;
+    const grid = $('presenterAnswers');
+    grid.innerHTML = '';
+    state.cat.answers.forEach((answer) => {
+      const found = state.foundSet.has(answer);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'presenter-answer' + (found ? ' found' : '') + (state.presenterHint === answer && !found ? ' hint-pulse' : '');
+      btn.disabled = !state.running || found;
+      btn.dataset.answer = answer;
+      btn.innerHTML = '<span>' + escapeHtml(answer) + '</span>' + (found ? '<span class="check">✓</span>' : '');
+      btn.addEventListener('click', () => markPresenterAnswer(answer, btn));
+      grid.appendChild(btn);
+    });
+  }
+
+  function renderPresenterTraps(){
+    if(!state.cat) return;
+    const wrap = $('presenterTraps');
+    wrap.innerHTML = '';
+    state.cat.traps.forEach((trap) => {
+      const used = state.usedTraps.has(trap);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'presenter-trap' + (used ? ' used' : '');
+      btn.disabled = !state.running || used;
+      btn.textContent = trap;
+      btn.addEventListener('click', () => markPresenterTrap(trap));
+      wrap.appendChild(btn);
+    });
+    $('presenterTrapCount').textContent = state.usedTraps.size + '/' + state.cat.traps.length;
+  }
+
+  function markPresenterAnswer(answer, el){
+    if(!state.running || state.ended || !state.cat) return;
+    if(state.foundSet.has(answer)){
+      showFlash('😉 Ya la tenías: ' + answer, 'dup');
+      sfxWrong();
+      return;
+    }
+    revealAnswer(answer, false, el);
+  }
+
+  function markPresenterTrap(trap){
+    if(!state.running || state.ended || state.usedTraps.has(trap)) return;
+    state.usedTraps.add(trap);
+    applyTrap(trap);
+    renderPresenterTraps();
+  }
+
+  function highlightPresenterAnswer(answer){
+    clearTimeout(presenterHintTimer);
+    state.presenterHint = answer;
+    renderPresenterAnswers();
+    presenterHintTimer = setTimeout(() => {
+      state.presenterHint = null;
+      if(state.cat) renderPresenterAnswers();
+    }, 3500);
+  }
+
+  function updateProgress(){
+    const n = state.foundList.length;
+    $('foundCount').textContent = n + '/9';
+    $('progressBar').style.width = ((n / SLOTS) * 100) + '%';
+  }
+
+  function updateStreakBadge(){
+    const badge = $('streakBadge');
+    if(state.mode === 'racha' && state.streak > 0){
+      badge.classList.remove('hidden');
+      badge.textContent = '🔥 x' + Math.min(state.streak + 1, 5);
+    } else {
+      badge.classList.add('hidden');
+    }
+  }
+
+  function updatePowerButtons(){
+    const p = state.players[state.currentPlayerIndex];
+    if(!p){ return; }
+    $('hintCount').textContent = String(p.hints);
+    $('timeCount').textContent = String(p.time);
+    $('sparkCount').textContent = String(p.spark);
+    const hasHidden = state.slots.some((s) => s.state === 'hidden');
+    const hasUnrevealed = state.cat ? state.cat.answers.some((a) => !state.foundSet.has(a)) : false;
+    const hasOpenSlot = state.slots.some((s) => s.state === 'hidden' || s.state === 'hinted');
+    const isPresenter = state.dynamic === 'presenter';
+    document.querySelector('[data-power="hint"]').disabled = !state.running || p.hints <= 0 || !hasUnrevealed || (!isPresenter && !hasHidden);
+    document.querySelector('[data-power="time"]').disabled = !state.running || p.time <= 0;
+    document.querySelector('[data-power="spark"]').disabled = !state.running || p.spark <= 0 || !hasUnrevealed || !hasOpenSlot;
+  }
+
+  function submitAnswer(){
+    if(!state.running || state.ended || !state.cat || state.dynamic !== 'individual'){ return; }
+    const input = $('answerInput');
+    const raw = input.value.trim();
+    if(!raw){
+      input.classList.remove('shake');
+      void input.offsetWidth;
+      input.classList.add('shake');
+      sfxWrong();
+      return;
+    }
+    const norm = normalize(raw);
+    if(!norm){ return; }
+    const canonical = state.cat.lookup.get(norm);
+    if(canonical){
+      if(state.foundSet.has(canonical)){
+        showFlash('😉 Ya la tenías: ' + canonical, 'dup');
+        sfxWrong();
+      } else {
+        revealAnswer(canonical, false);
+      }
+    } else if(state.cat.trapSet.has(norm)){
+      applyTrap(raw);
+    } else {
+      applyWrong(raw);
+    }
+    input.value = '';
+    if(state.running && state.dynamic === 'individual'){ input.focus(); }
+  }
+
+  function revealAnswer(canonical, viaSpark, sourceEl){
+    const p = state.players[state.currentPlayerIndex];
+    const sourceRect = sourceEl ? sourceEl.getBoundingClientRect() : null;
+    let slotIndex = -1;
+    if(!viaSpark){
+      slotIndex = state.slots.findIndex((s) => s.state === 'hinted' && s.hintAnswer === canonical);
+    }
+    if(slotIndex < 0){
+      slotIndex = state.slots.findIndex((s) => s.state === 'hidden');
+    }
+    if(slotIndex < 0){
+      slotIndex = state.slots.findIndex((s) => s.state === 'hinted' && !state.foundSet.has(s.hintAnswer));
+    }
+    if(slotIndex < 0){ return; }
+
+    state.slots[slotIndex] = { state: 'found', answer: canonical };
+    state.foundSet.add(canonical);
+    state.foundList.push(canonical);
+    state.lastFoundSlot = slotIndex;
+
+    state.streak += 1;
+    state.turnBestStreak = Math.max(state.turnBestStreak, state.streak);
+    p.bestStreak = Math.max(p.bestStreak, state.streak);
+
+    const mult = state.mode === 'racha' ? Math.min(state.streak, 5) : 1;
+    const gain = viaSpark ? 50 : 100 * mult;
+    p.score += gain;
+    p.found += 1;
+    state.turnPoints += gain;
+    state.turnFound += 1;
+
+    $('gamePlayerScore').textContent = nf.format(p.score);
+    renderSlots();
+    if(state.dynamic === 'presenter') renderPresenterAnswers();
+    updateProgress();
+    updatePowerButtons();
+    updateStreakBadge();
+
+    if(sourceRect && sourceRect.width && sourceRect.height){
+      spawnConfetti(24, sourceRect.left + sourceRect.width / 2, sourceRect.top + sourceRect.height / 2);
+    } else if(!viaSpark){
+      const slotEl = $('slotsGrid').children[slotIndex];
+      if(slotEl){
+        const r = slotEl.getBoundingClientRect();
+        if(r.width && r.height) spawnConfetti(24, r.left + r.width / 2, r.top + r.height / 2);
+      }
+    } else if(state.dynamic === 'presenter'){
+      spawnConfetti(24, window.innerWidth / 2, window.innerHeight * .45);
+    }
+
+    if(viaSpark){
+      showFlash('🃏 ¡Chispa! ' + canonical + ' (+50)', 'correct');
+      sfxPower();
+    } else {
+      showFlash('✅ ¡Correcto! +' + gain + (state.mode === 'racha' && mult > 1 ? ' (x' + mult + ')' : ''), 'correct');
+      sfxCorrect(state.streak);
+    }
+
+    if(state.foundList.length >= SLOTS){
+      state.running = false;
+      stopTimer();
+      $('answerInput').disabled = true;
+      $('submitAnswer').disabled = true;
+      if(state.dynamic === 'presenter'){
+        renderPresenterAnswers();
+        renderPresenterTraps();
+      }
+      updatePowerButtons();
+      setTimeout(() => endTurn('full'), 700);
+    }
+  }
+
+  function applyTrap(raw){
+    const p = state.players[state.currentPlayerIndex];
+    p.score -= 75;
+    p.traps += 1;
+    state.turnPoints -= 75;
+    state.turnTraps += 1;
+    state.streak = 0;
+    $('gamePlayerScore').textContent = nf.format(p.score);
+    updateStreakBadge();
+    showFlash('🚨 ¡TRAMPA! "' + raw.slice(0, 24) + '" resta 75 pts', 'trap');
+    sfxTrap();
+    const card = $('categoryCard');
+    card.classList.remove('shake');
     void card.offsetWidth;
-    card.classList.add('card-in');
-    startTimer();
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 450);
   }
 
-  function renderAnswer(){
-    const raw = state.guess === '' ? '0' : state.guess;
-    $('answerValue').textContent = raw.length > 3 ? nf.format(parseInt(raw, 10)) : raw;
+  function applyWrong(raw){
+    if(state.mode === 'racha' && state.streak > 0){
+      state.streak = 0;
+      updateStreakBadge();
+      showFlash('❌ No está en la lista... ¡racha perdida!', 'info');
+    } else {
+      showFlash('❌ "' + raw.slice(0, 24) + '" no está en la lista', 'info');
+    }
+    sfxWrong();
   }
 
-  function pressKey(k){
-    if(state.answered) return;
+  function usePower(type){
+    if(!state.running || state.ended || !state.cat){ return; }
+    const p = state.players[state.currentPlayerIndex];
 
-    if(k === 'enter'){
-      if(state.guess === ''){
-        showToast('¡Escribe un número primero! 🤔');
-        sfxDelete();
-        const box = $('answerBox');
-        box.classList.remove('shake');
-        void box.offsetWidth;
-        box.classList.add('shake');
-        setTimeout(() => box.classList.remove('shake'), 450);
+    if(type === 'time'){
+      if(p.time <= 0){ return; }
+      p.time -= 1;
+      state.timeLeft += 10;
+      updateTimerUI();
+      updatePowerButtons();
+      showFlash('⏱️ ¡+10 segundos!', 'info');
+      sfxPower();
+      return;
+    }
+
+    if(type === 'hint'){
+      if(p.hints <= 0){ return; }
+      if(state.dynamic === 'presenter'){
+        const candidates = state.cat.answers.filter((a) => !state.foundSet.has(a));
+        if(!candidates.length){
+          showFlash('No quedan pistas disponibles', 'info');
+          return;
+        }
+        const answer = candidates[Math.floor(Math.random() * candidates.length)];
+        p.hints -= 1;
+        updatePowerButtons();
+        showFlash('💡 Pista: empieza por "' + answer.charAt(0).toUpperCase() + '" y tiene ' + answer.length + ' letras', 'info');
+        highlightPresenterAnswer(answer);
+        sfxPower();
         return;
       }
-      submitGuess(false);
-      return;
-    }
-
-    if(k === 'del'){
-      if(state.guess !== '') state.guess = state.guess.slice(0, -1);
-      sfxDelete();
-      renderAnswer();
-      return;
-    }
-
-    if(!/^[0-9]$/.test(k)) return;
-    let g = state.guess;
-    if(g === '0') g = '';
-    if(g.length >= 7) return;
-    state.guess = g + k;
-    sfxDigit();
-    renderAnswer();
-  }
-
-  function scoreGuess(guess, answer, timeLeft){
-    const diff = Math.abs(guess - answer);
-    const rel = diff / Math.max(1, Math.abs(answer));
-    const base = diff === 0 ? 1000 : Math.round(1000 * Math.exp(-rel * 5));
-    let speed = Math.round(timeLeft * 5);
-    if(diff === 0) speed += 200;
-    return { diff, rel, base, speed, points: base + speed };
-  }
-
-  function submitGuess(timeout = false){
-    if(state.answered) return;
-    state.answered = true;
-    stopTimer();
-    const q = state.current;
-    const hasGuess = state.guess !== '';
-    const guess = hasGuess ? parseInt(state.guess, 10) : 0;
-    const res = scoreGuess(guess, q.a, state.timeLeft);
-    state.score += res.points;
-    state.results.push({ guess, answer: q.a, points: res.points, diff: res.diff, rel: res.rel, timeout });
-    $('scoreValue').textContent = nf.format(state.score);
-    updateChips();
-    showFeedback({ guess, q, res, timeout, hasGuess });
-  }
-
-  function showFeedback({ guess, q, res, timeout, hasGuess }){
-    let emoji, title, msg, color;
-
-    if(timeout){
-      emoji = '⏰';
-      title = '¡TIEMPO AGOTADO!';
-      msg = hasGuess ? 'El reloj te pilló... ¡pero tu apuesta ha contado!' : 'El reloj te pilló sin apuesta. ¡La próxima vez más rápido!';
-      color = '#e11d48';
-    } else if(res.diff === 0){
-      emoji = '🎯';
-      title = '¡BOOM! ¡CLAVADÍSIMO!';
-      msg = '¡Perfecto! Eres una máquina de adivinar.';
-      color = '#db2777';
-    } else if(res.rel <= .05){
-      emoji = '🤏';
-      title = '¡CASI, CASI!';
-      msg = 'Te has rozado con la respuesta. ¡Qué puntería!';
-      color = '#db2777';
-    } else if(res.rel <= .2){
-      emoji = '🔥';
-      title = '¡MUY CERCA!';
-      msg = '¡Buen ojo! La respuesta estaba a la vuelta de la esquina.';
-      color = '#db2777';
-    } else if(res.rel <= .5){
-      if(guess > q.a){
-        emoji = '🚀';
-        title = '¡TE PASASTE POR MUCHO!';
-        msg = 'Ups... te has ido a la estratosfera. 😅';
-      } else {
-        emoji = '🐢';
-        title = '¡TE QUEDASTE CORTO!';
-        msg = 'Casi llegas... ¡pero faltaba un trecho! 😜';
+      const hinted = new Set(state.slots.filter((s) => s.state === 'hinted').map((s) => s.hintAnswer));
+      const candidates = state.cat.answers.filter((a) => !state.foundSet.has(a) && !hinted.has(a));
+      const hiddenSlots = state.slots.map((s, i) => s.state === 'hidden' ? i : -1).filter((i) => i >= 0);
+      if(!candidates.length || !hiddenSlots.length){
+        showFlash('No quedan pistas disponibles', 'info');
+        return;
       }
-      color = '#7c3aed';
-    } else {
-      emoji = guess > q.a ? '🛸' : '🧭';
-      title = '¡TURISTA PERDIDO!';
-      msg = guess > q.a ? 'Te has ido a otra galaxia. ¡La próxima es tuya!' : 'Te has quedado a mitad de camino. ¡A por la revancha!';
-      color = '#7c3aed';
+      const answer = candidates[Math.floor(Math.random() * candidates.length)];
+      const slotIndex = hiddenSlots[Math.floor(Math.random() * hiddenSlots.length)];
+      state.slots[slotIndex] = { state: 'hinted', hintAnswer: answer };
+      p.hints -= 1;
+      renderSlots();
+      updatePowerButtons();
+      showFlash('💡 Pista: empieza por "' + answer.charAt(0).toUpperCase() + '" y tiene ' + answer.length + ' letras', 'info');
+      sfxPower();
+      return;
     }
 
-    $('fbEmoji').textContent = emoji;
-    $('fbTitle').textContent = title;
-    $('fbTitle').style.color = color;
-    $('fbMsg').textContent = msg;
-    $('fbGuess').textContent = nf.format(guess) + ' ' + q.unit;
-    $('fbAnswer').textContent = nf.format(q.a) + ' ' + q.unit;
-    $('fbFact').textContent = '💡 ' + q.fact;
-    $('fbBonus').textContent = res.speed > 0 ? ('⚡ +' + nf.format(res.speed) + ' de bonus por rapidez') : 'Sin bonus de velocidad';
-    $('nextBtn').textContent = state.round === TOTAL_ROUNDS - 1 ? 'Ver resultados 🏁' : 'Siguiente ronda 🚀';
+    if(type === 'spark'){
+      if(p.spark <= 0){ return; }
+      const hintedAnswers = new Set(state.slots.filter((s) => s.state === 'hinted').map((s) => s.hintAnswer));
+      let candidates = state.cat.answers.filter((a) => !state.foundSet.has(a) && !hintedAnswers.has(a));
+      if(!candidates.length){ candidates = state.cat.answers.filter((a) => !state.foundSet.has(a)); }
+      if(!candidates.length){ return; }
+      const answer = candidates[Math.floor(Math.random() * candidates.length)];
+      p.spark -= 1;
+      revealAnswer(answer, true);
+      updatePowerButtons();
+    }
+  }
 
-    const modal = $('feedbackModal');
-    modal.classList.remove('hidden');
-    const card = $('feedbackCard');
+  function endTurn(reason){
+    if(state.ended){ return; }
+    state.ended = true;
+    state.running = false;
+    stopTimer();
+    $('answerInput').disabled = true;
+    $('submitAnswer').disabled = true;
+    if(state.dynamic === 'presenter'){
+      renderPresenterAnswers();
+      renderPresenterTraps();
+    }
+    updatePowerButtons();
+
+    const p = state.players[state.currentPlayerIndex];
+    let bonus = 0;
+    if(reason === 'full'){
+      bonus = state.mode === 'racha' ? 500 : 250;
+      p.score += bonus;
+      state.turnPoints += bonus;
+      $('gamePlayerScore').textContent = nf.format(p.score);
+    }
+
+    fillMissedSlots();
+    renderSummary(reason, bonus);
+
+    if(reason === 'full'){
+      sfxPleno();
+      celebrate(1.4);
+      showFlash('🎉 ¡PLENO PERFECTO! +' + bonus + ' de bonus', 'correct');
+    } else {
+      sfxTimeUp();
+      showFlash('⏰ ¡Se acabó el tiempo!', 'trap');
+    }
+
+    $('summaryModal').classList.remove('hidden');
+    const card = $('summaryCard');
     card.classList.remove('pop-in');
     void card.offsetWidth;
     card.classList.add('pop-in');
+  }
 
-    animatePoints(res.points, res.diff === 0);
+  function fillMissedSlots(){
+    const shown = new Set(state.foundList);
+    state.slots.forEach((s) => { if(s.state === 'hinted' && s.hintAnswer){ shown.add(s.hintAnswer); } });
+    const remaining = shuffle(state.cat.answers.filter((a) => !shown.has(a)));
+    let ri = 0;
+    state.slots.forEach((s) => {
+      if(s.state === 'hinted'){
+        s.state = 'missed';
+        s.answer = s.hintAnswer;
+        delete s.hintAnswer;
+      } else if(s.state === 'hidden'){
+        s.state = 'missed';
+        s.answer = remaining[ri++] || '—';
+      }
+    });
+  }
 
-    if(!timeout && res.diff === 0){
-      sfxExact();
-      celebrate(1.3);
-    } else if(!timeout && res.rel <= .1){
-      sfxSuccess();
-      celebrate(.8);
-    } else if(!timeout && res.rel <= .25){
-      sfxSuccess();
+  function renderSummary(reason, bonus){
+    const p = state.players[state.currentPlayerIndex];
+    const pleno = reason === 'full';
+    $('sumEmoji').textContent = pleno ? '🎉' : '⏰';
+    $('sumTitle').textContent = pleno ? '¡PLENO PERFECTO!' : '¡SE ACABÓ EL TIEMPO!';
+    $('sumTitle').style.color = pleno ? '#db2777' : '#e11d48';
+    $('sumSub').textContent = p.name + ' ha encontrado ' + state.turnFound + ' de 9 respuestas.';
+    $('sumPoints').textContent = (state.turnPoints >= 0 ? '+' : '') + nf.format(state.turnPoints);
+    $('sumPoints').style.color = state.turnPoints >= 0 ? '#db2777' : '#e11d48';
+    $('sumFound').textContent = String(state.turnFound);
+    $('sumTraps').textContent = String(state.turnTraps);
+    $('sumStreak').textContent = 'x' + Math.max(1, Math.min(state.turnBestStreak, 5));
+
+    const bonusEl = $('sumBonus');
+    if(pleno){
+      bonusEl.classList.remove('hidden');
+      bonusEl.textContent = '🎁 Bonus por pleno: +' + bonus + ' pts';
     } else {
-      sfxFail();
+      bonusEl.classList.add('hidden');
     }
+
+    const grid = $('sumAnswers');
+    grid.innerHTML = '';
+    state.slots.forEach((s) => {
+      const chip = document.createElement('div');
+      chip.className = 'rounded-lg px-1.5 py-1.5 text-[9px] font-extrabold leading-tight ' +
+        (s.state === 'found' ? 'bg-emerald-100 text-emerald-700 border border-emerald-300' : 'bg-rose-50 text-rose-500 border border-rose-200');
+      chip.textContent = s.answer || '—';
+      grid.appendChild(chip);
+    });
+
+    $('sumNext').textContent = state.turnIndex >= state.totalTurns - 1 ? 'Ver resultados 🏁' : 'Pasar el móvil 🚀';
   }
 
-  function animatePoints(target, perfect){
-    if(pointRAF){ cancelAnimationFrame(pointRAF); pointRAF = null; }
-    const el = $('fbPoints');
-    el.className = 'text-5xl font-extrabold leading-none text-transparent bg-clip-text ' +
-      (perfect ? 'bg-gradient-to-r from-amber-500 via-pink-500 to-fuchsia-600' : 'bg-gradient-to-r from-fuchsia-600 to-pink-500');
-    const start = performance.now();
-    const dur = 700;
-    function frame(now){
-      const p = Math.min(1, (now - start) / dur);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = '+' + nf.format(Math.round(target * eased));
-      if(p < 1){ pointRAF = requestAnimationFrame(frame); }
-      else { el.textContent = '+' + nf.format(target); pointRAF = null; }
+  function nextTurn(){
+    $('summaryModal').classList.add('hidden');
+    state.turnIndex += 1;
+    if(state.turnIndex >= state.totalTurns){
+      showResults();
+      return;
     }
-    pointRAF = requestAnimationFrame(frame);
-  }
-
-  function nextRound(){
-    $('feedbackModal').classList.add('hidden');
-    if(pointRAF){ cancelAnimationFrame(pointRAF); pointRAF = null; }
-    if(state.round >= TOTAL_ROUNDS - 1){ showResults(); return; }
-    state.round++;
-    loadRound();
+    prepareTurn();
   }
 
   function showResults(){
     stopTimer();
-    const rank = getRank(state.score);
-    $('rankEmoji').textContent = rank.emoji;
-    $('rankTitle').textContent = rank.title;
-    $('rankMsg').textContent = rank.msg;
-    $('podiumEmoji').textContent = rank.emoji;
-    $('podiumScore').textContent = nf.format(state.score) + ' pts';
+    state.running = false;
+    state.resumePending = false;
+    clearSavedGame();
 
-    const best = state.results.length ? Math.max(...state.results.map(r => r.points)) : 0;
-    const exact = state.results.filter(r => r.diff === 0).length;
-    $('bestRound').textContent = nf.format(best);
-    $('exactCount').textContent = String(exact);
+    const sorted = state.players.map((p, i) => ({ player: p, index: i })).sort((a, b) => {
+      if(b.player.score !== a.player.score){ return b.player.score - a.player.score; }
+      return b.player.found - a.player.found;
+    });
+    const winner = sorted[0];
+    const tied = sorted.filter((entry) => entry.player.score === winner.player.score && entry.player.found === winner.player.found);
+    const tie = tied.length > 1;
+    $('resultsTitle').textContent = tie ? '¡TENEMOS EMPATE!' : '¡TENEMOS GANADOR!';
+    $('winnerBanner').innerHTML = tie
+      ? '🤝 ¡EMPATE EN LA CIMA! ' + tied.map((entry) => escapeHtml(entry.player.name)).join(', ') + ' con ' + nf.format(winner.player.score) + ' pts'
+      : '👑 ¡' + escapeHtml(winner.player.name) + ' gana la fiesta con ' + nf.format(winner.player.score) + ' pts!';
 
-    const summary = $('roundSummary');
-    summary.innerHTML = '';
-    state.results.forEach((r, i) => {
-      const badge = document.createElement('span');
-      badge.className = 'summary-chip' + (r.diff === 0 ? ' perfect' : '');
-      badge.innerHTML = '<b>R' + (i + 1) + '</b> ' + nf.format(r.points);
-      summary.appendChild(badge);
+    const mostFound = state.players.slice().sort((a, b) => b.found - a.found)[0];
+    $('mostFound').textContent = mostFound.name + ' · ' + mostFound.found + ' aciertos';
+    const bestStreak = state.players.slice().sort((a, b) => b.bestStreak - a.bestStreak)[0];
+    $('bestStreak').textContent = bestStreak.name + ' · x' + Math.max(1, Math.min(bestStreak.bestStreak, 5));
+
+    const podium = $('podium');
+    podium.innerHTML = '';
+    const top = sorted.slice(0, 3);
+    const layout = top.length === 3 ? [top[1], top[0], top[2]] : top.length === 2 ? [top[1], top[0]] : [top[0]];
+    const styleByPos = {
+      1: 'background:linear-gradient(180deg,#fde047,#f59e0b);color:#4c1d95',
+      2: 'background:linear-gradient(180deg,#cbd5e1,#94a3b8);color:#1e293b',
+      3: 'background:linear-gradient(180deg,#fda4af,#e11d48);color:#ffffff'
+    };
+    const heightByPos = { 1: 'h-36', 2: 'h-24', 3: 'h-20' };
+
+    layout.forEach((entry) => {
+      const pos = sorted.indexOf(entry) + 1;
+      const pl = entry.player;
+      const rank = RANK_TITLES[pos - 1] || RANK_TITLES[RANK_TITLES.length - 1];
+      const block = document.createElement('div');
+      block.className = 'podium-step flex-1 max-w-[9.5rem] ' + heightByPos[pos];
+      block.setAttribute('style', styleByPos[pos]);
+      block.innerHTML =
+        '<div class="text-2xl">' + (pos === 1 ? '👑' : pos === 2 ? '🥈' : '🥉') + '</div>' +
+        '<div class="avatar w-10 h-10 text-xl mt-1" style="background:' + AVATAR_BG[entry.index % AVATAR_BG.length] + ';border-color:rgba(255,255,255,.9)">' + AVATARS[entry.index % AVATARS.length] + '</div>' +
+        '<div class="font-extrabold text-[11px] leading-tight mt-1 truncate w-full px-1">' + escapeHtml(pl.name) + '</div>' +
+        '<div class="font-extrabold text-sm leading-tight">' + nf.format(pl.score) + '</div>' +
+        '<div class="text-[8px] font-extrabold uppercase tracking-wide opacity-80 leading-tight">' + rank.emoji + ' ' + rank.title + '</div>';
+      podium.appendChild(block);
     });
 
-    const bestSaved = Number(localStorage.getItem(STORAGE_KEY) || 0);
-    if(state.score > bestSaved) localStorage.setItem(STORAGE_KEY, String(state.score));
+    const ranking = $('fullRanking');
+    ranking.innerHTML = '';
+    sorted.forEach((entry, i) => {
+      const pl = entry.player;
+      const pos = i + 1;
+      const rank = RANK_TITLES[i] || RANK_TITLES[RANK_TITLES.length - 1];
+      const row = document.createElement('div');
+      row.className = 'rank-row';
+      row.innerHTML =
+        '<div class="w-6 text-center font-extrabold text-sm ' + (pos === 1 ? 'text-yellow-300' : 'text-white/60') + '">' + pos + 'º</div>' +
+        '<div class="avatar w-8 h-8 text-base" style="background:' + AVATAR_BG[entry.index % AVATAR_BG.length] + '">' + AVATARS[entry.index % AVATARS.length] + '</div>' +
+        '<div class="flex-1 min-w-0">' +
+          '<div class="font-extrabold text-sm truncate">' + escapeHtml(pl.name) + '</div>' +
+          '<div class="text-[9px] font-bold text-white/55">' + rank.emoji + ' ' + rank.title + ' · 🎯 ' + pl.found + ' · 🔥 x' + Math.max(1, Math.min(pl.bestStreak, 5)) + '</div>' +
+        '</div>' +
+        '<div class="font-extrabold text-base text-yellow-300 whitespace-nowrap">' + nf.format(pl.score) + '<span class="text-[9px] text-white/50"> pts</span></div>';
+      ranking.appendChild(row);
+    });
 
-    animateFinalScore(state.score);
     showScreen('screen-results');
-    updateBest();
+    updateInstallButton();
     sfxWin();
-    celebrate(1.5);
+    celebrate(1.6);
     setTimeout(() => celebrate(1), 900);
   }
 
-  function animateFinalScore(target){
-    const el = $('finalScore');
-    const start = performance.now();
-    const dur = 900;
-    function frame(now){
-      const p = Math.min(1, (now - start) / dur);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = nf.format(Math.round(target * eased));
-      if(p < 1) requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  }
-
-  async function shareScore(){
-    const rank = getRank(state.score);
-    const text = '🎉 ¡He hecho ' + nf.format(state.score) + ' puntos en 9GUESS! Mi rango: ' + rank.emoji + ' ' + rank.title + '. ¿Puedes superarme? 🚀';
+  async function shareResults(){
+    const sorted = state.players.map((p) => p).sort((a, b) => b.score - a.score || b.found - a.found);
+    const lines = sorted.map((p, i) => (i + 1) + '. ' + p.name + ' — ' + nf.format(p.score) + ' pts');
+    const text = '🎉 9GUESS — Resultados de la fiesta:\n' + lines.join('\n') + '\n¿Puedes superarnos? 🚀';
     if(navigator.share){
       try{
-        await navigator.share({ title:'9GUESS — Party Game', text, url: location.href });
+        await navigator.share({ title: '9GUESS — Resultados', text, url: location.href });
         return;
       }catch(err){
-        if(err && err.name === 'AbortError') return;
+        if(err && err.name === 'AbortError'){ return; }
       }
     }
     try{
       await navigator.clipboard.writeText(text + ' ' + location.href);
-      showToast('📋 ¡Marcador copiado al portapapeles!');
+      showToast('📋 ¡Resultados copiados!');
     }catch(err){
-      showToast('📣 ' + text);
+      showToast('📣 ' + (lines[0] || ''));
     }
   }
-
-  /* ================= EVENTS ================= */
-  $('startBtn').addEventListener('click', startGame);
-  $('replayBtn').addEventListener('click', startGame);
-  $('shareBtn').addEventListener('click', shareScore);
-
-  $('nextBtn').addEventListener('click', () => {
-    sfxClick();
-    nextRound();
-  });
-
-  $('homeBtn').addEventListener('click', () => {
-    if(state.answered || window.confirm('¿Seguro que quieres salir de la fiesta?')){
-      stopTimer();
-      showScreen('screen-lobby');
-      updateBest();
-    }
-  });
-
-  $('muteBtn').addEventListener('click', () => {
-    muted = !muted;
-    $('muteBtn').textContent = muted ? '🔇' : '🔊';
-    if(!muted){ unlockAudio(); sfxClick(); }
-  });
-
-  $('keypad').addEventListener('pointerdown', (e) => {
-    const btn = e.target.closest('.key');
-    if(!btn) return;
-    const rect = btn.getBoundingClientRect();
-    const x = (e.clientX || rect.left + rect.width / 2) - rect.left;
-    const y = (e.clientY || rect.top + rect.height / 2) - rect.top;
-    const ripple = document.createElement('span');
-    ripple.className = 'ripple';
-    ripple.style.left = x + 'px';
-    ripple.style.top = y + 'px';
-    btn.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 520);
-  });
-
-  $('keypad').addEventListener('click', (e) => {
-    const btn = e.target.closest('.key');
-    if(!btn) return;
-    pressKey(btn.dataset.key);
-  });
-
-  window.addEventListener('keydown', (e) => {
-    const modalVisible = !$('feedbackModal').classList.contains('hidden');
-    if(modalVisible){
-      if(e.key === 'Enter' || e.key === ' '){
-        e.preventDefault();
-        sfxClick();
-        nextRound();
-      }
-      return;
-    }
-    if($('screen-game').classList.contains('hidden')) return;
-    if(/^[0-9]$/.test(e.key)){
-      e.preventDefault();
-      pressKey(e.key);
-    } else if(e.key === 'Backspace'){
-      e.preventDefault();
-      pressKey('del');
-    } else if(e.key === 'Enter'){
-      e.preventDefault();
-      pressKey('enter');
-    }
-  });
-
-  document.addEventListener('pointerdown', unlockAudio, { once:true });
-
-  updateBest();
 })();
 </script>
 </body>

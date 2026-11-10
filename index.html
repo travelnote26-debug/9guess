@@ -22,9 +22,7 @@
   html{ scroll-behavior: smooth; }
   body{
     font-family:'Baloo 2', 'Fredoka', ui-rounded, system-ui, sans-serif;
-    background: linear-gradient(120deg, #4f46e5 0%, #7c3aed 25%, #9333ea 50%, #ec4899 75%, #4f46e5 100%);
-    background-size: 300% 300%;
-    animation: bgShift 16s ease infinite;
+    background: linear-gradient(150deg, #4f46e5 0%, #7c3aed 45%, #9333ea 75%, #db2777 100%);
     min-height: 100dvh;
     color:#fff;
     overflow-x:hidden;
@@ -37,7 +35,11 @@
     top: max(.75rem, env(safe-area-inset-top, 0px));
     right: max(.75rem, env(safe-area-inset-right, 0px));
   }
-  @keyframes bgShift{ 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
+  #saveExitTopBtn{
+    top: max(.75rem, env(safe-area-inset-top, 0px));
+    left: max(.75rem, env(safe-area-inset-left, 0px));
+    z-index: 72;
+  }
 
   .logo-text{
     font-family:'Fredoka', sans-serif;
@@ -57,9 +59,6 @@
     border:1px solid rgba(255,255,255,.28);
     box-shadow: 0 24px 60px -12px rgba(46,16,101,.6);
   }
-
-  .blob{ position:absolute; border-radius:50%; filter:blur(70px); opacity:.38; animation: drift 18s ease-in-out infinite; }
-  @keyframes drift{ 0%,100%{ transform:translate(0,0) scale(1); } 33%{ transform:translate(35px,-45px) scale(1.15); } 66%{ transform:translate(-30px,30px) scale(.9); } }
 
   .btn-3d{
     position:relative; display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
@@ -265,11 +264,6 @@
     border-radius:1rem; background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.18);
   }
 
-  .animate-float{ animation: floaty 3.6s ease-in-out infinite; }
-  @keyframes floaty{ 0%,100%{ transform:translateY(0) rotate(-2deg); } 50%{ transform:translateY(-12px) rotate(3deg); } }
-  .animate-bounce-slow{ animation: bounceSlow 1.9s ease-in-out infinite; }
-  @keyframes bounceSlow{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-8px); } }
-
   .pop-in{ animation: popIn .42s cubic-bezier(.2,.9,.3,1.25) both; }
   @keyframes popIn{ 0%{ transform:scale(.72) translateY(24px); opacity:0; } 60%{ transform:scale(1.03); } 100%{ transform:scale(1); opacity:1; } }
   .card-in{ animation: cardIn .38s ease-out both; }
@@ -289,246 +283,163 @@
 
 <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none" style="z-index:60;"></canvas>
 
-<div class="fixed inset-0 overflow-hidden pointer-events-none" style="z-index:0;" aria-hidden="true">
-  <div class="blob" style="width:420px;height:420px;background:#facc15;top:-130px;left:-110px;"></div>
-  <div class="blob" style="width:380px;height:380px;background:#06b6d4;bottom:-130px;right:-90px;animation-delay:-6s;"></div>
-  <div class="blob" style="width:320px;height:320px;background:#f43f5e;top:42%;left:52%;animation-delay:-11s;"></div>
-</div>
-
-<button id="muteBtn" aria-label="Silenciar sonido" class="fixed top-3 right-3 z-[70] glass rounded-full w-11 h-11 text-xl flex items-center justify-center hover:scale-110 transition">🔊</button>
+<button id="muteBtn" type="button" aria-label="Silenciar sonido" class="fixed top-3 right-3 z-[70] glass rounded-full w-11 h-11 text-xl flex items-center justify-center hover:scale-110 transition">🔊</button>
+<button id="saveExitTopBtn" type="button" aria-label="Guardar y salir" class="hidden fixed glass rounded-full w-11 h-11 flex items-center justify-center text-white/85 hover:text-white hover:scale-110 transition">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8"></path>
+    <path d="M10 12h11"></path>
+    <path d="m18 9 3 3-3 3"></path>
+  </svg>
+</button>
 
 <main class="relative z-10 min-h-[100dvh] flex items-start sm:items-center justify-center px-4 py-6">
 
   <!-- ================= HOME ================= -->
-  <section id="screen-home" class="screen w-full max-w-lg mx-auto text-center">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[10px] sm:text-xs tracking-widest mb-4">
-      ✨ PARTY GAME · PASS &amp; PLAY ✨
-    </div>
+  <section id="screen-home" class="screen w-full max-w-md mx-auto text-center pt-10">
     <h1 class="logo-text logo-main">9GUESS</h1>
-    <p class="mt-3 text-xl sm:text-2xl font-extrabold text-yellow-200" style="text-shadow:0 3px 0 rgba(91,33,182,.9);">¡Pasa el móvil, adivina y compite!</p>
-    <p class="mt-1 text-sm text-white/75 font-semibold">Dos formas de jugar: presenta o responde. Encuentra 9 respuestas antes de que el reloj llegue a cero.</p>
+    <p class="mt-2 text-sm font-semibold text-white/70">Nombra 9 respuestas. Pasa el móvil. Gana la fiesta.</p>
 
-    <div class="glass rounded-3xl p-4 sm:p-5 mt-5 text-left">
-      <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-yellow-300 mb-2">Dos dinámicas de juego</div>
-      <div class="grid grid-cols-2 gap-2">
-        <div class="rounded-2xl bg-white/10 border border-white/20 p-3">
-          <div class="text-2xl">🎤</div>
-          <div class="font-extrabold text-sm leading-tight mt-1">Presentador</div>
-          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">Uno lee y marca. Otro responde en voz alta.</div>
-        </div>
-        <div class="rounded-2xl bg-white/10 border border-white/20 p-3">
-          <div class="text-2xl">⌨️</div>
-          <div class="font-extrabold text-sm leading-tight mt-1">Individual</div>
-          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">Cada jugador escribe sus respuestas en secreto.</div>
-        </div>
-      </div>
-      <div class="mt-3 flex items-center justify-center gap-1.5 text-[9px] font-extrabold text-white/60 flex-wrap">
-        <span>🎯 9 respuestas</span><span class="text-yellow-300">·</span>
-        <span>⚠️ Trampas</span><span class="text-yellow-300">·</span>
-        <span>🃏 Comodines</span><span class="text-yellow-300">·</span>
-        <span>🔥 Rachas</span>
-      </div>
-    </div>
-
-    <div id="resumeCard" class="hidden glass rounded-3xl p-4 mt-5 text-left border-2 border-cyan-300/40">
+    <div id="resumeCard" class="hidden glass rounded-2xl p-4 mt-6 text-left">
       <div class="flex items-start justify-between gap-2">
         <div class="min-w-0">
-          <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-cyan-200">💾 Partida guardada</div>
+          <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-cyan-200">Partida guardada</div>
           <div id="resumeInfo" class="text-sm font-extrabold text-white mt-0.5 truncate">Turno 1 de 4 · Ronda 1 de 2</div>
-          <div id="resumeSavedAt" class="text-[9px] font-semibold text-white/60 mt-0.5"></div>
+          <div id="resumeSavedAt" class="text-[9px] font-semibold text-white/55 mt-0.5"></div>
         </div>
-        <button id="discardSaveBtn" type="button" class="shrink-0 w-8 h-8 rounded-full bg-white/10 border border-white/25 text-white/70 hover:bg-rose-500/40 hover:text-white transition" aria-label="Descartar partida guardada">🗑️</button>
+        <button id="discardSaveBtn" type="button" class="shrink-0 w-8 h-8 rounded-full bg-white/10 border border-white/20 text-white/60 hover:bg-rose-500/40 hover:text-white transition" aria-label="Descartar partida guardada">✕</button>
       </div>
       <button id="resumeBtn" type="button" class="btn-3d btn-cyan mt-3 w-full px-6 py-3 text-base">
-        ▶️ CONTINUAR PARTIDA
+        ▶️ CONTINUAR
       </button>
-      <p class="mt-2 text-[9px] font-semibold text-white/50 text-center">Solo se guarda una partida. Empezar una nueva la borrará.</p>
     </div>
 
-    <button id="homeStartBtn" type="button" class="btn-3d btn-party mt-5 w-full px-8 py-4 text-xl sm:text-2xl animate-bounce-slow">
-      🎊 EMPEZAR A JUGAR
+    <button id="homeStartBtn" type="button" class="btn-3d btn-party mt-6 w-full px-8 py-4 text-xl">
+      🎊 EMPEZAR
     </button>
-    <button id="homeHowBtn" type="button" class="btn-3d btn-cyan mt-3 w-full px-8 py-3.5 text-lg">
-      📖 INSTRUCCIONES
-    </button>
-    <button id="installBtn" type="button" class="mt-3 inline-flex items-center gap-2 text-[11px] font-extrabold text-white/75 hover:text-white underline underline-offset-4">
-      📲 Instalar como app
-    </button>
-    <p class="mt-4 text-[10px] text-white/50 font-semibold">Ideal para reuniones, viajes y romper el hielo 🧊</p>
+    <div class="mt-4 flex items-center justify-center gap-5 text-[11px] font-extrabold text-white/60">
+      <button id="homeHowBtn" type="button" class="underline underline-offset-4 hover:text-white">Cómo se juega</button>
+      <button id="installBtn" type="button" class="underline underline-offset-4 hover:text-white">Instalar app</button>
+    </div>
   </section>
 
   <!-- ================= SETUP ================= -->
-  <section id="screen-setup" class="screen w-full max-w-lg mx-auto hidden text-center">
-    <div class="flex items-center justify-between gap-2 mb-4">
-      <button id="setupBackBtn" type="button" class="glass rounded-full px-3 py-1.5 text-[11px] font-extrabold text-white/80 hover:text-white">← Inicio</button>
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[9px] tracking-widest">
-        CONFIGURA TU PARTIDA
-      </div>
+  <section id="screen-setup" class="screen w-full max-w-md mx-auto hidden">
+    <div class="flex items-center justify-between mb-5">
+      <button id="setupBackBtn" type="button" class="glass rounded-full px-3 py-1.5 text-[11px] font-extrabold text-white/80 hover:text-white">← Atrás</button>
+      <h2 class="text-xl font-extrabold text-yellow-200">Prepara la partida</h2>
       <div class="w-16"></div>
     </div>
-    <h2 class="text-2xl sm:text-3xl font-extrabold text-yellow-200" style="text-shadow:0 3px 0 rgba(91,33,182,.85);">Prepara la fiesta</h2>
-    <p class="mt-1 text-xs text-white/70 font-semibold">Elige dinámica, puntuación y jugadores.</p>
 
-    <div class="glass rounded-3xl p-4 sm:p-5 mt-5 text-left">
-      <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-yellow-300 mb-2">1 · Dinámica de juego</div>
-      <div class="grid grid-cols-2 gap-2">
-        <button class="mode-card selected" data-dynamic="presenter" type="button">
-          <div class="text-2xl">🎤</div>
-          <div class="font-extrabold text-base leading-tight mt-1">Presentador</div>
-          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">Un jugador lee y marca; otro responde en voz alta. <b class="text-yellow-200">Por defecto</b>.</div>
-        </button>
-        <button class="mode-card" data-dynamic="individual" type="button">
-          <div class="text-2xl">⌨️</div>
-          <div class="font-extrabold text-base leading-tight mt-1">Individual</div>
-          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">Cada jugador escribe sus respuestas en un panel ciego.</div>
-        </button>
-      </div>
-
-      <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-yellow-300 mb-2 mt-5">2 · Puntuación</div>
-      <div class="grid grid-cols-2 gap-2">
-        <button class="mode-card selected" data-mode="fiesta" type="button">
-          <div class="text-2xl">🎉</div>
-          <div class="font-extrabold text-base leading-tight mt-1">Fiesta</div>
-          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">100 pts por acierto. Pura diversión, sin complicaciones.</div>
-        </button>
-        <button class="mode-card" data-mode="racha" type="button">
-          <div class="text-2xl">🔥</div>
-          <div class="font-extrabold text-base leading-tight mt-1">Racha</div>
-          <div class="text-[10px] font-semibold text-white/70 leading-tight mt-0.5">Encadena aciertos y multiplica hasta x5. Un fallo corta la racha.</div>
-        </button>
-      </div>
-
-      <div class="flex items-center justify-between mt-5 mb-2">
-        <div class="text-[10px] font-extrabold uppercase tracking-[.25em] text-yellow-300">3 · Jugadores</div>
-        <div class="text-[10px] font-bold text-white/50">2 a 6</div>
-      </div>
-      <div id="playersList" class="space-y-2"></div>
-      <button id="addPlayerBtn" type="button" class="mt-2 w-full rounded-xl border-2 border-dashed border-white/30 py-2.5 font-extrabold text-xs text-white/80 hover:bg-white/10 transition">＋ AÑADIR JUGADOR</button>
-
-      <div class="grid grid-cols-2 gap-4 mt-5">
-        <div>
-          <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-1.5">Rondas por jugador</div>
-          <div class="flex gap-1.5" id="roundsGroup">
-            <button class="seg-btn" data-rounds="1" type="button">1</button>
-            <button class="seg-btn active" data-rounds="2" type="button">2</button>
-            <button class="seg-btn" data-rounds="3" type="button">3</button>
-          </div>
+    <div class="glass rounded-2xl p-4 text-left space-y-5">
+      <div>
+        <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-2">Dinámica</div>
+        <div class="grid grid-cols-2 gap-2">
+          <button class="mode-card selected flex items-center justify-center gap-2" data-dynamic="presenter" type="button">
+            <span class="text-xl">🎤</span><span class="font-extrabold text-sm">Presentador</span>
+          </button>
+          <button class="mode-card flex items-center justify-center gap-2" data-dynamic="individual" type="button">
+            <span class="text-xl">⌨️</span><span class="font-extrabold text-sm">Individual</span>
+          </button>
         </div>
-        <div>
-          <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-1.5">Tiempo por turno</div>
-          <div class="flex gap-1.5" id="secondsGroup">
-            <button class="seg-btn" data-seconds="45" type="button">45s</button>
-            <button class="seg-btn active" data-seconds="60" type="button">60s</button>
-            <button class="seg-btn" data-seconds="90" type="button">90s</button>
-          </div>
+      </div>
+
+      <div>
+        <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-2">Puntuación</div>
+        <div class="grid grid-cols-2 gap-2">
+          <button class="mode-card selected flex items-center justify-center gap-2" data-mode="fiesta" type="button">
+            <span class="text-xl">🎉</span><span class="font-extrabold text-sm">Fiesta</span>
+          </button>
+          <button class="mode-card flex items-center justify-center gap-2" data-mode="racha" type="button">
+            <span class="text-xl">🔥</span><span class="font-extrabold text-sm">Racha</span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300">Jugadores</div>
+          <div class="text-[10px] font-bold text-white/50">2 a 6</div>
+        </div>
+        <div id="playersList" class="space-y-2"></div>
+        <button id="addPlayerBtn" type="button" class="mt-2 w-full rounded-xl border-2 border-dashed border-white/25 py-2.5 font-extrabold text-xs text-white/80 hover:bg-white/10 transition">＋ AÑADIR JUGADOR</button>
+      </div>
+
+      <div>
+        <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-2">Rondas por jugador</div>
+        <div class="grid grid-cols-5 gap-1.5" id="roundsGroup">
+          <button class="seg-btn" data-rounds="1" type="button">1</button>
+          <button class="seg-btn active" data-rounds="2" type="button">2</button>
+          <button class="seg-btn" data-rounds="3" type="button">3</button>
+          <button class="seg-btn" data-rounds="4" type="button">4</button>
+          <button class="seg-btn" data-rounds="5" type="button">5</button>
+          <button class="seg-btn" data-rounds="6" type="button">6</button>
+          <button class="seg-btn" data-rounds="7" type="button">7</button>
+          <button class="seg-btn" data-rounds="8" type="button">8</button>
+          <button class="seg-btn" data-rounds="9" type="button">9</button>
+          <button class="seg-btn" data-rounds="10" type="button">10</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-2">Tiempo por turno</div>
+        <div class="flex gap-1.5" id="secondsGroup">
+          <button class="seg-btn" data-seconds="45" type="button">45s</button>
+          <button class="seg-btn active" data-seconds="60" type="button">60s</button>
+          <button class="seg-btn" data-seconds="90" type="button">90s</button>
         </div>
       </div>
     </div>
 
-    <button id="startBtn" type="button" class="btn-3d btn-party mt-5 w-full px-8 py-4 text-xl sm:text-2xl animate-bounce-slow">
-      🎊 ¡COMENZAR LA FIESTA!
-    </button>
-    <button id="setupHowBtn" type="button" class="mt-3 inline-flex items-center gap-2 text-[11px] font-extrabold text-white/75 hover:text-white underline underline-offset-4">
-      📖 Ver instrucciones
+    <button id="startBtn" type="button" class="btn-3d btn-party mt-5 w-full px-8 py-4 text-xl">
+      🎊 COMENZAR
     </button>
   </section>
 
   <!-- ================= PASS ================= -->
-  <section id="screen-pass" class="screen w-full max-w-md mx-auto hidden text-center">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[10px] tracking-widest mb-3">
-      📱 SIGUIENTE TURNO
-    </div>
-    <div class="glass rounded-3xl p-6 mt-2">
-      <div id="passLabel" class="text-[11px] font-extrabold tracking-[.3em] text-white/70">PÁSALE EL MÓVIL A</div>
-      <div id="passAvatar" class="avatar w-28 h-28 mx-auto my-5 text-6xl"></div>
+  <section id="screen-pass" class="screen w-full max-w-md mx-auto hidden text-center pt-10">
+    <div class="glass rounded-3xl p-6">
+      <div id="passLabel" class="text-[11px] font-extrabold tracking-[.3em] text-white/65">PÁSALE EL MÓVIL A</div>
+      <div id="passAvatar" class="avatar w-24 h-24 mx-auto my-5 text-6xl"></div>
       <h2 id="passName" class="text-3xl sm:text-4xl font-extrabold text-yellow-200 break-words" style="text-shadow:0 3px 0 rgba(91,33,182,.85);">Jugador 1</h2>
-      <p id="passMeta" class="text-xs font-bold text-white/70 mt-1">Turno 1 de 4 · Ronda 1 de 2</p>
-
-      <div id="passContestantCard" class="hidden mt-3 rounded-2xl bg-white/10 border border-white/20 px-3 py-2 flex items-center gap-2 text-left">
-        <div id="passContestantAvatar" class="avatar w-10 h-10 text-xl"></div>
-        <div class="min-w-0 leading-tight">
-          <div class="text-[9px] font-extrabold uppercase tracking-widest text-white/50">Concursante</div>
-          <div id="passContestantName" class="font-extrabold text-sm text-yellow-200 truncate">Jugador 1</div>
-        </div>
-      </div>
-
-      <p id="passInstruction" class="mt-3 text-[11px] font-semibold text-white/75 leading-snug"></p>
-
-      <div class="mt-4 grid grid-cols-2 gap-2">
-        <div class="rounded-2xl bg-white/10 border border-white/20 px-3 py-2">
-          <div id="passScoreLabel" class="text-[9px] font-extrabold uppercase tracking-widest text-white/50">Puntos</div>
-          <div id="passScore" class="text-lg font-extrabold text-yellow-300">0</div>
-        </div>
-        <div class="rounded-2xl bg-white/10 border border-white/20 px-3 py-2">
-          <div id="passPowersLabel" class="text-[9px] font-extrabold uppercase tracking-widest text-white/50">Comodines</div>
-          <div id="passPowers" class="text-sm font-extrabold text-cyan-300 mt-0.5">💡1 · ⏱️1 · 🃏1</div>
-        </div>
-      </div>
-
-      <button id="readyBtn" type="button" class="btn-3d btn-party mt-5 w-full py-4 text-xl">¡ESTOY LISTO! 🚀</button>
-      <button id="passExitBtn" type="button" class="mt-3 text-[10px] font-extrabold text-white/60 hover:text-white underline underline-offset-4">💾 Guardar y salir</button>
+      <p id="passMeta" class="text-xs font-bold text-white/60 mt-1">Turno 1 de 4 · Ronda 1 de 2</p>
+      <p id="passInstruction" class="mt-4 text-sm font-semibold text-white/75 leading-snug"></p>
+      <button id="readyBtn" type="button" class="btn-3d btn-party mt-5 w-full py-4 text-xl">ESTOY LISTO</button>
     </div>
-    <p id="passFootNote" class="mt-4 text-xs text-white/60 font-semibold">Que los demás no miren... ¡o que miren y sufran! 😏</p>
   </section>
 
   <!-- ================= GAME ================= -->
-  <section id="screen-game" class="screen w-full max-w-xl mx-auto hidden">
-    <div class="flex items-center justify-between gap-2 mb-3 pr-12">
-      <div class="glass rounded-full pl-1.5 pr-3 py-1.5 flex items-center gap-2 min-w-0">
-        <div id="gameAvatar" class="avatar w-9 h-9 text-lg"></div>
-        <div class="min-w-0 text-left leading-tight">
-          <div id="gamePlayerName" class="font-extrabold text-sm truncate max-w-[6.5rem]">Jugador</div>
-          <div class="text-[10px] font-bold text-white/60"><span id="gamePlayerScore">0</span> pts</div>
-        </div>
+  <section id="screen-game" class="screen w-full max-w-lg mx-auto hidden pt-10">
+    <div class="flex items-center justify-between gap-3 mb-4">
+      <div class="min-w-0 text-left leading-tight">
+        <div id="gamePlayerName" class="font-extrabold text-base truncate">Jugador</div>
+        <div class="text-[11px] font-bold text-white/55"><span id="turnLabel">TURNO 1/4</span> · <span id="gamePlayerScore">0</span> pts</div>
+        <div id="streakBadge" class="hidden mt-1 streak-badge rounded-full px-2 py-0.5 text-[10px] font-extrabold inline-block">🔥 x1</div>
       </div>
 
-      <div class="flex flex-col items-center">
-        <div id="turnLabel" class="glass rounded-full px-3 py-1 text-[10px] font-extrabold whitespace-nowrap">TURNO 1/4</div>
-        <button id="exitGameBtn" type="button" class="mt-1 text-[9px] font-extrabold text-white/60 hover:text-white underline underline-offset-2">⏸ Salir</button>
-        <div id="streakBadge" class="hidden mt-1 streak-badge rounded-full px-2 py-0.5 text-[10px] font-extrabold">🔥 x1</div>
-      </div>
-
-      <div id="timerWrap" class="relative w-16 h-16 shrink-0">
+      <div id="timerWrap" class="relative w-14 h-14 shrink-0">
         <svg viewBox="0 0 80 80" class="w-full h-full" style="transform:rotate(-90deg);">
           <circle cx="40" cy="40" r="34" stroke="rgba(255,255,255,.18)" stroke-width="8" fill="none"></circle>
           <circle id="timerRing" cx="40" cy="40" r="34" stroke="#facc15" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="213.63" stroke-dashoffset="0" style="transition:stroke-dashoffset .1s linear, stroke .3s ease;"></circle>
         </svg>
-        <div id="timerText" class="absolute inset-0 flex items-center justify-center text-2xl font-extrabold" style="text-shadow:0 2px 0 rgba(0,0,0,.3);">60</div>
+        <div id="timerText" class="absolute inset-0 flex items-center justify-center text-xl font-extrabold" style="text-shadow:0 2px 0 rgba(0,0,0,.3);">60</div>
       </div>
     </div>
 
-    <div id="presenterRoleBar" class="hidden glass rounded-2xl px-3 py-2 mb-2 text-[11px] font-extrabold text-center text-white/85"></div>
-
-    <div id="categoryCard" class="glass rounded-3xl p-4 sm:p-5 border-2 border-white/30">
+    <div id="categoryCard" class="glass rounded-2xl p-4 sm:p-5">
       <div class="flex items-center justify-between mb-1">
         <span id="categoryTag" class="text-[10px] font-extrabold tracking-[.2em] text-yellow-300">CATEGORÍA</span>
-        <span id="categoryEmoji" class="text-3xl animate-float">🌍</span>
-      </div>
-      <h2 id="categoryPrompt" class="text-lg sm:text-2xl font-extrabold leading-snug min-h-[3.2rem]">Nombra 9 respuestas…</h2>
-
-      <div class="mt-2 flex items-center gap-2">
-        <div class="flex-1 h-2 rounded-full bg-white/15 overflow-hidden">
-          <div id="progressBar" class="h-full rounded-full transition-all duration-300" style="width:0%;background:linear-gradient(90deg,#facc15,#f43f5e,#a855f7);"></div>
-        </div>
         <span id="foundCount" class="text-xs font-extrabold text-yellow-300 whitespace-nowrap">0/9</span>
       </div>
+      <h2 id="categoryPrompt" class="text-lg sm:text-2xl font-extrabold leading-snug min-h-[3rem]">Nombra 9 respuestas…</h2>
 
       <div id="slotsGrid" class="grid grid-cols-3 gap-1.5 sm:gap-2 mt-3"></div>
 
       <div id="presenterPanel" class="hidden mt-3">
-        <div class="flex items-center justify-between gap-2 mb-1.5">
-          <span class="text-[9px] font-extrabold uppercase tracking-[.2em] text-yellow-300">Toca las respuestas que diga</span>
-          <span class="text-[8px] font-bold text-white/50 whitespace-nowrap">Solo presentador</span>
-        </div>
+        <div class="text-[9px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-1.5">Toca las respuestas que diga</div>
         <div id="presenterAnswers" class="grid grid-cols-2 gap-1.5"></div>
-
-        <div class="mt-3 rounded-2xl bg-rose-500/15 border border-rose-300/30 p-2">
-          <div class="flex items-center justify-between gap-2 mb-1.5">
-            <span class="text-[9px] font-extrabold uppercase tracking-[.2em] text-rose-200">⚠️ Trampas · -75 pts</span>
-            <span id="presenterTrapCount" class="text-[9px] font-bold text-rose-200/80">0/0</span>
-          </div>
+        <div class="mt-3">
+          <div class="text-[9px] font-extrabold uppercase tracking-[.2em] text-rose-200 mb-1.5">Trampa</div>
           <div id="presenterTraps" class="flex flex-wrap gap-1.5"></div>
-          <p class="mt-1 text-[8px] text-rose-100/70 font-semibold">Toca una trampa si el concursante la dice.</p>
         </div>
       </div>
 
@@ -548,7 +459,6 @@
         <input id="answerInput" type="text" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" placeholder="Escribe una respuesta…" class="flex-1 min-w-0 rounded-xl border-2 border-white/40 bg-white/95 px-3.5 py-3 text-base font-extrabold text-[#3b0764] placeholder-purple-400 focus:outline-none focus:ring-4 focus:ring-yellow-300/60" />
         <button id="submitAnswer" type="button" class="btn-3d btn-yellow px-4 py-3 text-sm shrink-0">AÑADIR ✓</button>
       </div>
-      <p id="soloHintText" class="text-[9px] text-white/55 font-semibold mt-1.5 text-center">Enter para enviar · ⚠️ cuidado con las respuestas trampa</p>
     </div>
   </section>
 
@@ -657,27 +567,23 @@
     <div class="mt-3 space-y-2.5 text-[12px] font-semibold text-purple-900/80 leading-snug">
       <div class="rounded-2xl bg-purple-50 px-3 py-2.5">
         <div class="font-extrabold text-purple-900">🎯 Objetivo</div>
-        Encuentra <b>9 respuestas válidas</b> de la categoría antes de que se acabe el tiempo.
+        Encuentra las <b>9 respuestas correctas</b> del turno antes de que se acabe el tiempo.
       </div>
       <div class="rounded-2xl bg-fuchsia-50 px-3 py-2.5">
-        <div class="font-extrabold text-fuchsia-700">🎤 Presentador · por defecto</div>
-        Un jugador hace de presentador: lee la pregunta en voz alta y toca en la lista cada respuesta que diga el concursante. El concursante responde sin mirar la pantalla. Si dice una trampa, el presentador la toca y restan 75 puntos.
+        <div class="font-extrabold text-fuchsia-700">🎤 Presentador</div>
+        Lee la pregunta y toca cada respuesta que diga el concursante. Cada turno muestra <b>9 respuestas correctas y 1 trampa</b>.
       </div>
       <div class="rounded-2xl bg-cyan-50 px-3 py-2.5">
         <div class="font-extrabold text-cyan-700">⌨️ Individual</div>
-        Cada jugador recibe el móvil y escribe sus respuestas en un panel ciego. Los demás no deben mirar.
-      </div>
-      <div class="rounded-2xl bg-amber-50 px-3 py-2.5">
-        <div class="font-extrabold text-amber-700">🔄 Turnos y presentadores</div>
-        Los turnos van rotando. En cada ronda cada jugador es concursante una vez y presentador otra vez. Si hay más jugadores, el presentador también rota para que todos presenten.
+        Escribe tus respuestas sin que nadie mire. También hay <b>9 válidas y 1 trampa</b> por turno.
       </div>
       <div class="rounded-2xl bg-emerald-50 px-3 py-2.5">
-        <div class="font-extrabold text-emerald-700">🃏 Comodines y puntuación</div>
-        Cada jugador tiene 1 pista, 1 +10 s y 1 chispa por partida. Fiesta da 100 pts por acierto. Racha multiplica hasta x5, pero un fallo o una trampa corta la racha. El pleno perfecto da bonus.
+        <div class="font-extrabold text-emerald-700">🏆 Puntuación</div>
+        Cada acierto da <b>50, 75 o 100 pts</b> según su dificultad. Racha multiplica hasta x5; un fallo o una trampa (−75) la corta. Pleno perfecto: bonus.
       </div>
-      <div class="rounded-2xl bg-cyan-50 px-3 py-2.5">
-        <div class="font-extrabold text-cyan-700">💾 Guardar y continuar</div>
-        Puedes salir de la partida y guardarla en este dispositivo para continuarla luego desde el inicio. Solo se guarda una partida.
+      <div class="rounded-2xl bg-amber-50 px-3 py-2.5">
+        <div class="font-extrabold text-amber-700">💾 Guardar y salir</div>
+        Usa la puerta de arriba a la izquierda en cualquier pantalla de la partida. Solo se guarda una partida.
       </div>
     </div>
 
@@ -693,10 +599,11 @@
   'use strict';
 
   const MAX_PLAYERS = 6;
+  const MAX_ROUNDS = 10;
   const SLOTS = 9;
   const STORAGE_KEY = 'guess9_setup_v2';
-  const SAVE_KEY = 'guess9_saved_game_v1';
-  const SAVE_VERSION = 1;
+  const SAVE_KEY = 'guess9_saved_game_v2';
+  const SAVE_VERSION = 2;
   const RING_CIRC = 2 * Math.PI * 34;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -886,6 +793,46 @@
     return arr;
   }
 
+  function pointsForAnswer(cat, answer){
+    const total = cat.answers.length;
+    const index = cat.answers.indexOf(answer);
+    if(index < 0){ return 75; }
+    const ratio = total > 1 ? index / (total - 1) : 0;
+    return ratio < 0.34 ? 50 : (ratio < 0.67 ? 75 : 100);
+  }
+
+  function makeRound(cat, answers, traps){
+    const unique = [];
+    (Array.isArray(answers) ? answers : []).forEach((answer) => {
+      if(cat.answers.includes(answer) && !unique.includes(answer)){ unique.push(answer); }
+    });
+    const chosen = unique.slice(0, SLOTS);
+    if(chosen.length !== SLOTS){ return null; }
+    const trapList = (Array.isArray(traps) ? traps : []).filter((trap) => cat.traps.includes(trap)).slice(0, 1);
+    const lookup = new Map();
+    const points = new Map();
+    chosen.forEach((answer) => {
+      lookup.set(normalize(answer), answer);
+      points.set(answer, pointsForAnswer(cat, answer));
+    });
+    (cat.aliases || []).forEach(([alias, canonical]) => {
+      if(lookup.has(normalize(canonical))){ lookup.set(normalize(alias), canonical); }
+    });
+    return Object.assign({}, cat, {
+      answers: chosen,
+      traps: trapList,
+      lookup: lookup,
+      trapSet: new Set(trapList.map(normalize)),
+      points: points
+    });
+  }
+
+  function buildRound(cat){
+    const chosen = shuffle(cat.answers.slice()).slice(0, SLOTS);
+    const trap = cat.traps.length ? cat.traps[Math.floor(Math.random() * cat.traps.length)] : null;
+    return makeRound(cat, chosen, trap ? [trap] : []);
+  }
+
   function createPlayer(name){
     return { name: name, score: 0, found: 0, traps: 0, bestStreak: 0, hints: 1, time: 1, spark: 1 };
   }
@@ -915,7 +862,7 @@
     if(saved && Array.isArray(saved.names) && saved.names.length >= 2){
       state.mode = saved.mode === 'racha' ? 'racha' : 'fiesta';
       state.dynamic = saved.dynamic === 'individual' ? 'individual' : 'presenter';
-      state.rounds = [1, 2, 3].indexOf(saved.rounds) >= 0 ? saved.rounds : 2;
+      state.rounds = Number.isInteger(saved.rounds) && saved.rounds >= 1 && saved.rounds <= MAX_ROUNDS ? saved.rounds : 2;
       state.seconds = [45, 60, 90].indexOf(saved.seconds) >= 0 ? saved.seconds : 60;
       state.players = saved.names.slice(0, MAX_PLAYERS).map((n) => createPlayer(String(n || '').slice(0, 14)));
       if(state.players.length < 2) state.players = [createPlayer('Jugador 1'), createPlayer('Jugador 2')];
@@ -948,6 +895,8 @@
       poolIndex: state.poolIndex,
       lastCategory: state.lastCategory ? state.lastCategory.prompt : null,
       cat: null,
+      catAnswers: [],
+      catTraps: [],
       slots: [],
       foundSet: [],
       foundList: [],
@@ -964,6 +913,8 @@
 
     if(phase === 'playing' && state.cat){
       snapshot.cat = state.cat.prompt;
+      snapshot.catAnswers = state.cat.answers.slice();
+      snapshot.catTraps = state.cat.traps.slice();
       snapshot.slots = state.slots.map((s) => ({ ...s }));
       snapshot.foundSet = [...state.foundSet];
       snapshot.foundList = [...state.foundList];
@@ -1007,7 +958,7 @@
       };
     });
 
-    const rounds = [1, 2, 3].indexOf(raw.rounds) >= 0 ? raw.rounds : 2;
+    const rounds = Number.isInteger(raw.rounds) && raw.rounds >= 1 && raw.rounds <= MAX_ROUNDS ? raw.rounds : 2;
     const seconds = [45, 60, 90].indexOf(raw.seconds) >= 0 ? raw.seconds : 60;
     const totalTurns = players.length * rounds;
     const turnIndex = Number.isInteger(raw.turnIndex) && raw.turnIndex >= 0 && raw.turnIndex < totalTurns ? raw.turnIndex : null;
@@ -1031,8 +982,10 @@
     };
 
     if(phase === 'playing'){
-      const cat = findCategoryByPrompt(raw.cat);
-      if(!cat || !Array.isArray(raw.slots) || raw.slots.length !== SLOTS) return null;
+      const source = findCategoryByPrompt(raw.cat);
+      if(!source || !Array.isArray(raw.slots) || raw.slots.length !== SLOTS) return null;
+      const cat = makeRound(source, raw.catAnswers, raw.catTraps);
+      if(!cat) return null;
       const validStates = new Set(['hidden', 'hinted', 'found']);
       const slots = raw.slots.map((s) => {
         if(!s || !validStates.has(s.state)) return null;
@@ -1230,6 +1183,7 @@
     target.classList.remove('pop-in');
     void target.offsetWidth;
     target.classList.add('pop-in');
+    $('saveExitTopBtn').classList.toggle('hidden', !(id === 'screen-pass' || id === 'screen-game'));
     if(id === 'screen-home'){ renderSavedGame(); }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -1531,7 +1485,6 @@
   });
   $('setupBackBtn').addEventListener('click', () => { sfxClick(); showScreen('screen-home'); });
   $('homeHowBtn').addEventListener('click', () => { sfxClick(); openInstructions(); });
-  $('setupHowBtn').addEventListener('click', () => { sfxClick(); openInstructions(); });
 
   $('resumeBtn').addEventListener('click', () => { sfxClick(); resumeSavedGame(); });
   $('discardSaveBtn').addEventListener('click', () => {
@@ -1542,8 +1495,7 @@
       showToast('🗑️ Partida guardada eliminada');
     }
   });
-  $('exitGameBtn').addEventListener('click', () => { sfxClick(); openExitModal(); });
-  $('passExitBtn').addEventListener('click', () => { sfxClick(); openExitModal(); });
+  $('saveExitTopBtn').addEventListener('click', () => { sfxClick(); openExitModal(); });
   $('saveExitBtn').addEventListener('click', () => { sfxClick(); saveAndExit(); });
   $('discardExitBtn').addEventListener('click', () => { sfxClick(); discardAndExit(); });
   $('cancelExitBtn').addEventListener('click', cancelExit);
@@ -1655,23 +1607,10 @@
     $('passLabel').textContent = isPresenter ? 'PÁSALE EL MÓVIL AL PRESENTADOR' : 'PÁSALE EL MÓVIL A';
     $('passMeta').textContent = 'Turno ' + (state.turnIndex + 1) + ' de ' + state.totalTurns + ' · Ronda ' + round + ' de ' + state.rounds +
       (state.resumePending ? ' · ⏱️ ' + Math.max(1, Math.ceil(state.timeLeft)) + 's guardados' : '');
-    $('passScore').textContent = nf.format(p.score) + ' pts';
-    $('passPowers').textContent = '💡' + p.hints + ' · ⏱️' + p.time + ' · 🃏' + p.spark;
-
-    $('passContestantCard').classList.toggle('hidden', !isPresenter);
     if(isPresenter){
-      $('passContestantAvatar').textContent = AVATARS[idx % AVATARS.length];
-      $('passContestantAvatar').style.background = AVATAR_BG[idx % AVATAR_BG.length];
-      $('passContestantName').textContent = p.name;
-      $('passScoreLabel').textContent = 'Puntos concursante';
-      $('passPowersLabel').textContent = 'Comodines concursante';
-      $('passInstruction').innerHTML = '🎤 <b>' + escapeHtml(presenter.name) + '</b>, lee la pregunta y toca las respuestas que diga <b>' + escapeHtml(p.name) + '</b>. 🙋 <b>' + escapeHtml(p.name) + '</b>, responde sin mirar la pantalla.';
-      $('passFootNote').textContent = 'Solo el presentador mira la pantalla. ¡Sin trampas! 😏';
+      $('passInstruction').innerHTML = '🎤 <b>' + escapeHtml(presenter.name) + '</b> lee y marca · 🙋 <b>' + escapeHtml(p.name) + '</b> responde sin mirar.';
     } else {
-      $('passScoreLabel').textContent = 'Puntos';
-      $('passPowersLabel').textContent = 'Comodines';
-      $('passInstruction').textContent = 'Responde en secreto y escribe tus respuestas. ¡No enseñes la pantalla!';
-      $('passFootNote').textContent = 'Que los demás no miren... ¡o que miren y sufran! 😏';
+      $('passInstruction').textContent = 'Responde en secreto sin que nadie mire la pantalla.';
     }
 
     showScreen('screen-pass');
@@ -1696,11 +1635,10 @@
     unlockAudio();
     const p = state.players[state.currentPlayerIndex];
     const isPresenter = state.dynamic === 'presenter';
-    const presenter = isPresenter ? state.players[state.presenterIndex] : null;
     const resuming = state.resumePending && state.cat && Array.isArray(state.slots) && state.slots.length === SLOTS;
     state.resumePending = false;
     if(!resuming){
-      state.cat = pickCategory();
+      state.cat = buildRound(pickCategory());
       state.slots = Array.from({ length: SLOTS }, () => ({ state: 'hidden' }));
       state.foundSet = new Set();
       state.foundList = [];
@@ -1722,26 +1660,18 @@
     state.running = true;
     state.ended = false;
 
-    $('gameAvatar').textContent = AVATARS[state.currentPlayerIndex % AVATARS.length];
-    $('gameAvatar').style.background = AVATAR_BG[state.currentPlayerIndex % AVATAR_BG.length];
     $('gamePlayerName').textContent = p.name;
     $('gamePlayerScore').textContent = nf.format(p.score);
     $('turnLabel').textContent = 'TURNO ' + (state.turnIndex + 1) + '/' + state.totalTurns;
     $('categoryTag').textContent = state.cat.tag.toUpperCase();
-    $('categoryEmoji').textContent = state.cat.emoji;
     $('categoryPrompt').textContent = state.cat.prompt;
     $('answerInput').value = '';
     $('answerInput').disabled = isPresenter;
     $('submitAnswer').disabled = isPresenter;
 
-    $('presenterRoleBar').classList.toggle('hidden', !isPresenter);
-    $('presenterRoleBar').innerHTML = isPresenter
-      ? '🎤 <b>' + escapeHtml(presenter.name) + '</b> presenta · 🙋 <b>' + escapeHtml(p.name) + '</b> responde'
-      : '';
     $('slotsGrid').classList.toggle('hidden', isPresenter);
     $('presenterPanel').classList.toggle('hidden', !isPresenter);
     $('soloInputRow').classList.toggle('hidden', isPresenter);
-    $('soloHintText').classList.toggle('hidden', isPresenter);
 
     renderSlots();
     if(isPresenter){
@@ -1841,13 +1771,12 @@
       const used = state.usedTraps.has(trap);
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'presenter-trap' + (used ? ' used' : '');
+      btn.className = 'presenter-trap w-full' + (used ? ' used' : '');
       btn.disabled = !state.running || used;
       btn.textContent = trap;
       btn.addEventListener('click', () => markPresenterTrap(trap));
       wrap.appendChild(btn);
     });
-    $('presenterTrapCount').textContent = state.usedTraps.size + '/' + state.cat.traps.length;
   }
 
   function markPresenterAnswer(answer, el){
@@ -1880,7 +1809,6 @@
   function updateProgress(){
     const n = state.foundList.length;
     $('foundCount').textContent = n + '/9';
-    $('progressBar').style.width = ((n / SLOTS) * 100) + '%';
   }
 
   function updateStreakBadge(){
@@ -1947,7 +1875,6 @@
 
   function revealAnswer(canonical, viaSpark, sourceEl){
     const p = state.players[state.currentPlayerIndex];
-    const sourceRect = sourceEl ? sourceEl.getBoundingClientRect() : null;
     let slotIndex = -1;
     if(!viaSpark){
       slotIndex = state.slots.findIndex((s) => s.state === 'hinted' && s.hintAnswer === canonical);
@@ -1970,7 +1897,8 @@
     p.bestStreak = Math.max(p.bestStreak, state.streak);
 
     const mult = state.mode === 'racha' ? Math.min(state.streak, 5) : 1;
-    const gain = viaSpark ? 50 : 100 * mult;
+    const base = state.cat.points ? (state.cat.points.get(canonical) || 75) : 75;
+    const gain = viaSpark ? 50 : base * mult;
     p.score += gain;
     p.found += 1;
     state.turnPoints += gain;
@@ -1982,18 +1910,6 @@
     updateProgress();
     updatePowerButtons();
     updateStreakBadge();
-
-    if(sourceRect && sourceRect.width && sourceRect.height){
-      spawnConfetti(24, sourceRect.left + sourceRect.width / 2, sourceRect.top + sourceRect.height / 2);
-    } else if(!viaSpark){
-      const slotEl = $('slotsGrid').children[slotIndex];
-      if(slotEl){
-        const r = slotEl.getBoundingClientRect();
-        if(r.width && r.height) spawnConfetti(24, r.left + r.width / 2, r.top + r.height / 2);
-      }
-    } else if(state.dynamic === 'presenter'){
-      spawnConfetti(24, window.innerWidth / 2, window.innerHeight * .45);
-    }
 
     if(viaSpark){
       showFlash('🃏 ¡Chispa! ' + canonical + ' (+50)', 'correct');
@@ -2113,6 +2029,7 @@
     state.ended = true;
     state.running = false;
     stopTimer();
+    $('saveExitTopBtn').classList.add('hidden');
     $('answerInput').disabled = true;
     $('submitAnswer').disabled = true;
     if(state.dynamic === 'presenter'){

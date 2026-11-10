@@ -1,4 +1,4 @@
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL_CACHE = `9guess-shell-${VERSION}`;
 const RUNTIME_CACHE = `9guess-runtime-${VERSION}`;
 const SHELL = [

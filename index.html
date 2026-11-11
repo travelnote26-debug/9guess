@@ -184,9 +184,9 @@
     border:2px dashed rgba(255,255,255,.25); background:rgba(255,255,255,.08);
     transition: all .25s ease; overflow:hidden;
   }
-  .slot .slot-num{ font-size:1.35rem; font-weight:800; color:rgba(255,255,255,.35); line-height:1; }
+  .slot .slot-num{ font-size:clamp(1.25rem,3.6vh,1.9rem); font-weight:800; color:rgba(255,255,255,.35); line-height:1; }
   .slot .slot-lock{ font-size:.6rem; opacity:.7; margin-top:.15rem; }
-  .slot .slot-answer{ font-size:clamp(.82rem,3.4vw,1rem); line-height:1.1; font-weight:800; overflow-wrap:anywhere; }
+  .slot .slot-answer{ font-size:clamp(.9rem,min(4.6vw,2.7vh),1.25rem); line-height:1.1; font-weight:800; overflow-wrap:anywhere; }
   .slot .slot-check{ font-size:.55rem; opacity:.9; margin-top:.1rem; }
   .slot.hinted{
     border-style:solid; border-color:rgba(253,224,71,.8);
@@ -216,7 +216,7 @@
   .presenter-answer{
     position:relative; display:flex; align-items:center; justify-content:space-between; gap:.5rem;
     width:100%; min-height:1.7rem; border-radius:.7rem; padding:.22rem .6rem; text-align:left;
-    font-size:clamp(.88rem,3.7vw,1.1rem); font-weight:800; line-height:1.1; color:#fff;
+    font-size:clamp(.95rem,min(5.3vw,3.1vh),1.55rem); font-weight:800; line-height:1.1; color:#fff;
     background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3);
     transition:background .15s ease, border-color .15s ease, transform .08s ease;
     overflow-wrap:anywhere;
@@ -243,7 +243,7 @@
   .presenter-trap{
     display:flex; align-items:center; justify-content:space-between; gap:.5rem;
     width:100%; min-height:1.7rem; border-radius:.7rem; padding:.22rem .6rem;
-    font-size:clamp(.88rem,3.7vw,1.1rem); font-weight:800; line-height:1.1; text-align:left;
+    font-size:clamp(.95rem,min(5.3vw,3.1vh),1.55rem); font-weight:800; line-height:1.1; text-align:left;
     color:#ffe4e6; background:rgba(244,63,94,.22); border:1px solid rgba(251,113,133,.45);
     transition:all .15s ease;
   }
@@ -253,6 +253,13 @@
   .presenter-trap:active{ transform:scale(.96); }
   .presenter-trap.used{ opacity:.4; text-decoration:line-through; background:rgba(244,63,94,.12); }
   .presenter-trap:disabled{ cursor:not-allowed; }
+
+  #screen-game{ height:calc(100dvh - 3rem); }
+  #categoryCard{ flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
+  #presenterPanel:not(.hidden){ flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
+  #presenterAnswers{ flex:1 1 auto; min-height:0; }
+  #slotsGrid:not(.hidden){ flex:1 1 auto; min-height:0; grid-auto-rows:minmax(0,1fr); }
+  .presenter-answer, .presenter-trap{ flex:1 1 0; min-height:2rem; }
 
   .power-btn{
     position:relative; border-radius:1rem; padding:.45rem .3rem .5rem;
@@ -325,10 +332,13 @@
 
   @media (max-height: 620px){
     #screen-game{ padding-top:0; padding-bottom:0; }
-    #categoryCard{ padding:.55rem .7rem; }
-    #categoryPrompt{ font-size:clamp(1.05rem,5vw,1.5rem) !important; line-height:1.1; }
+    #categoryCard{ padding:.5rem .65rem; }
     #presenterAnswers{ gap:.2rem; }
-    .presenter-answer, .presenter-trap{ min-height:1.35rem; padding:.12rem .5rem; font-size:clamp(.78rem,3.5vw,1rem); }
+    .presenter-answer, .presenter-trap{ min-height:1.65rem; padding:.12rem .5rem; font-size:clamp(.92rem,min(5.1vw,3.05vh),1.2rem); }
+    #slotsGrid{ gap:.3rem; }
+    .slot{ min-height:0; padding:.2rem .25rem; }
+    .slot .slot-num{ font-size:clamp(1rem,3vh,1.4rem); }
+    .slot .slot-answer{ font-size:clamp(.82rem,min(4.4vw,2.4vh),1.05rem); }
     #powerRow{ margin-top:.35rem; gap:.35rem; }
     .power-btn{ padding:.3rem .2rem .35rem; font-size:.6rem; }
     .power-emoji{ font-size:1rem; }
@@ -501,7 +511,7 @@
         <span id="categoryTag" class="text-[10px] font-extrabold tracking-[.2em] text-yellow-300">CATEGORÍA</span>
         <span id="foundCount" class="text-xs font-extrabold text-yellow-300 whitespace-nowrap">0/9</span>
       </div>
-      <h2 id="categoryPrompt" class="font-extrabold leading-tight" style="font-size:clamp(1.3rem,5.4vw,1.9rem);">Nombra 9 respuestas…</h2>
+      <h2 id="categoryPrompt" class="font-extrabold leading-tight" style="font-size:clamp(1.35rem,min(6.4vw,3.7vh),2.6rem);">Nombra 9 respuestas…</h2>
 
       <div id="slotsGrid" class="grid grid-cols-3 gap-1.5 sm:gap-2 mt-2"></div>
 
@@ -608,6 +618,18 @@
     <button id="saveExitBtn" type="button" class="btn-3d btn-party mt-5 w-full py-3.5 text-base">💾 Guardar y salir</button>
     <button id="discardExitBtn" type="button" class="mt-3 w-full rounded-xl border-2 border-rose-200 bg-rose-50 py-2.5 text-sm font-extrabold text-rose-500 hover:bg-rose-100 transition">Salir sin guardar</button>
     <button id="cancelExitBtn" type="button" class="mt-2 w-full py-2 text-xs font-extrabold text-purple-500 hover:text-purple-700 underline underline-offset-4">Seguir jugando</button>
+  </div>
+</div>
+
+<!-- ================= CONFIRM ================= -->
+<div id="confirmModal" class="hidden fixed inset-0 z-[72] flex items-center justify-center px-4 py-8" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+  <div class="absolute inset-0 bg-[#1e1b4b]/75 backdrop-blur-md" data-close-confirm></div>
+  <div class="relative w-full max-w-sm rounded-3xl bg-white text-[#3b0764] p-6 text-center pop-in border-4 border-white/70" style="box-shadow:0 30px 80px -12px rgba(0,0,0,.65);">
+    <div id="confirmModalEmoji" class="text-5xl">⚠️</div>
+    <h3 id="confirmModalTitle" class="text-2xl font-extrabold text-fuchsia-600 mt-1">¿Seguro?</h3>
+    <p id="confirmModalText" class="text-sm font-semibold text-purple-900/70 mt-2 leading-relaxed"></p>
+    <button id="confirmModalOk" type="button" class="btn-3d btn-party mt-5 w-full py-3.5 text-base">Aceptar</button>
+    <button id="confirmModalCancel" type="button" class="mt-2 w-full rounded-xl border-2 border-purple-200 bg-purple-50 py-2.5 text-sm font-extrabold text-purple-600 hover:bg-purple-100 transition">Cancelar</button>
   </div>
 </div>
 
@@ -1363,6 +1385,7 @@
 
   /* ================= UI HELPERS ================= */
   function showScreen(id){
+    $('confirmModal').classList.add('hidden');
     document.querySelectorAll('.screen').forEach((s) => s.classList.add('hidden'));
     const target = $(id);
     target.classList.remove('hidden');
@@ -1380,6 +1403,38 @@
     t.classList.add('toast-show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('toast-show'), 2400);
+  }
+
+  let confirmCallback = null;
+
+  function openConfirm(opts){
+    const ok = $('confirmModalOk');
+    $('confirmModalEmoji').textContent = opts.emoji || '⚠️';
+    $('confirmModalTitle').textContent = opts.title || '¿Seguro?';
+    $('confirmModalText').textContent = opts.text || '';
+    ok.textContent = opts.confirmLabel || 'Aceptar';
+    if(opts.danger){
+      ok.className = 'btn-3d mt-5 w-full py-3.5 text-base';
+      ok.style.background = 'linear-gradient(180deg,#fb7185,#be123c)';
+      ok.style.color = '#fff';
+      ok.style.boxShadow = '0 5px 0 #881337, 0 10px 20px -6px rgba(0,0,0,.45)';
+    }else{
+      ok.className = 'btn-3d btn-party mt-5 w-full py-3.5 text-base';
+      ok.removeAttribute('style');
+    }
+    confirmCallback = typeof opts.onConfirm === 'function' ? opts.onConfirm : null;
+    $('confirmModal').classList.remove('hidden');
+  }
+
+  function closeConfirm(){
+    $('confirmModal').classList.add('hidden');
+    confirmCallback = null;
+  }
+
+  function acceptConfirm(){
+    const action = confirmCallback;
+    closeConfirm();
+    if(action){ action(); }
   }
 
   function showFlash(msg, type){
@@ -1684,7 +1739,17 @@
 
   $('homeStartBtn').addEventListener('click', () => {
     sfxClick();
-    if(loadSavedGame() && !confirm('Ya tienes una partida guardada. Si empiezas una nueva, se borrará. ¿Continuar?')){ return; }
+    if(loadSavedGame()){
+      openConfirm({
+        emoji: '⚠️',
+        title: 'Ya hay una partida guardada',
+        text: 'Si empiezas una partida nueva, se borrará la partida guardada. ¿Quieres continuar?',
+        confirmLabel: 'Empezar nueva',
+        danger: false,
+        onConfirm: () => showScreen('screen-setup')
+      });
+      return;
+    }
     showScreen('screen-setup');
   });
   $('setupBackBtn').addEventListener('click', () => { sfxClick(); showScreen('screen-home'); });
@@ -1693,11 +1758,24 @@
   $('resumeBtn').addEventListener('click', () => { sfxClick(); resumeSavedGame(); });
   $('discardSaveBtn').addEventListener('click', () => {
     if(!loadSavedGame()){ renderSavedGame(); return; }
-    if(confirm('¿Descartar la partida guardada? No se podrá recuperar.')){
-      clearSavedGame();
-      renderSavedGame();
-      showToast('🗑️ Partida guardada eliminada');
-    }
+    sfxClick();
+    openConfirm({
+      emoji: '🗑️',
+      title: '¿Descartar la partida?',
+      text: 'Se borrará la partida guardada y no se podrá recuperar.',
+      confirmLabel: 'Sí, descartar',
+      danger: true,
+      onConfirm: () => {
+        clearSavedGame();
+        renderSavedGame();
+        showToast('🗑️ Partida guardada eliminada');
+      }
+    });
+  });
+  $('confirmModalOk').addEventListener('click', acceptConfirm);
+  $('confirmModalCancel').addEventListener('click', closeConfirm);
+  $('confirmModal').addEventListener('click', (e) => {
+    if(e.target.hasAttribute('data-close-confirm')) closeConfirm();
   });
   $('saveExitTopBtn').addEventListener('click', () => { sfxClick(); openExitModal(); });
   $('saveExitBtn').addEventListener('click', () => { sfxClick(); saveAndExit(); });
@@ -1707,6 +1785,7 @@
     if(e.target.hasAttribute('data-close-exit')) cancelExit();
   });
   document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && !$('confirmModal').classList.contains('hidden')){ closeConfirm(); return; }
     if(e.key === 'Escape' && !$('exitModal').classList.contains('hidden')){ cancelExit(); }
   });
   $('instructionsCloseBtn').addEventListener('click', closeInstructions);
@@ -2352,6 +2431,12 @@
       if(b.player.score !== a.player.score){ return b.player.score - a.player.score; }
       return b.player.found - a.player.found;
     });
+    const ranks = new Map();
+    sorted.forEach((entry, i) => {
+      const prev = sorted[i - 1];
+      const sameAsPrev = prev && entry.player.score === prev.player.score && entry.player.found === prev.player.found;
+      ranks.set(entry, sameAsPrev ? ranks.get(prev) : i + 1);
+    });
     const winner = sorted[0];
     const tied = sorted.filter((entry) => entry.player.score === winner.player.score && entry.player.found === winner.player.found);
     const tie = tied.length > 1;
@@ -2377,7 +2462,7 @@
     const heightByPos = { 1: '6rem', 2: '5rem', 3: '4.75rem' };
 
     layout.forEach((entry) => {
-      const pos = sorted.indexOf(entry) + 1;
+      const pos = ranks.get(entry);
       const pl = entry.player;
       const block = document.createElement('div');
       block.className = 'podium-step flex-1 max-w-[8.5rem]';
@@ -2394,9 +2479,9 @@
     ranking.innerHTML = '';
     const rest = sorted.slice(3);
     ranking.classList.toggle('hidden', rest.length === 0);
-    rest.forEach((entry, i) => {
+    rest.forEach((entry) => {
       const pl = entry.player;
-      const pos = i + 4;
+      const pos = ranks.get(entry);
       const rank = RANK_TITLES[pos - 1] || RANK_TITLES[RANK_TITLES.length - 1];
       const row = document.createElement('div');
       row.className = 'rank-row';

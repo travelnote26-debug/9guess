@@ -24,7 +24,7 @@
   </g>
   <text x="268" y="360" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="330" font-weight="900" fill="#3b0764" opacity=".9">9</text>
   <text x="256" y="344" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="330" font-weight="900" fill="#fde047" stroke="#7c2d12" stroke-width="11" paint-order="stroke">9</text>
-  <text x="262" y="440" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="68" font-weight="900" fill="#3b0764" opacity=".9">GUESS</text>
-  <text x="256" y="432" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="68" font-weight="900" fill="#fff" stroke="#7c2d12" stroke-width="4" paint-order="stroke">GUESS</text>
+  <text x="262" y="440" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="58" font-weight="900" fill="#3b0764" opacity=".9">ADIVINA</text>
+  <text x="256" y="432" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="58" font-weight="900" fill="#fff" stroke="#7c2d12" stroke-width="4" paint-order="stroke">ADIVINA</text>
   <path d="M348 128l7 18 18 7-18 7-7 18-7-18-18-7 18-7z" fill="#fff"/>
 </svg>

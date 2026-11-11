@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>9GUESS — ¡El party game de las 9 respuestas!</title>
-<meta name="description" content="9GUESS: el party game de las 9 respuestas. Pasa el móvil, adivina categorías, usa comodines y compite con tus amigos." />
+<title>Adivina9 — ¡El party game de las 9 respuestas!</title>
+<meta name="description" content="Adivina9: el party game de las 9 respuestas. Pasa el móvil, adivina categorías, usa comodines y compite con tus amigos." />
 <meta name="theme-color" content="#7c3aed" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="9GUESS" />
+<meta name="apple-mobile-web-app-title" content="Adivina9" />
 <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <link rel="manifest" href="manifest.json" />
@@ -126,6 +126,44 @@
     color:#4c1d95; border-color:rgba(255,255,255,.7);
     box-shadow:0 4px 0 #b45309, 0 10px 18px -6px rgba(0,0,0,.5);
   }
+
+  .stepper-btn{
+    width:2.6rem; height:2.6rem; border-radius:9999px; font-weight:800; font-size:1.25rem;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.12); border:2px solid rgba(255,255,255,.25); color:#fff;
+    transition:transform .1s, background .15s;
+  }
+  .stepper-btn:hover{ background:rgba(255,255,255,.2); }
+  .stepper-btn:active{ transform:scale(.95); }
+  .stepper-btn:disabled{ opacity:.35; cursor:not-allowed; transform:none; }
+  .stepper-input{
+    width:4.5rem; height:2.6rem; text-align:center; border-radius:.9rem;
+    background:rgba(255,255,255,.93); color:#3b0764; font-weight:800; font-size:1.1rem;
+    border:2px solid rgba(255,255,255,.4); outline:none; appearance:textfield;
+  }
+  .stepper-input::-webkit-outer-spin-button, .stepper-input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  .stepper-input:focus{ border-color:#fde047; box-shadow:0 0 0 4px rgba(250,204,21,.35); }
+
+  .power-toggle{
+    border-radius:.9rem; padding:.55rem .3rem; font-size:.72rem; font-weight:800;
+    line-height:1.1; color:rgba(255,255,255,.7);
+    background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.18);
+    transition:all .2s ease; cursor:pointer;
+  }
+  .power-toggle:hover{ background:rgba(255,255,255,.15); }
+  .power-toggle.active{
+    color:#4c1d95; background:linear-gradient(180deg,#fef08a,#facc15 60%,#f59e0b);
+    border-color:rgba(255,255,255,.7); box-shadow:0 3px 0 #b45309;
+  }
+  .power-toggle:active{ transform:translateY(2px); }
+
+  .role-chip{
+    display:inline-flex; align-items:center; gap:.35rem; border-radius:9999px;
+    padding:.3rem .75rem; font-size:.62rem; font-weight:800; letter-spacing:.15em;
+    text-transform:uppercase; border:1px solid transparent;
+  }
+  .role-presenter{ background:rgba(244,63,94,.25); border-color:rgba(251,113,133,.55); color:#ffe4e6; }
+  .role-contestant{ background:rgba(6,182,212,.22); border-color:rgba(34,211,238,.5); color:#cffafe; }
 
   .player-input{
     flex:1; min-width:0; border-radius:.85rem; padding:.55rem .8rem;
@@ -295,8 +333,8 @@
 <main class="relative z-10 min-h-[100dvh] flex items-start sm:items-center justify-center px-4 py-6">
 
   <!-- ================= HOME ================= -->
-  <section id="screen-home" class="screen w-full max-w-md mx-auto text-center pt-10">
-    <h1 class="logo-text logo-main">9GUESS</h1>
+  <section id="screen-home" class="screen w-full max-w-md mx-auto text-center flex flex-col justify-center min-h-[calc(100dvh-3rem)]">
+    <h1 class="logo-text logo-main">Adivina9</h1>
     <p class="mt-2 text-sm font-semibold text-white/70">Nombra 9 respuestas. Pasa el móvil. Gana la fiesta.</p>
 
     <div id="resumeCard" class="hidden glass rounded-2xl p-4 mt-6 text-left">
@@ -316,10 +354,12 @@
     <button id="homeStartBtn" type="button" class="btn-3d btn-party mt-6 w-full px-8 py-4 text-xl">
       🎊 EMPEZAR
     </button>
-    <div class="mt-4 flex items-center justify-center gap-5 text-[11px] font-extrabold text-white/60">
-      <button id="homeHowBtn" type="button" class="underline underline-offset-4 hover:text-white">Cómo se juega</button>
-      <button id="installBtn" type="button" class="underline underline-offset-4 hover:text-white">Instalar app</button>
-    </div>
+    <button id="homeHowBtn" type="button" class="btn-3d btn-cyan mt-3 w-full px-8 py-3.5 text-lg">
+      📖 INSTRUCCIONES
+    </button>
+    <button id="installBtn" type="button" class="mt-4 inline-flex items-center justify-center gap-2 text-[11px] font-extrabold text-white/60 hover:text-white underline underline-offset-4">
+      📲 Instalar app
+    </button>
   </section>
 
   <!-- ================= SETUP ================= -->
@@ -366,17 +406,10 @@
 
       <div>
         <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-2">Rondas por jugador</div>
-        <div class="grid grid-cols-5 gap-1.5" id="roundsGroup">
-          <button class="seg-btn" data-rounds="1" type="button">1</button>
-          <button class="seg-btn active" data-rounds="2" type="button">2</button>
-          <button class="seg-btn" data-rounds="3" type="button">3</button>
-          <button class="seg-btn" data-rounds="4" type="button">4</button>
-          <button class="seg-btn" data-rounds="5" type="button">5</button>
-          <button class="seg-btn" data-rounds="6" type="button">6</button>
-          <button class="seg-btn" data-rounds="7" type="button">7</button>
-          <button class="seg-btn" data-rounds="8" type="button">8</button>
-          <button class="seg-btn" data-rounds="9" type="button">9</button>
-          <button class="seg-btn" data-rounds="10" type="button">10</button>
+        <div class="flex items-center gap-2">
+          <button id="roundsMinus" type="button" class="stepper-btn" aria-label="Restar ronda">−</button>
+          <input id="roundsInput" type="number" min="1" max="10" step="1" value="2" inputmode="numeric" class="stepper-input" aria-label="Rondas por jugador" />
+          <button id="roundsPlus" type="button" class="stepper-btn" aria-label="Sumar ronda">＋</button>
         </div>
       </div>
 
@@ -386,6 +419,18 @@
           <button class="seg-btn" data-seconds="45" type="button">45s</button>
           <button class="seg-btn active" data-seconds="60" type="button">60s</button>
           <button class="seg-btn" data-seconds="90" type="button">90s</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300">Comodines</div>
+          <div class="text-[10px] font-bold text-white/50">Opcional</div>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <button class="power-toggle active" data-power-toggle="hint" type="button">💡 Pista</button>
+          <button class="power-toggle active" data-power-toggle="time" type="button">⏱️ +10s</button>
+          <button class="power-toggle active" data-power-toggle="spark" type="button">🃏 Comodín</button>
         </div>
       </div>
     </div>
@@ -399,9 +444,15 @@
   <section id="screen-pass" class="screen w-full max-w-md mx-auto hidden text-center pt-10">
     <div class="glass rounded-3xl p-6">
       <div id="passLabel" class="text-[11px] font-extrabold tracking-[.3em] text-white/65">PÁSALE EL MÓVIL A</div>
-      <div id="passAvatar" class="avatar w-24 h-24 mx-auto my-5 text-6xl"></div>
+      <div id="passRole" class="role-chip role-presenter mt-3">🎤 PRESENTADOR</div>
+      <div id="passAvatar" class="avatar w-24 h-24 mx-auto my-4 text-6xl"></div>
       <h2 id="passName" class="text-3xl sm:text-4xl font-extrabold text-yellow-200 break-words" style="text-shadow:0 3px 0 rgba(91,33,182,.85);">Jugador 1</h2>
       <p id="passMeta" class="text-xs font-bold text-white/60 mt-1">Turno 1 de 4 · Ronda 1 de 2</p>
+      <div id="passContestantRow" class="mt-3 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-3 py-1.5">
+        <span id="passContestantAvatar" class="avatar w-6 h-6 text-xs"></span>
+        <span class="text-[10px] font-extrabold uppercase tracking-widest text-white/55">Concursante</span>
+        <span id="passContestantName" class="text-sm font-extrabold text-yellow-200"></span>
+      </div>
       <p id="passInstruction" class="mt-4 text-sm font-semibold text-white/75 leading-snug"></p>
       <button id="readyBtn" type="button" class="btn-3d btn-party mt-5 w-full py-4 text-xl">ESTOY LISTO</button>
     </div>
@@ -443,7 +494,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-1.5 sm:gap-2 mt-3">
+      <div id="powerRow" class="grid grid-cols-3 gap-1.5 sm:gap-2 mt-3">
         <button class="power-btn" data-power="hint" type="button">
           <span class="power-emoji">💡</span><span>Pista</span><span id="hintCount" class="power-count">1</span>
         </button>
@@ -451,7 +502,7 @@
           <span class="power-emoji">⏱️</span><span>+10 seg</span><span id="timeCount" class="power-count">1</span>
         </button>
         <button class="power-btn" data-power="spark" type="button">
-          <span class="power-emoji">🃏</span><span>Chispa</span><span id="sparkCount" class="power-count">1</span>
+          <span class="power-emoji">🃏</span><span>Comodín</span><span id="sparkCount" class="power-count">1</span>
         </button>
       </div>
 
@@ -549,7 +600,7 @@
   <div class="absolute inset-0 bg-[#1e1b4b]/75 backdrop-blur-md" data-close-install></div>
   <div class="relative w-full max-w-sm rounded-3xl bg-white text-[#3b0764] p-6 text-center pop-in border-4 border-white/70" style="box-shadow:0 30px 80px -12px rgba(0,0,0,.65);">
     <div class="text-5xl">📲</div>
-    <h3 class="text-2xl font-extrabold text-fuchsia-600 mt-1">Instala 9GUESS</h3>
+    <h3 class="text-2xl font-extrabold text-fuchsia-600 mt-1">Instala Adivina9</h3>
     <p id="installHelp" class="text-sm font-semibold text-purple-900/70 mt-2 leading-relaxed">...</p>
     <button id="installCloseBtn" type="button" class="btn-3d btn-party mt-5 w-full py-3 text-base">¡ENTENDIDO!</button>
   </div>
@@ -730,6 +781,7 @@
     dynamic: 'presenter',
     rounds: 2,
     seconds: 60,
+    powersEnabled: { hint: true, time: true, spark: true },
     players: [],
     totalTurns: 0,
     turnIndex: 0,
@@ -840,8 +892,15 @@
   function resetPlayerStats(){
     state.players.forEach((p) => {
       p.score = 0; p.found = 0; p.traps = 0; p.bestStreak = 0;
-      p.hints = 1; p.time = 1; p.spark = 1;
+      p.hints = state.powersEnabled.hint ? 1 : 0;
+      p.time = state.powersEnabled.time ? 1 : 0;
+      p.spark = state.powersEnabled.spark ? 1 : 0;
     });
+  }
+
+  function normalizePowers(value){
+    const src = value && typeof value === 'object' ? value : {};
+    return { hint: src.hint !== false, time: src.time !== false, spark: src.spark !== false };
   }
 
   function saveSetup(){
@@ -851,6 +910,7 @@
         dynamic: state.dynamic,
         rounds: state.rounds,
         seconds: state.seconds,
+        powersEnabled: { ...state.powersEnabled },
         names: state.players.map((p) => p.name)
       }));
     }catch(err){}
@@ -864,6 +924,7 @@
       state.dynamic = saved.dynamic === 'individual' ? 'individual' : 'presenter';
       state.rounds = Number.isInteger(saved.rounds) && saved.rounds >= 1 && saved.rounds <= MAX_ROUNDS ? saved.rounds : 2;
       state.seconds = [45, 60, 90].indexOf(saved.seconds) >= 0 ? saved.seconds : 60;
+      state.powersEnabled = normalizePowers(saved.powersEnabled);
       state.players = saved.names.slice(0, MAX_PLAYERS).map((n) => createPlayer(String(n || '').slice(0, 14)));
       if(state.players.length < 2) state.players = [createPlayer('Jugador 1'), createPlayer('Jugador 2')];
     } else {
@@ -886,6 +947,7 @@
       dynamic: state.dynamic,
       rounds: state.rounds,
       seconds: state.seconds,
+      powersEnabled: { ...state.powersEnabled },
       players: state.players.map((p) => ({ ...p })),
       totalTurns: state.totalTurns,
       turnIndex: state.turnIndex,
@@ -972,6 +1034,7 @@
       players,
       rounds,
       seconds,
+      powersEnabled: normalizePowers(raw.powersEnabled),
       totalTurns,
       turnIndex,
       mode: raw.mode === 'racha' ? 'racha' : 'fiesta',
@@ -1068,6 +1131,7 @@
     state.dynamic = saved.dynamic;
     state.rounds = saved.rounds;
     state.seconds = saved.seconds;
+    state.powersEnabled = saved.powersEnabled || normalizePowers(null);
     state.totalTurns = saved.totalTurns;
     state.turnIndex = saved.turnIndex;
     state.pool = saved.pool.length ? saved.pool.slice() : shuffle(preparedCategories.slice());
@@ -1234,8 +1298,20 @@
   function syncSetupUI(){
     document.querySelectorAll('[data-dynamic]').forEach((b) => b.classList.toggle('selected', b.dataset.dynamic === state.dynamic));
     document.querySelectorAll('[data-mode]').forEach((b) => b.classList.toggle('selected', b.dataset.mode === state.mode));
-    document.querySelectorAll('[data-rounds]').forEach((b) => b.classList.toggle('active', Number(b.dataset.rounds) === state.rounds));
+    const roundsInput = $('roundsInput');
+    if(roundsInput){ roundsInput.value = String(state.rounds); }
+    $('roundsMinus').disabled = state.rounds <= 1;
+    $('roundsPlus').disabled = state.rounds >= MAX_ROUNDS;
     document.querySelectorAll('[data-seconds]').forEach((b) => b.classList.toggle('active', Number(b.dataset.seconds) === state.seconds));
+    document.querySelectorAll('[data-power-toggle]').forEach((b) => {
+      b.classList.toggle('active', state.powersEnabled[b.dataset.powerToggle] !== false);
+    });
+  }
+
+  function setRounds(value){
+    const n = Math.round(Number(value));
+    if(Number.isFinite(n)){ state.rounds = Math.min(MAX_ROUNDS, Math.max(1, n)); }
+    syncSetupUI();
   }
 
   /* ================= AUDIO ================= */
@@ -1399,7 +1475,7 @@
   window.addEventListener('appinstalled', () => {
     deferredInstallPrompt = null;
     updateInstallButton();
-    showToast('📲 ¡9GUESS instalada!');
+    showToast('📲 ¡Adivina9 instalada!');
   });
 
   function openInstallHelp(){
@@ -1420,7 +1496,7 @@
       deferredInstallPrompt = null;
       prompt.prompt();
       prompt.userChoice.then((choice) => {
-        if(choice && choice.outcome === 'accepted') showToast('📲 Instalando 9GUESS...');
+        if(choice && choice.outcome === 'accepted') showToast('📲 Instalando Adivina9...');
       }).catch(() => {});
       return;
     }
@@ -1452,9 +1528,15 @@
     });
   });
 
-  document.querySelectorAll('[data-rounds]').forEach((btn) => {
+  $('roundsMinus').addEventListener('click', () => { setRounds(state.rounds - 1); sfxClick(); });
+  $('roundsPlus').addEventListener('click', () => { setRounds(state.rounds + 1); sfxClick(); });
+  $('roundsInput').addEventListener('change', () => { setRounds($('roundsInput').value); });
+  $('roundsInput').addEventListener('blur', () => { setRounds($('roundsInput').value); });
+
+  document.querySelectorAll('[data-power-toggle]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      state.rounds = Number(btn.dataset.rounds);
+      const key = btn.dataset.powerToggle;
+      state.powersEnabled[key] = state.powersEnabled[key] === false;
       syncSetupUI();
       sfxClick();
     });
@@ -1523,7 +1605,7 @@
     if(!muted){ unlockAudio(); sfxClick(); }
   });
 
-  $('startBtn').addEventListener('click', () => startGame());
+  $('startBtn').addEventListener('click', () => { setRounds($('roundsInput').value); startGame(); });
   $('readyBtn').addEventListener('click', () => startTurn());
   $('submitAnswer').addEventListener('click', submitAnswer);
   $('answerInput').addEventListener('keydown', (e) => {
@@ -1601,9 +1683,16 @@
     const presenter = isPresenter ? state.players[state.presenterIndex] : null;
     const holder = presenter || p;
 
-    $('passAvatar').textContent = AVATARS[holder === p ? idx % AVATARS.length : state.presenterIndex % AVATARS.length];
-    $('passAvatar').style.background = AVATAR_BG[holder === p ? idx % AVATAR_BG.length : state.presenterIndex % AVATAR_BG.length];
+    const holderIndex = holder === p ? idx : state.presenterIndex;
+    $('passAvatar').textContent = AVATARS[holderIndex % AVATARS.length];
+    $('passAvatar').style.background = AVATAR_BG[holderIndex % AVATAR_BG.length];
     $('passName').textContent = holder.name;
+    $('passRole').textContent = isPresenter ? '🎤 PRESENTADOR' : '⌨️ CONCURSANTE';
+    $('passRole').className = 'role-chip mt-3 ' + (isPresenter ? 'role-presenter' : 'role-contestant');
+    $('passContestantRow').style.display = isPresenter ? '' : 'none';
+    $('passContestantAvatar').textContent = AVATARS[idx % AVATARS.length];
+    $('passContestantAvatar').style.background = AVATAR_BG[idx % AVATAR_BG.length];
+    $('passContestantName').textContent = p.name;
     $('passLabel').textContent = isPresenter ? 'PÁSALE EL MÓVIL AL PRESENTADOR' : 'PÁSALE EL MÓVIL A';
     $('passMeta').textContent = 'Turno ' + (state.turnIndex + 1) + ' de ' + state.totalTurns + ' · Ronda ' + round + ' de ' + state.rounds +
       (state.resumePending ? ' · ⏱️ ' + Math.max(1, Math.ceil(state.timeLeft)) + 's guardados' : '');
@@ -1824,6 +1913,16 @@
   function updatePowerButtons(){
     const p = state.players[state.currentPlayerIndex];
     if(!p){ return; }
+    const powers = state.powersEnabled;
+    const hintBtn = document.querySelector('[data-power="hint"]');
+    const timeBtn = document.querySelector('[data-power="time"]');
+    const sparkBtn = document.querySelector('[data-power="spark"]');
+    hintBtn.classList.toggle('hidden', !powers.hint);
+    timeBtn.classList.toggle('hidden', !powers.time);
+    sparkBtn.classList.toggle('hidden', !powers.spark);
+    const enabledCount = (powers.hint ? 1 : 0) + (powers.time ? 1 : 0) + (powers.spark ? 1 : 0);
+    $('powerRow').classList.toggle('hidden', enabledCount === 0);
+    $('powerRow').style.gridTemplateColumns = 'repeat(' + Math.max(1, enabledCount) + ', minmax(0, 1fr))';
     $('hintCount').textContent = String(p.hints);
     $('timeCount').textContent = String(p.time);
     $('sparkCount').textContent = String(p.spark);
@@ -1831,9 +1930,9 @@
     const hasUnrevealed = state.cat ? state.cat.answers.some((a) => !state.foundSet.has(a)) : false;
     const hasOpenSlot = state.slots.some((s) => s.state === 'hidden' || s.state === 'hinted');
     const isPresenter = state.dynamic === 'presenter';
-    document.querySelector('[data-power="hint"]').disabled = !state.running || p.hints <= 0 || !hasUnrevealed || (!isPresenter && !hasHidden);
-    document.querySelector('[data-power="time"]').disabled = !state.running || p.time <= 0;
-    document.querySelector('[data-power="spark"]').disabled = !state.running || p.spark <= 0 || !hasUnrevealed || !hasOpenSlot;
+    hintBtn.disabled = !powers.hint || !state.running || p.hints <= 0 || !hasUnrevealed || (!isPresenter && !hasHidden);
+    timeBtn.disabled = !powers.time || !state.running || p.time <= 0;
+    sparkBtn.disabled = !powers.spark || !state.running || p.spark <= 0 || !hasUnrevealed || !hasOpenSlot;
   }
 
   function submitAnswer(){
@@ -2206,10 +2305,10 @@
   async function shareResults(){
     const sorted = state.players.map((p) => p).sort((a, b) => b.score - a.score || b.found - a.found);
     const lines = sorted.map((p, i) => (i + 1) + '. ' + p.name + ' — ' + nf.format(p.score) + ' pts');
-    const text = '🎉 9GUESS — Resultados de la fiesta:\n' + lines.join('\n') + '\n¿Puedes superarnos? 🚀';
+    const text = '🎉 Adivina9 — Resultados de la fiesta:\n' + lines.join('\n') + '\n¿Puedes superarnos? 🚀';
     if(navigator.share){
       try{
-        await navigator.share({ title: '9GUESS — Resultados', text, url: location.href });
+        await navigator.share({ title: 'Adivina9 — Resultados', text, url: location.href });
         return;
       }catch(err){
         if(err && err.name === 'AbortError'){ return; }

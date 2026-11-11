@@ -1,6 +1,6 @@
-const VERSION = 'v2';
-const SHELL_CACHE = `9guess-shell-${VERSION}`;
-const RUNTIME_CACHE = `9guess-runtime-${VERSION}`;
+const VERSION = 'v3';
+const SHELL_CACHE = `adivina9-shell-${VERSION}`;
+const RUNTIME_CACHE = `adivina9-runtime-${VERSION}`;
 const SHELL = [
   './',
   './index.html',
@@ -33,7 +33,7 @@ self.addEventListener('activate', (event) => {
     const keys = await caches.keys();
     await Promise.all(
       keys
-        .filter((key) => key.startsWith('9guess-') && key !== SHELL_CACHE && key !== RUNTIME_CACHE)
+        .filter((key) => (key.startsWith('adivina9-') || key.startsWith('9guess-')) && key !== SHELL_CACHE && key !== RUNTIME_CACHE)
         .map((key) => caches.delete(key))
     );
     await self.clients.claim();

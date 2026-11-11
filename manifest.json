@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "9GUESS — Party Game de las 9 respuestas",
-  "short_name": "9GUESS",
+  "name": "Adivina9 — Party Game de las 9 respuestas",
+  "short_name": "Adivina9",
   "description": "Pasa el móvil, adivina 9 respuestas por categoría, usa comodines y compite con tus amigos.",
   "lang": "es",
   "dir": "ltr",
@@ -43,7 +43,7 @@
     {
       "name": "Jugar ahora",
       "short_name": "Jugar",
-      "description": "Abrir una partida de 9GUESS",
+      "description": "Abrir una partida de Adivina9",
       "url": "./",
       "icons": [
         {

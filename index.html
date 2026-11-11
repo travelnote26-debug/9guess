@@ -186,7 +186,7 @@
   }
   .slot .slot-num{ font-size:1.35rem; font-weight:800; color:rgba(255,255,255,.35); line-height:1; }
   .slot .slot-lock{ font-size:.6rem; opacity:.7; margin-top:.15rem; }
-  .slot .slot-answer{ font-size:.66rem; line-height:1.15; font-weight:800; overflow-wrap:anywhere; }
+  .slot .slot-answer{ font-size:clamp(.82rem,3.4vw,1rem); line-height:1.1; font-weight:800; overflow-wrap:anywhere; }
   .slot .slot-check{ font-size:.55rem; opacity:.9; margin-top:.1rem; }
   .slot.hinted{
     border-style:solid; border-color:rgba(253,224,71,.8);
@@ -214,21 +214,24 @@
   }
 
   .presenter-answer{
-    position:relative; display:flex; align-items:center; justify-content:space-between; gap:.35rem;
-    min-height:2.55rem; border-radius:.8rem; padding:.4rem .5rem; text-align:left;
-    font-size:.68rem; font-weight:800; line-height:1.12; color:#fff;
+    position:relative; display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+    width:100%; min-height:1.7rem; border-radius:.7rem; padding:.22rem .6rem; text-align:left;
+    font-size:clamp(.88rem,3.7vw,1.1rem); font-weight:800; line-height:1.1; color:#fff;
     background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3);
     transition:background .15s ease, border-color .15s ease, transform .08s ease;
     overflow-wrap:anywhere;
   }
   .presenter-answer:hover{ background:rgba(255,255,255,.22); }
   .presenter-answer:active{ transform:scale(.97); }
-  .presenter-answer .check{ font-size:.72rem; opacity:.9; }
+  .presenter-answer .pa-word{ flex:1; min-width:0; }
+  .presenter-answer .pa-pts{ flex:0 0 auto; text-align:right; white-space:nowrap; color:#fde047; font-size:.8em; }
+  .presenter-answer .check{ flex:0 0 auto; font-size:.8em; opacity:.9; }
   .presenter-answer.found{
     background:linear-gradient(160deg,#34d399,#10b981 60%,#059669);
     border-color:rgba(255,255,255,.65); color:#fff;
     box-shadow:0 0 14px rgba(16,185,129,.4);
   }
+  .presenter-answer.found .pa-pts{ color:#fff; }
   .presenter-answer:not(.found):disabled{ opacity:.45; }
   .presenter-answer:disabled{ cursor:default; }
   .presenter-answer.hint-pulse{ animation:hintPulse 1s ease-in-out 3; border-color:#fde047; }
@@ -238,10 +241,14 @@
   }
 
   .presenter-trap{
-    border-radius:9999px; padding:.3rem .55rem; font-size:.62rem; font-weight:800;
+    display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+    width:100%; min-height:1.7rem; border-radius:.7rem; padding:.22rem .6rem;
+    font-size:clamp(.88rem,3.7vw,1.1rem); font-weight:800; line-height:1.1; text-align:left;
     color:#ffe4e6; background:rgba(244,63,94,.22); border:1px solid rgba(251,113,133,.45);
     transition:all .15s ease;
   }
+  .presenter-trap .pa-word{ flex:1; min-width:0; }
+  .presenter-trap .pa-pts{ flex:0 0 auto; text-align:right; white-space:nowrap; color:#fecdd3; font-size:.8em; }
   .presenter-trap:hover{ background:rgba(244,63,94,.35); }
   .presenter-trap:active{ transform:scale(.96); }
   .presenter-trap.used{ opacity:.4; text-decoration:line-through; background:rgba(244,63,94,.12); }
@@ -291,15 +298,15 @@
   .flash-dup{ background:linear-gradient(180deg,#67e8f9,#0891b2); color:#083344; }
 
   .podium-step{
-    border-radius:1rem 1rem .55rem .55rem;
-    box-shadow: inset 0 3px 0 rgba(255,255,255,.45), 0 14px 34px -8px rgba(0,0,0,.55);
+    border-radius:.8rem .8rem .5rem .5rem;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.45), 0 10px 24px -8px rgba(0,0,0,.55);
     border:1px solid rgba(255,255,255,.35);
     display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
-    padding:.5rem .35rem; text-align:center;
+    padding:.25rem .3rem; text-align:center; overflow:hidden;
   }
   .rank-row{
-    display:flex; align-items:center; gap:.6rem; padding:.55rem .7rem;
-    border-radius:1rem; background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.18);
+    display:flex; align-items:center; gap:.5rem; padding:.3rem .55rem;
+    border-radius:.8rem; background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.18);
   }
 
   .pop-in{ animation: popIn .42s cubic-bezier(.2,.9,.3,1.25) both; }
@@ -314,6 +321,17 @@
 
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+
+  @media (max-height: 620px){
+    #screen-game{ padding-top:0; padding-bottom:0; }
+    #categoryCard{ padding:.55rem .7rem; }
+    #categoryPrompt{ font-size:clamp(1.05rem,5vw,1.5rem) !important; line-height:1.1; }
+    #presenterAnswers{ gap:.2rem; }
+    .presenter-answer, .presenter-trap{ min-height:1.35rem; padding:.12rem .5rem; font-size:clamp(.78rem,3.5vw,1rem); }
+    #powerRow{ margin-top:.35rem; gap:.35rem; }
+    .power-btn{ padding:.3rem .2rem .35rem; font-size:.6rem; }
+    .power-emoji{ font-size:1rem; }
   }
 </style>
 </head>
@@ -441,17 +459,19 @@
   </section>
 
   <!-- ================= PASS ================= -->
-  <section id="screen-pass" class="screen w-full max-w-md mx-auto hidden text-center pt-10">
+  <section id="screen-pass" class="screen w-full max-w-md mx-auto hidden text-center flex flex-col justify-center min-h-[calc(100dvh-3rem)] py-2">
     <div class="glass rounded-3xl p-6">
       <div id="passLabel" class="text-[11px] font-extrabold tracking-[.3em] text-white/65">PÁSALE EL MÓVIL A</div>
       <div id="passRole" class="role-chip role-presenter mt-3">🎤 PRESENTADOR</div>
-      <div id="passAvatar" class="avatar w-24 h-24 mx-auto my-4 text-6xl"></div>
+      <div id="passAvatar" class="avatar w-20 h-20 mx-auto my-3 text-5xl"></div>
       <h2 id="passName" class="text-3xl sm:text-4xl font-extrabold text-yellow-200 break-words" style="text-shadow:0 3px 0 rgba(91,33,182,.85);">Jugador 1</h2>
       <p id="passMeta" class="text-xs font-bold text-white/60 mt-1">Turno 1 de 4 · Ronda 1 de 2</p>
-      <div id="passContestantRow" class="mt-3 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-3 py-1.5">
-        <span id="passContestantAvatar" class="avatar w-6 h-6 text-xs"></span>
-        <span class="text-[10px] font-extrabold uppercase tracking-widest text-white/55">Concursante</span>
-        <span id="passContestantName" class="text-sm font-extrabold text-yellow-200"></span>
+      <div id="passContestantRow" class="mt-4 flex items-center gap-3 rounded-2xl bg-white/10 border border-white/15 px-3 py-2 text-left">
+        <span id="passContestantAvatar" class="avatar w-11 h-11 text-2xl shrink-0"></span>
+        <div class="min-w-0 flex-1">
+          <div class="text-[9px] font-extrabold uppercase tracking-[.2em] text-cyan-200">🙋 Concursante</div>
+          <div id="passContestantName" class="text-lg font-extrabold text-yellow-200 truncate"></div>
+        </div>
       </div>
       <p id="passInstruction" class="mt-4 text-sm font-semibold text-white/75 leading-snug"></p>
       <button id="readyBtn" type="button" class="btn-3d btn-party mt-5 w-full py-4 text-xl">ESTOY LISTO</button>
@@ -459,8 +479,8 @@
   </section>
 
   <!-- ================= GAME ================= -->
-  <section id="screen-game" class="screen w-full max-w-lg mx-auto hidden pt-10">
-    <div class="flex items-center justify-between gap-3 mb-4">
+  <section id="screen-game" class="screen w-full max-w-lg mx-auto hidden flex flex-col justify-center min-h-[calc(100dvh-3rem)] py-2 sm:py-4">
+    <div class="flex items-center justify-between gap-3 mb-2">
       <div class="min-w-0 text-left leading-tight">
         <div id="gamePlayerName" class="font-extrabold text-base truncate">Jugador</div>
         <div class="text-[11px] font-bold text-white/55"><span id="turnLabel">TURNO 1/4</span> · <span id="gamePlayerScore">0</span> pts</div>
@@ -476,25 +496,21 @@
       </div>
     </div>
 
-    <div id="categoryCard" class="glass rounded-2xl p-4 sm:p-5">
+    <div id="categoryCard" class="glass rounded-2xl p-3 sm:p-5">
       <div class="flex items-center justify-between mb-1">
         <span id="categoryTag" class="text-[10px] font-extrabold tracking-[.2em] text-yellow-300">CATEGORÍA</span>
         <span id="foundCount" class="text-xs font-extrabold text-yellow-300 whitespace-nowrap">0/9</span>
       </div>
-      <h2 id="categoryPrompt" class="text-lg sm:text-2xl font-extrabold leading-snug min-h-[3rem]">Nombra 9 respuestas…</h2>
+      <h2 id="categoryPrompt" class="font-extrabold leading-tight" style="font-size:clamp(1.3rem,5.4vw,1.9rem);">Nombra 9 respuestas…</h2>
 
-      <div id="slotsGrid" class="grid grid-cols-3 gap-1.5 sm:gap-2 mt-3"></div>
+      <div id="slotsGrid" class="grid grid-cols-3 gap-1.5 sm:gap-2 mt-2"></div>
 
-      <div id="presenterPanel" class="hidden mt-3">
-        <div class="text-[9px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-1.5">Toca las respuestas que diga</div>
-        <div id="presenterAnswers" class="grid grid-cols-2 gap-1.5"></div>
-        <div class="mt-3">
-          <div class="text-[9px] font-extrabold uppercase tracking-[.2em] text-rose-200 mb-1.5">Trampa</div>
-          <div id="presenterTraps" class="flex flex-wrap gap-1.5"></div>
-        </div>
+      <div id="presenterPanel" class="hidden mt-2">
+        <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-1">Toca la respuesta que diga el concursante</div>
+        <div id="presenterAnswers" class="flex flex-col gap-1"></div>
       </div>
 
-      <div id="powerRow" class="grid grid-cols-3 gap-1.5 sm:gap-2 mt-3">
+      <div id="powerRow" class="grid grid-cols-3 gap-1.5 sm:gap-2 mt-2">
         <button class="power-btn" data-power="hint" type="button">
           <span class="power-emoji">💡</span><span>Pista</span><span id="hintCount" class="power-count">1</span>
         </button>
@@ -506,7 +522,7 @@
         </button>
       </div>
 
-      <div id="soloInputRow" class="mt-3 flex gap-2">
+      <div id="soloInputRow" class="mt-2 flex gap-2">
         <input id="answerInput" type="text" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" placeholder="Escribe una respuesta…" class="flex-1 min-w-0 rounded-xl border-2 border-white/40 bg-white/95 px-3.5 py-3 text-base font-extrabold text-[#3b0764] placeholder-purple-400 focus:outline-none focus:ring-4 focus:ring-yellow-300/60" />
         <button id="submitAnswer" type="button" class="btn-3d btn-yellow px-4 py-3 text-sm shrink-0">AÑADIR ✓</button>
       </div>
@@ -514,38 +530,38 @@
   </section>
 
   <!-- ================= RESULTS ================= -->
-  <section id="screen-results" class="screen w-full max-w-2xl mx-auto hidden text-center">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[10px] tracking-widest mb-2">
+  <section id="screen-results" class="screen w-full max-w-md mx-auto hidden flex flex-col justify-center min-h-[calc(100dvh-3rem)] py-1 text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[9px] tracking-widest mb-1 self-center">
       🎉 ¡FIN DE LA FIESTA! 🎉
     </div>
-    <h2 id="resultsTitle" class="logo-text" style="font-size:clamp(2.3rem,10vw,4rem);line-height:1;">¡TENEMOS GANADOR!</h2>
+    <h2 id="resultsTitle" class="logo-text" style="font-size:clamp(1.8rem,8.5vw,2.9rem);line-height:1;">¡TENEMOS GANADOR!</h2>
 
-    <div class="glass rounded-3xl p-4 sm:p-6 mt-4">
-      <div id="winnerBanner" class="rounded-2xl px-4 py-2 bg-yellow-300/20 border border-yellow-200/40 font-extrabold text-yellow-100 text-sm sm:text-base">
+    <div class="glass rounded-2xl p-2.5 mt-2">
+      <div id="winnerBanner" class="rounded-xl px-3 py-1 bg-yellow-300/20 border border-yellow-200/40 font-extrabold text-yellow-100 text-xs sm:text-sm leading-tight">
         👑 ¡Cargando resultados!
       </div>
 
-      <div id="podium" class="flex items-end justify-center gap-2 h-56 mt-4"></div>
+      <div id="podium" class="flex items-end justify-center gap-1.5 h-24 mt-1"></div>
 
-      <div class="grid grid-cols-2 gap-2 mt-4">
-        <div class="rounded-2xl bg-white/10 border border-white/20 px-3 py-2 text-left">
-          <div class="text-[9px] font-extrabold uppercase tracking-widest text-white/50">🎯 Más respuestas</div>
-          <div id="mostFound" class="font-extrabold text-sm text-white mt-0.5">—</div>
+      <div class="grid grid-cols-2 gap-1.5 mt-1">
+        <div class="rounded-xl bg-white/10 border border-white/20 px-2.5 py-1 text-left">
+          <div class="text-[8px] font-extrabold uppercase tracking-widest text-white/50">🎯 Más respuestas</div>
+          <div id="mostFound" class="font-extrabold text-xs text-white mt-0.5 truncate">—</div>
         </div>
-        <div class="rounded-2xl bg-white/10 border border-white/20 px-3 py-2 text-left">
-          <div class="text-[9px] font-extrabold uppercase tracking-widest text-white/50">🔥 Mejor racha</div>
-          <div id="bestStreak" class="font-extrabold text-sm text-white mt-0.5">—</div>
+        <div class="rounded-xl bg-white/10 border border-white/20 px-2.5 py-1 text-left">
+          <div class="text-[8px] font-extrabold uppercase tracking-widest text-white/50">🔥 Mejor racha</div>
+          <div id="bestStreak" class="font-extrabold text-xs text-white mt-0.5 truncate">—</div>
         </div>
       </div>
 
-      <div id="fullRanking" class="mt-4 space-y-2 text-left"></div>
+      <div id="fullRanking" class="mt-1 space-y-1 text-left"></div>
     </div>
 
-    <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
-      <button id="replayBtn" type="button" class="btn-3d btn-yellow px-7 py-4 text-lg">🔁 ¡REVANCHA!</button>
-      <button id="shareBtn" type="button" class="btn-3d btn-cyan px-7 py-4 text-lg">📣 COMPARTIR</button>
+    <div class="mt-2 grid grid-cols-2 gap-2">
+      <button id="replayBtn" type="button" class="btn-3d btn-yellow px-3 py-3 text-base">🔁 ¡REVANCHA!</button>
+      <button id="shareBtn" type="button" class="btn-3d btn-cyan px-3 py-3 text-base">📣 COMPARTIR</button>
     </div>
-    <button id="changeBtn" type="button" class="mt-3 text-xs font-extrabold text-white/70 underline underline-offset-4 hover:text-white">👥 Cambiar jugadores y ajustes</button>
+    <button id="changeBtn" type="button" class="mt-2 text-[11px] font-extrabold text-white/70 underline underline-offset-4 hover:text-white">👥 Cambiar jugadores y ajustes</button>
   </section>
 </main>
 
@@ -654,7 +670,7 @@
   const SLOTS = 9;
   const STORAGE_KEY = 'guess9_setup_v2';
   const SAVE_KEY = 'guess9_saved_game_v2';
-  const SAVE_VERSION = 2;
+  const SAVE_VERSION = 3;
   const RING_CIRC = 2 * Math.PI * 34;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -776,6 +792,101 @@
     }
   ];
 
+  const EXTRA_CATEGORIES = [
+    ['🌍', 'Geografía', 'Nombra 9 países de Europa', 'España|Francia|Italia|Alemania|Portugal|Reino Unido|Grecia|Polonia|Suecia|Noruega|Irlanda|Austria|Bélgica|Suiza', 'Estados Unidos|Brasil|China|Marruecos|Egipto|México|Argentina', 'UK>Reino Unido|Gran Bretaña>Reino Unido'],
+    ['🌍', 'Geografía', 'Nombra 9 países de África', 'Egipto|Marruecos|Nigeria|Sudáfrica|Kenia|Etiopía|Ghana|Senegal|Argelia|Túnez|Tanzania|Uganda', 'España|India|Brasil|México|Australia|Perú|Grecia', 'Etiopia>Etiopía|Tunez>Túnez'],
+    ['🌍', 'Geografía', 'Nombra 9 países de Oceanía', 'Australia|Nueva Zelanda|Fiyi|Papúa Nueva Guinea|Samoa|Tonga|Vanuatu|Palaos|Micronesia|Nauru|Tuvalu|Islas Salomón', 'Indonesia|Filipinas|Japón|Madagascar|Islandia|Irlanda|Cuba', 'Fiji>Fiyi|Papua Nueva Guinea>Papúa Nueva Guinea|Islas Salomon>Islas Salomón'],
+    ['🌍', 'Geografía', 'Nombra 9 países de Norteamérica y Centroamérica', 'Canadá|Estados Unidos|México|Guatemala|Honduras|El Salvador|Nicaragua|Costa Rica|Panamá|Belice|Cuba|República Dominicana', 'Brasil|Argentina|Colombia|España|Jamaica|Haití|Perú', 'EEUU>Estados Unidos|EUA>Estados Unidos|USA>Estados Unidos|Republica Dominicana>República Dominicana'],
+    ['🌍', 'Geografía', 'Nombra 9 países del Caribe', 'Cuba|Jamaica|Haití|República Dominicana|Bahamas|Barbados|Trinidad y Tobago|Granada|San Vicente y las Granadinas|Santa Lucía|Antigua y Barbuda|Dominica', 'México|Panamá|Colombia|Venezuela|Brasil|Florida|Miami', 'Haiti>Haití|Rep Dominicana>República Dominicana|Trinidad>Trinidad y Tobago|San Vicente>San Vicente y las Granadinas|Santa Lucia>Santa Lucía'],
+    ['🌍', 'Geografía', 'Nombra 9 capitales de Sudamérica', 'Buenos Aires|Brasilia|Santiago|Lima|Bogotá|Quito|Caracas|Montevideo|Asunción|La Paz|Sucre|Georgetown', 'Madrid|Ciudad de México|Ottawa|Canberra|El Cairo|Tokio|Lisboa', 'Bogota>Bogotá|Asuncion>Asunción|Santiago de Chile>Santiago'],
+    ['🌍', 'Geografía', 'Nombra 9 capitales de Asia', 'Tokio|Pekín|Nueva Delhi|Seúl|Bangkok|Hanói|Yakarta|Manila|Kuala Lumpur|Singapur|Islamabad|Teherán', 'Madrid|París|El Cairo|Moscú|Buenos Aires|Nairobi|Canberra', 'Beijing>Pekín|Pekin>Pekín|Seul>Seúl|Hanoi>Hanói|Teheran>Teherán'],
+    ['🌍', 'Geografía', 'Nombra 9 ríos del mundo', 'Amazonas|Nilo|Misisipi|Yangtsé|Danubio|Ganges|Rin|Volga|Éufrates|Tigris|Mekong|Colorado', 'Everest|Sahara|Atlántico|Pacífico|Amazonia|Alpes|Mediterráneo', 'Mississipi>Misisipi|Yangtse>Yangtsé|Eufrates>Éufrates'],
+    ['🌍', 'Geografía', 'Nombra 9 desiertos', 'Sahara|Gobi|Kalahari|Atacama|Mojave|Sonora|Arábigo|Thar|Namib|Patagónico|Simpson|Taklamakán', 'Amazonas|Everest|Alpes|Nilo|Selva Negra|Pirineos|Groenlandia', 'Desierto del Sahara>Sahara|Desierto de Gobi>Gobi|Desierto de Atacama>Atacama|Arabigo>Arábigo|Taklamakan>Taklamakán'],
+    ['🌍', 'Geografía', 'Nombra 9 cordilleras o montañas', 'Himalaya|Andes|Alpes|Rocosas|Urales|Cáucaso|Pirineos|Atlas|Apeninos|Balcanes|Cárpatos|Kilimanjaro', 'Amazonas|Nilo|Sahara|Gobi|Danubio|Pacífico|Groenlandia', 'Los Andes>Andes|Montañas Rocosas>Rocosas|Rocky Mountains>Rocosas|Montes Urales>Urales|Pirineo>Pirineos'],
+    ['🏛️', 'Historia', 'Nombra 9 civilizaciones antiguas', 'Egipto|Mesopotamia|Grecia|Roma|China|India|Persia|Maya|Azteca|Inca|Fenicia|Babilonia', 'Estados Unidos|Imperio Británico|Unión Soviética|Nazi|Otomano|España|Francia', 'Antiguo Egipto>Egipto|Antigua Grecia>Grecia|Antigua Roma>Roma|Antigua China>China'],
+    ['🏛️', 'Historia', 'Nombra 9 dioses egipcios', 'Ra|Osiris|Isis|Anubis|Horus|Set|Thot|Bastet|Hathor|Sobek|Amón|Nut', 'Zeus|Poseidón|Thor|Odín|Apolo|Atenea|Hades', 'Amon>Amón|Thoth>Thot'],
+    ['🏛️', 'Historia', 'Nombra 9 dioses griegos', 'Zeus|Hera|Poseidón|Atenea|Apolo|Artemisa|Ares|Afrodita|Hermes|Hades|Deméter|Dioniso', 'Ra|Osiris|Anubis|Thor|Odín|Loki|Júpiter', 'Poseidon>Poseidón|Artemis>Artemisa|Demeter>Deméter'],
+    ['🏛️', 'Historia', 'Nombra 9 dioses romanos', 'Júpiter|Juno|Neptuno|Minerva|Marte|Venus|Mercurio|Plutón|Ceres|Baco|Diana|Vulcano', 'Zeus|Hera|Poseidón|Atenea|Apolo|Thor|Odín', 'Jupiter>Júpiter|Pluton>Plutón|Vulcan>Vulcano'],
+    ['🏛️', 'Historia', 'Nombra 9 faraones', 'Tutankamón|Ramsés II|Cleopatra|Akenatón|Tutmosis III|Keops|Kefrén|Micerino|Hatshepsut|Seti I|Nefertiti|Amenhotep III', 'Julio César|Napoleón|Alejandro Magno|Nerón|Augusto|Carlomagno|Pericles', 'Tutankamon>Tutankamón|Ramses II>Ramsés II|Akenaton>Akenatón|Kefren>Kefrén'],
+    ['🏛️', 'Historia', 'Nombra 9 emperadores romanos', 'Augusto|Tiberio|Calígula|Claudio|Nerón|Trajano|Adriano|Marco Aurelio|Cómodo|Diocleciano|Constantino|Juliano', 'Julio César|Napoleón|Alejandro Magno|Pericles|Ramsés II|Carlomagno|Felipe II', 'Caligula>Calígula|Neron>Nerón|Comodo>Cómodo'],
+    ['👑', 'Historia', 'Nombra 9 reyes de España', 'Fernando el Católico|Isabel la Católica|Carlos I|Felipe II|Felipe III|Felipe IV|Carlos II|Felipe V|Carlos III|Alfonso XIII|Juan Carlos I|Felipe VI', 'Enrique VIII|Luis XIV|Napoleón|Victoria|Guillermo|Pedro I|Isabel II de Inglaterra', 'Fernando de Aragón>Fernando el Católico|Isabel de Castilla>Isabel la Católica|Juan Carlos>Juan Carlos I|Rey Juan Carlos>Juan Carlos I'],
+    ['🇺🇸', 'Historia', 'Nombra 9 presidentes de Estados Unidos', 'Washington|Lincoln|Jefferson|Roosevelt|Kennedy|Obama|Trump|Biden|Reagan|Nixon|Eisenhower|Clinton', 'Churchill|Macron|Merkel|Zapatero|Putin|Bolívar|San Martín', 'George Washington>Washington|Abraham Lincoln>Lincoln|Thomas Jefferson>Jefferson|Franklin Roosevelt>Roosevelt|FDR>Roosevelt|John F. Kennedy>Kennedy|JFK>Kennedy|Barack Obama>Obama|Donald Trump>Trump|Joe Biden>Biden|Ronald Reagan>Reagan|Richard Nixon>Nixon|Dwight Eisenhower>Eisenhower|Bill Clinton>Clinton'],
+    ['🧭', 'Historia', 'Nombra 9 exploradores', 'Cristóbal Colón|Magallanes|Vasco da Gama|Marco Polo|Hernán Cortés|Pizarro|Américo Vespucio|Cook|Livingstone|Núñez de Balboa|Caboto|Drake', 'Napoleón|Einstein|Newton|Darwin|Gandhi|Lincoln|Shakespeare', 'Colon>Colón|Cristobal Colon>Cristóbal Colón|Fernando de Magallanes>Magallanes|Hernan Cortes>Hernán Cortés|Francisco Pizarro>Pizarro|Americo Vespucio>Américo Vespucio|James Cook>Cook|Nunez de Balboa>Núñez de Balboa|Sebastian Caboto>Caboto|Francis Drake>Drake'],
+    ['🪐', 'Ciencia', 'Nombra 9 cuerpos del sistema solar', 'Sol|Mercurio|Venus|Tierra|Marte|Júpiter|Saturno|Urano|Neptuno|Luna|Plutón|Ceres', 'Andrómeda|Sirio|Halley|Vía Láctea|Orión|Kepler|Polaris', 'Jupiter>Júpiter|Pluton>Plutón'],
+    ['✨', 'Ciencia', 'Nombra 9 constelaciones', 'Orión|Osa Mayor|Osa Menor|Casiopea|Leo|Escorpio|Sagitario|Géminis|Tauro|Aries|Virgo|Piscis', 'Vía Láctea|Andrómeda|Sirio|Polaris|Sistema Solar|Halley|Galaxia', 'Orion>Orión|Geminis>Géminis|Escorpion>Escorpio'],
+    ['🐘', 'Ciencia', 'Nombra 9 mamíferos', 'Perro|Gato|León|Tigre|Elefante|Ballena|Delfín|Caballo|Vaca|Oso|Lobo|Murciélago', 'Cocodrilo|Águila|Tiburón|Serpiente|Rana|Pingüino|Pulpo', 'Delfin>Delfín|Murcielago>Murciélago'],
+    ['🐬', 'Ciencia', 'Nombra 9 animales marinos', 'Ballena|Delfín|Tiburón|Pulpo|Medusa|Tortuga marina|Foca|Orca|Caballito de mar|Estrella de mar|Manta raya|Pez payaso', 'León|Elefante|Águila|Camello|Tigre|Pingüino|Jirafa', 'Delfin>Delfín|Tiburon>Tiburón|Tortuga>Tortuga marina|Caballito>Caballito de mar|Estrella>Estrella de mar|Manta>Manta raya'],
+    ['🦅', 'Ciencia', 'Nombra 9 aves', 'Águila|Búho|Pingüino|Loro|Paloma|Gorrión|Cuervo|Flamenco|Avestruz|Tucán|Halcón|Pavo real', 'Murciélago|Delfín|Tiburón|Ballena|León|Serpiente|Mariposa', 'Aguila>Águila|Buho>Búho|Pinguino>Pingüino|Gorrion>Gorrión|Tucan>Tucán|Halcon>Halcón'],
+    ['🐜', 'Ciencia', 'Nombra 9 insectos', 'Hormiga|Abeja|Mosca|Mosquito|Mariposa|Escarabajo|Saltamontes|Libélula|Cucaracha|Termita|Mariquita|Grillo', 'Araña|Escorpión|Ciempiés|Caracol|Lombriz|Rana|Lagartija', 'Libelula>Libélula|Escorpion>Escorpión|Ciempies>Ciempiés'],
+    ['🦎', 'Ciencia', 'Nombra 9 reptiles', 'Serpiente|Lagartija|Cocodrilo|Tortuga|Camaleón|Iguana|Lagarto|Víbora|Boa|Pitón|Caimán|Dragón de Komodo', 'Rana|Salamandra|Tiburón|Delfín|Águila|Murciélago|Pulpo', 'Camaleon>Camaleón|Vibora>Víbora|Piton>Pitón|Caiman>Caimán|Dragon de Komodo>Dragón de Komodo'],
+    ['🦖', 'Ciencia', 'Nombra 9 dinosaurios', 'Tiranosaurio|Triceratops|Velociraptor|Estegosaurio|Brontosaurio|Diplodocus|Pterodáctilo|Espinosaurio|Anquilosaurio|Braquiosaurio|Alosaurio|Parasaurolophus', 'Mamut|Dodo|Elefante|Cocodrilo|Tiburón|Dragón|Yeti', 'T-Rex>Tiranosaurio|Tiranosaurio Rex>Tiranosaurio|Pterodactilo>Pterodáctilo'],
+    ['🫀', 'Ciencia', 'Nombra 9 órganos del cuerpo humano', 'Corazón|Pulmón|Hígado|Riñón|Estómago|Cerebro|Intestino|Páncreas|Bazo|Vejiga|Esófago|Tráquea', 'Fémur|Cráneo|Columna|Piel|Uña|Pelo|Diente', 'Corazon>Corazón|Pulmon>Pulmón|Higado>Hígado|Rinon>Riñón|Pancreas>Páncreas|Traquea>Tráquea'],
+    ['🦴', 'Ciencia', 'Nombra 9 huesos del cuerpo humano', 'Fémur|Tibia|Peroné|Húmero|Radio|Cúbito|Cráneo|Columna vertebral|Costilla|Pelvis|Clavícula|Escápula', 'Corazón|Hígado|Pulmón|Cerebro|Estómago|Riñón|Páncreas', 'Femur>Fémur|Perone>Peroné|Humero>Húmero|Cubito>Cúbito|Craneo>Cráneo|Costillas>Costilla|Clavicula>Clavícula|Escapula>Escápula|Omóplato>Escápula'],
+    ['⚡', 'Ciencia', 'Nombra 9 tipos de energía', 'Solar|Eólica|Hidráulica|Nuclear|Geotérmica|Térmica|Eléctrica|Química|Cinética|Potencial|Mareomotriz|Biomasa', 'Fuerza|Masa|Velocidad|Temperatura|Presión|Materia|Volumen', 'Eolica>Eólica|Hidraulica>Hidráulica|Geotermica>Geotérmica|Termica>Térmica|Electrica>Eléctrica|Quimica>Química|Cinetica>Cinética'],
+    ['🌦️', 'Ciencia', 'Nombra 9 fenómenos meteorológicos', 'Lluvia|Nieve|Granizo|Trueno|Relámpago|Huracán|Tornado|Niebla|Nube|Viento|Arcoíris|Sequía', 'Terremoto|Volcán|Tsunami|Eclipse|Mareo|Aurora|Meteorito', 'Relampago>Relámpago|Huracan>Huracán|Arcoiris>Arcoíris|Sequia>Sequía'],
+    ['🌳', 'Ciencia', 'Nombra 9 árboles', 'Roble|Pino|Olivo|Encina|Abeto|Haya|Sauce|Álamo|Ciprés|Castaño|Nogal|Fresno', 'Rosa|Girasol|Trigo|Maíz|Helecho|Cactus|Bambú', 'Alamo>Álamo|Cipres>Ciprés|Castano>Castaño|Maiz>Maíz|Bambu>Bambú'],
+    ['🥕', 'Comida', 'Nombra 9 verduras', 'Zanahoria|Lechuga|Tomate|Cebolla|Pepino|Brócoli|Espinaca|Patata|Pimiento|Calabacín|Berenjena|Coliflor', 'Manzana|Plátano|Fresa|Naranja|Uva|Pera|Sandía', 'Brocoli>Brócoli|Calabacin>Calabacín|Platano>Plátano|Sandia>Sandía'],
+    ['🏟️', 'Deportes', 'Nombra 9 deportes de equipo', 'Fútbol|Baloncesto|Voleibol|Balonmano|Rugby|Béisbol|Hockey|Waterpolo|Críquet|Fútbol americano|Hockey sobre hielo|Netball', 'Tenis|Golf|Natación|Atletismo|Boxeo|Ciclismo|Esgrima', 'Basquetbol>Baloncesto|Futbol>Fútbol|Beisbol>Béisbol|Cricket>Críquet|Futbol Americano>Fútbol americano'],
+    ['🏃', 'Deportes', 'Nombra 9 pruebas de atletismo', 'Maratón|Sprint|Salto de altura|Salto de longitud|Lanzamiento de jabalina|Lanzamiento de peso|Salto con pértiga|Vallas|Relevos|Marcha|Triple salto|Lanzamiento de disco', 'Natación|Ciclismo|Gimnasia|Halterofilia|Esgrima|Remo|Boxeo', 'Maraton>Maratón|Salto de pertiga>Salto con pértiga|Percha>Salto con pértiga'],
+    ['⚽', 'Deportes', 'Nombra 9 posiciones de fútbol', 'Portero|Defensa|Lateral|Central|Mediocentro|Pivote|Interior|Extremo|Delantero|Delantero centro|Mediapunta|Carrilero', 'Base|Escolta|Alero|Pívot|Batidor|Receptor|Pitcher', 'Arquero>Portero|Guardameta>Portero|Defensor>Defensa|Centrocampista>Mediocentro|Atacante>Delantero'],
+    ['⚽', 'Deportes', 'Nombra 9 equipos de La Liga', 'Real Madrid|Barcelona|Atlético de Madrid|Sevilla|Valencia|Villarreal|Real Sociedad|Athletic Club|Betis|Espanyol|Celta|Osasuna', 'Manchester United|Liverpool|PSG|Bayern Múnich|Juventus|Chelsea|Arsenal', 'Atletico de Madrid>Atlético de Madrid|Atletico>Atlético de Madrid|Barça>Barcelona|FC Barcelona>Barcelona|Athletic Bilbao>Athletic Club|Real Betis>Betis|Español>Espanyol'],
+    ['⚽', 'Deportes', 'Nombra 9 equipos de fútbol europeos', 'Real Madrid|Barcelona|Manchester United|Liverpool|Bayern Múnich|Juventus|PSG|Chelsea|Arsenal|Milán|Inter|Borussia Dortmund', 'Lakers|Yankees|Cowboys|Chiefs|Boca Juniors|River Plate|Flamengo', 'Man United>Manchester United|Manchester Utd>Manchester United|Bayern Munich>Bayern Múnich|AC Milan>Milán|Milan>Milán|Inter de Milán>Inter|Paris Saint-Germain>PSG|Dortmund>Borussia Dortmund'],
+    ['🎾', 'Deportes', 'Nombra 9 tenistas famosos', 'Nadal|Federer|Djokovic|Serena Williams|Venus Williams|Murray|Sampras|Agassi|Borg|McEnroe|Alcaraz|Graf', 'Messi|Ronaldo|Jordan|LeBron|Tiger Woods|Bolt|Schumacher', 'Rafael Nadal>Nadal|Roger Federer>Federer|Novak Djokovic>Djokovic|Andy Murray>Murray|Pete Sampras>Sampras|Andre Agassi>Agassi|Bjorn Borg>Borg|John McEnroe>McEnroe|Carlos Alcaraz>Alcaraz|Steffi Graf>Graf'],
+    ['⚽', 'Deportes', 'Nombra 9 futbolistas famosos', 'Messi|Cristiano Ronaldo|Maradona|Pelé|Zidane|Ronaldinho|Ronaldo Nazário|Beckham|Cruyff|Iniesta|Xavi|Mbappé', 'Jordan|Nadal|Federer|LeBron|Bolt|Tiger Woods|Brady', 'Cristiano>Cristiano Ronaldo|CR7>Cristiano Ronaldo|Diego Maradona>Maradona|Pele>Pelé|Zinedine Zidane>Zidane|Ronaldinho Gaucho>Ronaldinho|Ronaldo Nazario>Ronaldo Nazário|David Beckham>Beckham|Johan Cruyff>Cruyff|Kylian Mbappe>Mbappé'],
+    ['🏎️', 'Deportes', 'Nombra 9 pilotos de Fórmula 1', 'Schumacher|Senna|Hamilton|Verstappen|Alonso|Vettel|Prost|Lauda|Fangio|Raikkonen|Häkkinen|Mansell', 'Messi|Nadal|Jordan|Bolt|Rossi|Loeb|Ogier', 'Michael Schumacher>Schumacher|Ayrton Senna>Senna|Lewis Hamilton>Hamilton|Max Verstappen>Verstappen|Fernando Alonso>Alonso|Sebastian Vettel>Vettel|Alain Prost>Prost|Niki Lauda>Lauda|Juan Manuel Fangio>Fangio|Kimi Raikkonen>Raikkonen|Mika Hakkinen>Häkkinen|Nigel Mansell>Mansell'],
+    ['🏎️', 'Deportes', 'Nombra 9 escuderías de Fórmula 1', 'Ferrari|Mercedes|Red Bull|McLaren|Alpine|Aston Martin|Williams|Haas|Sauber|AlphaTauri|Lotus|Brabham', 'Real Madrid|Barcelona|Lakers|Yankees|Ducati|Yamaha|Kawasaki', 'Red Bull Racing>Red Bull|Alpha Tauri>AlphaTauri|Alfa Romeo>Sauber'],
+    ['😱', 'Cine', 'Nombra 9 películas de terror', 'El Exorcista|Psicosis|Halloween|Viernes 13|Pesadilla en Elm Street|Scream|El Resplandor|It|La Monja|Saw|Hereditary|Alien', 'Toy Story|Frozen|Coco|Titanic|Shrek|Una pareja de idiotas|La La Land', 'Exorcista>El Exorcista|Pesadilla en la calle Elm>Pesadilla en Elm Street|Resplandor>El Resplandor|Eso>It|Jigsaw>Saw'],
+    ['🚀', 'Cine', 'Nombra 9 películas de ciencia ficción', 'Star Wars|Matrix|Blade Runner|Alien|Terminator|Interestelar|Inception|Regreso al futuro|E.T.|Dune|Avatar|Gravity', 'Frozen|Coco|Titanic|Shrek|La La Land|El Padrino|Toy Story', 'El origen>Inception|Interstellar>Interestelar|Regreso al Futuro>Regreso al futuro|ET>E.T.|Gravedad>Gravity'],
+    ['🦸', 'Cine', 'Nombra 9 superhéroes de cine', 'Superman|Batman|Spider-Man|Iron Man|Wonder Woman|Capitán América|Thor|Hulk|Flash|Aquaman|Wolverine|Deadpool', 'Harry Potter|Frodo|Luke Skywalker|Neo|Terminator|Rocky|James Bond', 'Spiderman>Spider-Man|Hombre Araña>Spider-Man|Mujer Maravilla>Wonder Woman|Capitan America>Capitán América'],
+    ['🎬', 'Cine', 'Nombra 9 directores de cine', 'Spielberg|Tarantino|Nolan|Scorsese|Hitchcock|Kubrick|Ridley Scott|Coppola|Almodóvar|Burton|Cameron|Eastwood', 'Cervantes|Picasso|Mozart|Beethoven|Shakespeare|Dalí|Goya', 'Steven Spielberg>Spielberg|Quentin Tarantino>Tarantino|Christopher Nolan>Nolan|Martin Scorsese>Scorsese|Alfred Hitchcock>Hitchcock|Stanley Kubrick>Kubrick|Francis Ford Coppola>Coppola|Pedro Almodovar>Almodóvar|Tim Burton>Burton|James Cameron>Cameron|Clint Eastwood>Eastwood'],
+    ['🎭', 'Cine', 'Nombra 9 actores de Hollywood', 'Tom Hanks|Leonardo DiCaprio|Brad Pitt|Tom Cruise|Robert De Niro|Al Pacino|Morgan Freeman|Johnny Depp|Will Smith|Denzel Washington|Robert Downey Jr.|Scarlett Johansson', 'Messi|Nadal|Obama|Einstein|Picasso|Mozart|Shakespeare', 'DiCaprio>Leonardo DiCaprio|Robert de Niro>Robert De Niro|RDJ>Robert Downey Jr.|Scarlett>Scarlett Johansson'],
+    ['⭐', 'Cine', 'Nombra 9 personajes de Star Wars', 'Luke Skywalker|Darth Vader|Yoda|Han Solo|Leia|Chewbacca|Obi-Wan|R2-D2|C-3PO|Palpatine|Boba Fett|Kylo Ren', 'Spock|Gandalf|Frodo|Harry Potter|Neo|Terminator|Kirk', 'Obi Wan>Obi-Wan|Obi-Wan Kenobi>Obi-Wan|R2D2>R2-D2|C3PO>C-3PO|Emperador Palpatine>Palpatine|Darth Sidious>Palpatine|Princesa Leia>Leia'],
+    ['⚡', 'Cine', 'Nombra 9 personajes de Harry Potter', 'Harry Potter|Hermione|Ron|Dumbledore|Voldemort|Snape|Hagrid|Draco Malfoy|Sirius Black|Dobby|McGonagall|Bellatrix', 'Frodo|Gandalf|Luke Skywalker|Neo|Katniss|Percy Jackson|Aslan', 'Hermione Granger>Hermione|Ron Weasley>Ron|Albus Dumbledore>Dumbledore|Severus Snape>Snape|Draco>Draco Malfoy|Sirius>Sirius Black|Profesora McGonagall>McGonagall'],
+    ['💍', 'Cine', 'Nombra 9 personajes de El Señor de los Anillos', 'Frodo|Sam|Gandalf|Aragorn|Legolas|Gimli|Gollum|Saruman|Sauron|Boromir|Merry|Pippin', 'Harry Potter|Luke Skywalker|Darth Vader|Neo|Jon Snow|Daenerys|Aslan', 'Frodo Bolsón>Frodo|Sam Gamyi>Sam|Smeagol>Gollum'],
+    ['🐉', 'Cine', 'Nombra 9 personajes de Juego de Tronos', 'Jon Nieve|Daenerys|Tyrion|Arya|Sansa|Cersei|Jaime|Ned Stark|Joffrey|Khal Drogo|Brienne|Varys', 'Frodo|Gandalf|Harry Potter|Luke Skywalker|Neo|Katniss|Rick Grimes', 'Jon Snow>Jon Nieve|Daenerys Targaryen>Daenerys|Khaleesi>Daenerys|Tyrion Lannister>Tyrion|Arya Stark>Arya|Sansa Stark>Sansa|Cersei Lannister>Cersei|Jaime Lannister>Jaime|Eddard Stark>Ned Stark|Ned>Ned Stark|Joffrey Baratheon>Joffrey'],
+    ['📺', 'Cine', 'Nombra 9 series de televisión', 'Friends|Breaking Bad|Los Simpson|Stranger Things|Game of Thrones|The Office|La Casa de Papel|Los Soprano|The Wire|Lost|Dexter|Sherlock', 'Titanic|Avatar|Frozen|Coco|Matrix|Star Wars|El Padrino', 'Juego de Tronos>Game of Thrones|GOT>Game of Thrones|Simpsons>Los Simpson|The Sopranos>Los Soprano|Perdidos>Lost|Casa de Papel>La Casa de Papel'],
+    ['🐲', 'Cine', 'Nombra 9 personajes de Dragon Ball', 'Goku|Vegeta|Gohan|Piccolo|Bulma|Krillin|Freezer|Cell|Majin Buu|Trunks|Broly|Beerus', 'Naruto|Luffy|Ichigo|Pikachu|Mario|Sonic|Seiya', 'Son Goku>Goku|Kakarotto>Goku|Frieza>Freezer|Freeza>Freezer|Krilin>Krillin|Majin Boo>Majin Buu|Bills>Beerus'],
+    ['⚡', 'Cine', 'Nombra 9 Pokémon', 'Pikachu|Charizard|Bulbasaur|Squirtle|Mewtwo|Jigglypuff|Eevee|Snorlax|Gengar|Lucario|Greninja|Mew', 'Digimon|Agumon|Goku|Naruto|Sonic|Mario|Kirby', ''],
+    ['🦹', 'Cine', 'Nombra 9 villanos de Disney', 'Maléfica|Úrsula|Scar|Jafar|Hades|Gastón|Cruella de Vil|Capitán Garfio|Reina Malvada|Dr. Facilier|Yzma|Shan Yu', 'Voldemort|Darth Vader|Sauron|Joker|Thanos|Loki|Gargamel', 'Malefica>Maléfica|Ursula>Úrsula|Gaston>Gastón|Cruella>Cruella de Vil|Garfio>Capitán Garfio'],
+    ['🎻', 'Música', 'Nombra 9 instrumentos de cuerda', 'Guitarra|Violín|Chelo|Bajo|Arpa|Viola|Contrabajo|Ukelele|Mandolina|Banjo|Piano|Clave', 'Flauta|Trompeta|Batería|Saxofón|Clarinete|Trombón|Acordeón', 'Violin>Violín|Cello>Chelo|Violoncello>Chelo'],
+    ['🎺', 'Música', 'Nombra 9 instrumentos de viento', 'Flauta|Trompeta|Saxofón|Clarinete|Trombón|Oboe|Fagot|Tuba|Corno|Armónica|Gaita|Didgeridoo', 'Guitarra|Violín|Batería|Piano|Arpa|Chelo|Ukelele', 'Saxofon>Saxofón|Trombon>Trombón|Armonica>Armónica'],
+    ['🥁', 'Música', 'Nombra 9 instrumentos de percusión', 'Batería|Tambor|Platillos|Xilófono|Timbal|Pandereta|Maracas|Gong|Cajón|Campana|Triángulo|Bongó', 'Guitarra|Violín|Flauta|Trompeta|Saxofón|Clarinete|Arpa|Chelo', 'Bateria>Batería|Xilofono>Xilófono|Cajon>Cajón|Triangulo>Triángulo|Bongo>Bongó'],
+    ['🎧', 'Música', 'Nombra 9 géneros musicales', 'Rock|Pop|Jazz|Blues|Reggaetón|Salsa|Cumbia|Clásica|Hip hop|Country|Flamenco|Electrónica', 'Fútbol|Tenis|Pintura|Cine|Teatro|Poesía|Novela', 'Reggaeton>Reggaetón|Hip-hop>Hip hop|Electronica>Electrónica|Clasica>Clásica'],
+    ['🎤', 'Música', 'Nombra 9 cantantes famosos', 'Michael Jackson|Madonna|Elvis|Freddie Mercury|Beyoncé|Taylor Swift|Adele|Lady Gaga|Bob Marley|Whitney Houston|Prince|David Bowie', 'Messi|Nadal|Einstein|Picasso|Obama|Spielberg|Shakespeare', 'MJ>Michael Jackson|Freddie>Freddie Mercury|Beyonce>Beyoncé|Taylor>Taylor Swift|Whitney>Whitney Houston'],
+    ['🎸', 'Música', 'Nombra 9 grupos musicales', 'The Beatles|Queen|Rolling Stones|Pink Floyd|Led Zeppelin|U2|Nirvana|Metallica|AC/DC|ABBA|Coldplay|Radiohead', 'Real Madrid|Lakers|Friends|Star Wars|Ferrari|Messi|Coca-Cola', 'Beatles>The Beatles|Stones>Rolling Stones|The Rolling Stones>Rolling Stones|AC DC>AC/DC'],
+    ['🇪🇸', 'Música', 'Nombra 9 cantantes españoles', 'Rosalía|Enrique Iglesias|Julio Iglesias|Alejandro Sanz|Pablo Alborán|David Bisbal|Malú|Manuel Carrasco|Aitana|Lola Índigo|Raphael|Camilo Sesto', 'Madonna|Beyoncé|Taylor Swift|Adele|Michael Jackson|Elvis|Shakira', 'Rosalia>Rosalía|Pablo Alboran>Pablo Alborán|Malu>Malú|Lola Indigo>Lola Índigo'],
+    ['🎼', 'Música', 'Nombra 9 compositores clásicos', 'Mozart|Beethoven|Bach|Chopin|Vivaldi|Haydn|Brahms|Tchaikovsky|Schubert|Wagner|Verdi|Debussy', 'Picasso|Cervantes|Spielberg|Michael Jackson|Elvis|Madonna|Dalí', 'Chaikovski>Tchaikovsky'],
+    ['📖', 'Literatura', 'Nombra 9 obras de Shakespeare', 'Hamlet|Romeo y Julieta|Macbeth|Otelo|El Rey Lear|Sueño de una noche de verano|La tempestad|Julio César|Mucho ruido y pocas nueces|El mercader de Venecia|Antonio y Cleopatra|Ricardo III', 'El Quijote|La Odisea|La Ilíada|Cien años de soledad|Drácula|Frankenstein|El Principito', 'Romeo and Juliet>Romeo y Julieta|Midsummer Night Dream>Sueño de una noche de verano|Tempest>La tempestad|Mercader de Venecia>El mercader de Venecia'],
+    ['✍️', 'Literatura', 'Nombra 9 escritores famosos', 'Cervantes|Shakespeare|García Márquez|Borges|Neruda|Poe|Tolstói|Dickens|Kafka|Orwell|Hemingway|Austen', 'Picasso|Mozart|Spielberg|Einstein|Newton|Beethoven|Dalí', 'Gabriel Garcia Marquez>García Márquez|Garcia Marquez>García Márquez|Jorge Luis Borges>Borges|Pablo Neruda>Neruda|Edgar Allan Poe>Poe|Tolstoi>Tolstói|Jane Austen>Austen|Ernest Hemingway>Hemingway'],
+    ['📚', 'Literatura', 'Nombra 9 personajes literarios', 'Don Quijote|Sancho Panza|Hamlet|Romeo|Julieta|Sherlock Holmes|Dracula|Frankenstein|Robinson Crusoe|Alicia|Peter Pan|Moby Dick', 'Batman|Superman|Mario|Pikachu|Goku|Darth Vader|Shrek', 'Quijote>Don Quijote|Don Quixote>Don Quijote|Sherlock>Sherlock Holmes|Drácula>Dracula|Moby-Dick>Moby Dick|Alicia en el País de las Maravillas>Alicia'],
+    ['🎨', 'Arte', 'Nombra 9 pintores famosos', 'Picasso|Dalí|Van Gogh|Monet|Leonardo da Vinci|Miguel Ángel|Velázquez|Goya|Rembrandt|Klimt|Munch|Frida Kahlo', 'Mozart|Beethoven|Cervantes|Shakespeare|Spielberg|Einstein|Darwin', 'Salvador Dali>Dalí|Vincent van Gogh>Van Gogh|Leonardo>Leonardo da Vinci|Da Vinci>Leonardo da Vinci|Miguel Angel>Miguel Ángel|Frida>Frida Kahlo'],
+    ['🖼️', 'Arte', 'Nombra 9 cuadros famosos', 'La Mona Lisa|La noche estrellada|El grito|Las meninas|Guernica|La persistencia de la memoria|El nacimiento de Venus|La última cena|Los girasoles|El jardín de las delicias|La creación de Adán|El beso', 'El Quijote|Hamlet|Star Wars|Titanic|Avatar|La Odisea|Cien años de soledad', 'Mona Lisa>La Mona Lisa|Gioconda>La Mona Lisa|La Gioconda>La Mona Lisa|Noche estrellada>La noche estrellada|El Grito>El grito|Meninas>Las meninas|Persistencia de la memoria>La persistencia de la memoria|Nacimiento de Venus>El nacimiento de Venus|Ultima Cena>La última cena|Girasoles>Los girasoles'],
+    ['🏛️', 'Arte', 'Nombra 9 museos famosos', 'Museo del Prado|Louvre|Museo Británico|MoMA|Hermitage|Uffizi|Museo de Orsay|Metropolitano|Reina Sofía|Guggenheim|Vaticano|Museo Egipcio', 'Estadio Bernabéu|Camp Nou|Disneyland|Times Square|Torre Eiffel|Sagrada Familia|Coliseo', 'Prado>Museo del Prado|Museo del Louvre>Louvre|British Museum>Museo Británico|Museo Metropolitano>Metropolitano|Met>Metropolitano|Museo Reina Sofia>Reina Sofía|Museos Vaticanos>Vaticano'],
+    ['🦇', 'Cultura Pop', 'Nombra 9 superhéroes de DC', 'Superman|Batman|Wonder Woman|Flash|Aquaman|Green Lantern|Cyborg|Robin|Supergirl|Batgirl|Nightwing|Shazam', 'Spider-Man|Iron Man|Thor|Hulk|Capitán América|Wolverine|Deadpool', 'Mujer Maravilla>Wonder Woman|Linterna Verde>Green Lantern|Superchica>Supergirl|Batichica>Batgirl'],
+    ['🦹', 'Cultura Pop', 'Nombra 9 villanos de Marvel', 'Thanos|Loki|Ultron|Green Goblin|Doctor Octopus|Magneto|Venom|Red Skull|Kang|Galactus|Mystique|Kingpin', 'Joker|Lex Luthor|Darth Vader|Voldemort|Sauron|Maléfica|Scar', 'Duende Verde>Green Goblin|Dr Octopus>Doctor Octopus|Octopus>Doctor Octopus|Craneo Rojo>Red Skull|Cráneo Rojo>Red Skull'],
+    ['🚗', 'Cultura Pop', 'Nombra 9 marcas de coches', 'Toyota|Ford|BMW|Mercedes|Audi|Volkswagen|Ferrari|Porsche|Honda|Nissan|Renault|Tesla', "Coca-Cola|Nike|Apple|Samsung|Adidas|McDonald's|Sony", 'Mercedes-Benz>Mercedes|VW>Volkswagen'],
+    ['📱', 'Tecnología', 'Nombra 9 redes sociales', 'Facebook|Instagram|Twitter|TikTok|Snapchat|LinkedIn|YouTube|WhatsApp|Telegram|Pinterest|Reddit|Discord', 'Netflix|Spotify|Amazon|Google|Microsoft|Wikipedia|Gmail', 'X>Twitter|FB>Facebook|IG>Instagram|Insta>Instagram|Tik Tok>TikTok|Youtube>YouTube|Whatsapp>WhatsApp|Linkedin>LinkedIn'],
+    ['💻', 'Tecnología', 'Nombra 9 empresas tecnológicas', 'Apple|Microsoft|Google|Amazon|Meta|Samsung|Intel|NVIDIA|Sony|IBM|Tesla|Netflix', "Coca-Cola|Nike|McDonald's|Toyota|Adidas|Walmart|Zara", 'Alphabet>Google|Facebook>Meta|Nvidia>NVIDIA|International Business Machines>IBM'],
+    ['⌨️', 'Tecnología', 'Nombra 9 lenguajes de programación', 'Python|Java|JavaScript|TypeScript|Ruby|PHP|Swift|Kotlin|Go|Rust|Perl|Scala', 'HTML|CSS|SQL|Windows|Linux|Photoshop|Excel', 'JS>JavaScript|TS>TypeScript|Golang>Go'],
+    ['🎮', 'Videojuegos', 'Nombra 9 consolas de videojuegos', 'PlayStation|Xbox|Nintendo Switch|Game Boy|Nintendo 64|Super Nintendo|Sega Genesis|Dreamcast|Atari 2600|PSP|Nintendo DS|GameCube', 'Windows|Android|iOS|Steam|Fortnite|Mario|Pac-Man', 'PS1>PlayStation|PS2>PlayStation|PS3>PlayStation|PS4>PlayStation|PS5>PlayStation|Switch>Nintendo Switch|N64>Nintendo 64|SNES>Super Nintendo|Genesis>Sega Genesis|Sega Mega Drive>Sega Genesis'],
+    ['🍝', 'Comida', 'Nombra 9 comidas italianas', 'Pizza|Pasta|Lasaña|Risotto|Ravioli|Espagueti|Carbonara|Tiramisú|Gnocchi|Bruschetta|Panna cotta|Prosciutto', 'Paella|Tacos|Sushi|Hamburguesa|Croissant|Curry|Ceviche', 'Espaghetti>Espagueti|Lasana>Lasaña|Tiramisu>Tiramisú|Ñoquis>Gnocchi'],
+    ['🥘', 'Comida', 'Nombra 9 comidas españolas', 'Paella|Tortilla de patatas|Jamón ibérico|Gazpacho|Croquetas|Pulpo a la gallega|Fabada|Cocido|Churros|Pimientos de Padrón|Salmorejo|Migas', 'Pizza|Tacos|Sushi|Hamburguesa|Lasaña|Curry|Ceviche', 'Tortilla de patata>Tortilla de patatas|Tortilla española>Tortilla de patatas|Jamon iberico>Jamón ibérico|Pimientos de Padron>Pimientos de Padrón'],
+    ['🌮', 'Comida', 'Nombra 9 comidas mexicanas', 'Tacos|Burritos|Enchiladas|Quesadillas|Nachos|Guacamole|Tamales|Fajitas|Pozole|Chiles rellenos|Mole|Elote', 'Pizza|Paella|Sushi|Hamburguesa|Croissant|Curry|Ceviche', 'Taco>Tacos|Burrito>Burritos|Enchilada>Enchiladas|Quesadilla>Quesadillas|Nacho>Nachos|Tamal>Tamales|Fajita>Fajitas'],
+    ['🍰', 'Comida', 'Nombra 9 postres', 'Tarta de chocolate|Helado|Flan|Tiramisú|Cheesecake|Brownie|Donut|Macarons|Churros|Natillas|Arroz con leche|Panacota', 'Pizza|Paella|Tacos|Sushi|Hamburguesa|Ensalada|Gazpacho', 'Pastel de chocolate>Tarta de chocolate|Tarta de queso>Cheesecake|Dona>Donut|Donuts>Donut|Macaron>Macarons|Panna cotta>Panacota'],
+    ['🧀', 'Comida', 'Nombra 9 quesos', 'Manchego|Brie|Camembert|Cheddar|Gouda|Parmesano|Mozzarella|Roquefort|Feta|Gruyere|Provolone|Gorgonzola', 'Jamón|Pan|Leche|Yogur|Mantequilla|Huevo|Harina', 'Gruyère>Gruyere|Parmesan>Parmesano'],
+    ['🌶️', 'Comida', 'Nombra 9 especias', 'Pimienta|Canela|Comino|Orégano|Pimentón|Azafrán|Cúrcuma|Jengibre|Nuez moscada|Clavo|Laurel|Cilantro', 'Sal|Azúcar|Harina|Leche|Mantequilla|Huevo|Arroz', 'Oregano>Orégano|Pimenton>Pimentón|Azafran>Azafrán|Curcuma>Cúrcuma'],
+    ['🐟', 'Comida', 'Nombra 9 pescados', 'Salmón|Atún|Bacalao|Sardina|Trucha|Merluza|Lenguado|Dorada|Lubina|Boquerón|Pez espada|Tiburón', 'Pollo|Cerdo|Ternera|Cordero|Pavo|Conejo|Jamón', 'Salmon>Salmón|Atun>Atún|Boqueron>Boquerón'],
+    ['🌎', 'Otros', 'Nombra 9 países donde se habla español', 'España|México|Argentina|Colombia|Perú|Chile|Venezuela|Ecuador|Guatemala|Cuba|Bolivia|Uruguay', 'Brasil|Portugal|Francia|Italia|Estados Unidos|Canadá|Alemania', 'Espana>España|Mexico>México|Peru>Perú']
+  ].map(([emoji, tag, prompt, answers, traps, aliases]) => ({
+    emoji: emoji,
+    tag: tag,
+    prompt: prompt,
+    answers: answers.split('|'),
+    traps: traps.split('|'),
+    aliases: aliases ? aliases.split('|').map((pair) => pair.split('>')) : []
+  }));
+  CATEGORIES.push(...EXTRA_CATEGORIES);
+
   const state = {
     mode: 'fiesta',
     dynamic: 'presenter',
@@ -845,14 +956,6 @@
     return arr;
   }
 
-  function pointsForAnswer(cat, answer){
-    const total = cat.answers.length;
-    const index = cat.answers.indexOf(answer);
-    if(index < 0){ return 75; }
-    const ratio = total > 1 ? index / (total - 1) : 0;
-    return ratio < 0.34 ? 50 : (ratio < 0.67 ? 75 : 100);
-  }
-
   function makeRound(cat, answers, traps){
     const unique = [];
     (Array.isArray(answers) ? answers : []).forEach((answer) => {
@@ -879,10 +982,29 @@
     });
   }
 
+  function pointsForAnswer(cat, answer){
+    const index = cat.answers.indexOf(answer);
+    if(index < 0){ return 75; }
+    const tier = Math.min(2, Math.floor(index * 3 / cat.answers.length));
+    return tier === 0 ? 50 : (tier === 1 ? 75 : 100);
+  }
+
   function buildRound(cat){
-    const chosen = shuffle(cat.answers.slice()).slice(0, SLOTS);
     const trap = cat.traps.length ? cat.traps[Math.floor(Math.random() * cat.traps.length)] : null;
-    return makeRound(cat, chosen, trap ? [trap] : []);
+    const buckets = [[], [], []];
+    cat.answers.forEach((answer, i) => {
+      const tier = Math.min(2, Math.floor(i * 3 / cat.answers.length));
+      buckets[tier].push(answer);
+    });
+    const chosen = [];
+    buckets.forEach((bucket) => {
+      shuffle(bucket);
+      chosen.push(...bucket.slice(0, 3));
+    });
+    if(chosen.length !== SLOTS){
+      return makeRound(cat, shuffle(cat.answers.slice()).slice(0, SLOTS), trap ? [trap] : []);
+    }
+    return makeRound(cat, shuffle(chosen), trap ? [trap] : []);
   }
 
   function createPlayer(name){
@@ -1765,7 +1887,6 @@
     renderSlots();
     if(isPresenter){
       renderPresenterAnswers();
-      renderPresenterTraps();
     }
     updateProgress();
     updatePowerButtons();
@@ -1837,34 +1958,31 @@
 
   function renderPresenterAnswers(){
     if(!state.cat) return;
-    const grid = $('presenterAnswers');
-    grid.innerHTML = '';
+    const list = $('presenterAnswers');
+    list.innerHTML = '';
     state.cat.answers.forEach((answer) => {
       const found = state.foundSet.has(answer);
+      const points = state.cat.points ? (state.cat.points.get(answer) || 75) : 75;
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'presenter-answer' + (found ? ' found' : '') + (state.presenterHint === answer && !found ? ' hint-pulse' : '');
       btn.disabled = !state.running || found;
       btn.dataset.answer = answer;
-      btn.innerHTML = '<span>' + escapeHtml(answer) + '</span>' + (found ? '<span class="check">✓</span>' : '');
+      btn.innerHTML = '<span class="pa-word">' + escapeHtml(answer) + '</span>' +
+        (found ? '<span class="check">✓</span>' : '') +
+        '<span class="pa-pts">+' + points + ' pts</span>';
       btn.addEventListener('click', () => markPresenterAnswer(answer, btn));
-      grid.appendChild(btn);
+      list.appendChild(btn);
     });
-  }
-
-  function renderPresenterTraps(){
-    if(!state.cat) return;
-    const wrap = $('presenterTraps');
-    wrap.innerHTML = '';
     state.cat.traps.forEach((trap) => {
       const used = state.usedTraps.has(trap);
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'presenter-trap w-full' + (used ? ' used' : '');
+      btn.className = 'presenter-trap' + (used ? ' used' : '');
       btn.disabled = !state.running || used;
-      btn.textContent = trap;
+      btn.innerHTML = '<span class="pa-word">🚨 ' + escapeHtml(trap) + '</span><span class="pa-pts">-75 pts</span>';
       btn.addEventListener('click', () => markPresenterTrap(trap));
-      wrap.appendChild(btn);
+      list.appendChild(btn);
     });
   }
 
@@ -1882,7 +2000,7 @@
     if(!state.running || state.ended || state.usedTraps.has(trap)) return;
     state.usedTraps.add(trap);
     applyTrap(trap);
-    renderPresenterTraps();
+    renderPresenterAnswers();
   }
 
   function highlightPresenterAnswer(answer){
@@ -2025,7 +2143,6 @@
       $('submitAnswer').disabled = true;
       if(state.dynamic === 'presenter'){
         renderPresenterAnswers();
-        renderPresenterTraps();
       }
       updatePowerButtons();
       setTimeout(() => endTurn('full'), 700);
@@ -2133,7 +2250,6 @@
     $('submitAnswer').disabled = true;
     if(state.dynamic === 'presenter'){
       renderPresenterAnswers();
-      renderPresenterTraps();
     }
     updatePowerButtons();
 
@@ -2258,40 +2374,40 @@
       2: 'background:linear-gradient(180deg,#cbd5e1,#94a3b8);color:#1e293b',
       3: 'background:linear-gradient(180deg,#fda4af,#e11d48);color:#ffffff'
     };
-    const heightByPos = { 1: 'h-36', 2: 'h-24', 3: 'h-20' };
+    const heightByPos = { 1: '6rem', 2: '5rem', 3: '4.75rem' };
 
     layout.forEach((entry) => {
       const pos = sorted.indexOf(entry) + 1;
       const pl = entry.player;
-      const rank = RANK_TITLES[pos - 1] || RANK_TITLES[RANK_TITLES.length - 1];
       const block = document.createElement('div');
-      block.className = 'podium-step flex-1 max-w-[9.5rem] ' + heightByPos[pos];
-      block.setAttribute('style', styleByPos[pos]);
+      block.className = 'podium-step flex-1 max-w-[8.5rem]';
+      block.setAttribute('style', styleByPos[pos] + ';height:' + heightByPos[pos]);
       block.innerHTML =
-        '<div class="text-2xl">' + (pos === 1 ? '👑' : pos === 2 ? '🥈' : '🥉') + '</div>' +
-        '<div class="avatar w-10 h-10 text-xl mt-1" style="background:' + AVATAR_BG[entry.index % AVATAR_BG.length] + ';border-color:rgba(255,255,255,.9)">' + AVATARS[entry.index % AVATARS.length] + '</div>' +
-        '<div class="font-extrabold text-[11px] leading-tight mt-1 truncate w-full px-1">' + escapeHtml(pl.name) + '</div>' +
-        '<div class="font-extrabold text-sm leading-tight">' + nf.format(pl.score) + '</div>' +
-        '<div class="text-[8px] font-extrabold uppercase tracking-wide opacity-80 leading-tight">' + rank.emoji + ' ' + rank.title + '</div>';
+        '<div class="text-sm leading-none">' + (pos === 1 ? '👑' : pos === 2 ? '🥈' : '🥉') + '</div>' +
+        '<div class="avatar w-6 h-6 text-sm mt-0.5" style="background:' + AVATAR_BG[entry.index % AVATAR_BG.length] + ';border-color:rgba(255,255,255,.9)">' + AVATARS[entry.index % AVATARS.length] + '</div>' +
+        '<div class="font-extrabold text-[10px] leading-tight mt-0.5 truncate w-full px-0.5">' + escapeHtml(pl.name) + '</div>' +
+        '<div class="font-extrabold text-xs leading-none">' + nf.format(pl.score) + '</div>';
       podium.appendChild(block);
     });
 
     const ranking = $('fullRanking');
     ranking.innerHTML = '';
-    sorted.forEach((entry, i) => {
+    const rest = sorted.slice(3);
+    ranking.classList.toggle('hidden', rest.length === 0);
+    rest.forEach((entry, i) => {
       const pl = entry.player;
-      const pos = i + 1;
-      const rank = RANK_TITLES[i] || RANK_TITLES[RANK_TITLES.length - 1];
+      const pos = i + 4;
+      const rank = RANK_TITLES[pos - 1] || RANK_TITLES[RANK_TITLES.length - 1];
       const row = document.createElement('div');
       row.className = 'rank-row';
       row.innerHTML =
-        '<div class="w-6 text-center font-extrabold text-sm ' + (pos === 1 ? 'text-yellow-300' : 'text-white/60') + '">' + pos + 'º</div>' +
-        '<div class="avatar w-8 h-8 text-base" style="background:' + AVATAR_BG[entry.index % AVATAR_BG.length] + '">' + AVATARS[entry.index % AVATARS.length] + '</div>' +
+        '<div class="w-5 text-center font-extrabold text-xs text-white/60">' + pos + 'º</div>' +
+        '<div class="avatar w-6 h-6 text-sm" style="background:' + AVATAR_BG[entry.index % AVATAR_BG.length] + '">' + AVATARS[entry.index % AVATARS.length] + '</div>' +
         '<div class="flex-1 min-w-0">' +
-          '<div class="font-extrabold text-sm truncate">' + escapeHtml(pl.name) + '</div>' +
-          '<div class="text-[9px] font-bold text-white/55">' + rank.emoji + ' ' + rank.title + ' · 🎯 ' + pl.found + ' · 🔥 x' + Math.max(1, Math.min(pl.bestStreak, 5)) + '</div>' +
+          '<div class="font-extrabold text-xs truncate">' + escapeHtml(pl.name) + '</div>' +
+          '<div class="text-[8px] font-bold text-white/55 truncate">' + rank.emoji + ' ' + rank.title + ' · 🎯 ' + pl.found + ' · 🔥 x' + Math.max(1, Math.min(pl.bestStreak, 5)) + '</div>' +
         '</div>' +
-        '<div class="font-extrabold text-base text-yellow-300 whitespace-nowrap">' + nf.format(pl.score) + '<span class="text-[9px] text-white/50"> pts</span></div>';
+        '<div class="font-extrabold text-sm text-yellow-300 whitespace-nowrap">' + nf.format(pl.score) + '<span class="text-[8px] text-white/50"> pts</span></div>';
       ranking.appendChild(row);
     });
 

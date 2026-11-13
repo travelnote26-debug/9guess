@@ -253,8 +253,23 @@
   #presenterPanel:not(.hidden){ flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
   #presenterAnswers{ flex:1 1 auto; min-height:0; }
   #slotsGrid:not(.hidden){ min-height:0; }
-  #screen-game.solo #slotsGrid{ flex:0 0 auto; grid-auto-rows:minmax(2.6rem,auto); align-content:start; }
+  #screen-game.solo #slotsGrid{
+    flex:0 0 auto; grid-template-columns:1fr; grid-auto-rows:minmax(2rem,auto);
+    align-content:start; gap:.3rem;
+  }
+  #screen-game.solo .slot{
+    flex-direction:row; justify-content:flex-start; gap:.5rem;
+    min-height:2rem; padding:.3rem .65rem; text-align:left;
+  }
+  #screen-game.solo .slot .slot-num{ flex:0 0 1.25rem; font-size:1.05rem; text-align:center; }
+  #screen-game.solo .slot .slot-lock{ flex:0 0 auto; margin-top:0; }
+  #screen-game.solo .slot-hint,
+  #screen-game.solo .slot-answer{ flex:1 1 auto; min-width:0; }
+  #screen-game.solo .slot-len,
+  #screen-game.solo .slot-check{ flex:0 0 auto; margin-top:0; }
   #screen-game.solo #powerRow{ margin-top:auto; }
+  #screen-home{ row-gap:clamp(1.75rem,6vh,3.5rem); }
+  #screen-results{ row-gap:clamp(1.25rem,4.5vh,2.75rem); }
   .presenter-answer, .presenter-trap{ flex:1 1 0; min-height:2rem; }
 
   .power-btn{
@@ -333,6 +348,8 @@
     .slot{ min-height:0; padding:.2rem .25rem; }
     .slot .slot-num{ font-size:clamp(1rem,3vh,1.4rem); }
     .slot .slot-answer{ font-size:clamp(.82rem,min(4.4vw,2.4vh),1.05rem); }
+    #screen-game.solo #slotsGrid{ grid-auto-rows:minmax(1.75rem,auto); gap:.2rem; }
+    #screen-game.solo .slot{ min-height:1.75rem; padding:.15rem .5rem; }
     #powerRow{ margin-top:.35rem; gap:.35rem; }
     .power-btn{ padding:.3rem .2rem .35rem; font-size:.6rem; }
     .power-emoji{ font-size:1rem; }
@@ -361,7 +378,7 @@
       <p class="mt-4 text-sm font-semibold text-white/70 leading-snug">Nombra 9 respuestas. Pasa el móvil. Gana la fiesta.</p>
     </div>
 
-    <div id="resumeCard" class="hidden glass rounded-2xl p-4 mt-8 text-left">
+    <div id="resumeCard" class="hidden glass rounded-2xl p-4 text-left">
       <div class="flex items-start justify-between gap-2">
         <div class="min-w-0">
           <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-cyan-200">Partida guardada</div>
@@ -375,7 +392,7 @@
       </button>
     </div>
 
-    <div class="mt-8 space-y-3">
+    <div class="space-y-3">
       <button id="homeStartBtn" type="button" class="btn-3d btn-party w-full px-8 py-4 text-xl">
         🎊 EMPEZAR
       </button>
@@ -383,7 +400,7 @@
         📖 INSTRUCCIONES
       </button>
     </div>
-    <button id="installBtn" type="button" class="mt-6 inline-flex items-center justify-center gap-2 text-[11px] font-extrabold text-white/60 hover:text-white underline underline-offset-4">
+    <button id="installBtn" type="button" class="inline-flex items-center justify-center gap-2 text-[11px] font-extrabold text-white/60 hover:text-white underline underline-offset-4">
       📲 Instalar app
     </button>
   </section>
@@ -441,7 +458,7 @@
 
       <div>
         <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-yellow-300 mb-2">Tiempo por turno</div>
-        <div class="flex gap-1.5" id="secondsGroup">
+        <div class="flex gap-1.5">
           <button class="seg-btn" data-seconds="45" type="button">45s</button>
           <button class="seg-btn active" data-seconds="60" type="button">60s</button>
           <button class="seg-btn" data-seconds="90" type="button">90s</button>
@@ -538,13 +555,15 @@
   </section>
 
   <!-- ================= RESULTS ================= -->
-  <section id="screen-results" class="screen w-full max-w-md mx-auto hidden flex flex-col justify-center min-h-[calc(100dvh-3rem)] py-1 text-center">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[9px] tracking-widest mb-1 self-center">
-      🎉 ¡FIN DE LA FIESTA! 🎉
+  <section id="screen-results" class="screen w-full max-w-md mx-auto hidden flex flex-col justify-center min-h-[calc(100dvh-3rem)] py-4 text-center">
+    <div class="shrink-0">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-300/20 border border-yellow-200/40 text-yellow-100 font-extrabold text-[9px] tracking-widest mb-1">
+        🎉 ¡FIN DE LA FIESTA! 🎉
+      </div>
+      <h2 id="resultsTitle" class="logo-text" style="font-size:clamp(1.8rem,8.5vw,2.9rem);line-height:1;">¡TENEMOS GANADOR!</h2>
     </div>
-    <h2 id="resultsTitle" class="logo-text" style="font-size:clamp(1.8rem,8.5vw,2.9rem);line-height:1;">¡TENEMOS GANADOR!</h2>
 
-    <div class="glass rounded-2xl p-2.5 mt-2">
+    <div class="glass rounded-2xl p-2.5">
       <div id="winnerBanner" class="rounded-xl px-3 py-1 bg-yellow-300/20 border border-yellow-200/40 font-extrabold text-yellow-100 text-xs sm:text-sm leading-tight">
         👑 ¡Cargando resultados!
       </div>
@@ -565,11 +584,13 @@
       <div id="fullRanking" class="mt-1 space-y-1 text-left"></div>
     </div>
 
-    <div class="mt-2 grid grid-cols-2 gap-2">
-      <button id="replayBtn" type="button" class="btn-3d btn-yellow px-3 py-3 text-base">🔁 ¡REVANCHA!</button>
-      <button id="shareBtn" type="button" class="btn-3d btn-cyan px-3 py-3 text-base">📣 COMPARTIR</button>
+    <div class="w-full">
+      <div class="grid grid-cols-2 gap-2">
+        <button id="replayBtn" type="button" class="btn-3d btn-yellow px-3 py-3 text-base">🔁 ¡REVANCHA!</button>
+        <button id="shareBtn" type="button" class="btn-3d btn-cyan px-3 py-3 text-base">📣 COMPARTIR</button>
+      </div>
+      <button id="changeBtn" type="button" class="mt-3 text-[11px] font-extrabold text-white/70 underline underline-offset-4 hover:text-white">👥 Cambiar jugadores y ajustes</button>
     </div>
-    <button id="changeBtn" type="button" class="mt-2 text-[11px] font-extrabold text-white/70 underline underline-offset-4 hover:text-white">👥 Cambiar jugadores y ajustes</button>
   </section>
 </main>
 
@@ -709,7 +730,6 @@
     { title: 'Cerebrito de la Fiesta', emoji: '🧠' },
     { title: 'Oráculo de Barrio', emoji: '🔮' },
     { title: 'Aprendiz de Vidente', emoji: '🌱' },
-    { title: 'Turista Perdido', emoji: '🧭' },
     { title: 'Turista Perdido', emoji: '🧭' }
   ];
 
@@ -936,7 +956,8 @@
     timerId: null,
     lastTick: 0,
     running: false,
-    resumePending: false
+    resumePending: false,
+    ended: false
   };
 
   const $ = (id) => document.getElementById(id);
@@ -948,6 +969,32 @@
   let deferredInstallPrompt = null;
   let wakeLock = null;
   let hiddenPause = false;
+
+  function currentPlayer(){
+    return state.players[state.currentPlayerIndex];
+  }
+
+  function comparePlayers(a, b){
+    if(b.score !== a.score){ return b.score - a.score; }
+    if(b.found !== a.found){ return b.found - a.found; }
+    if(a.traps !== b.traps){ return a.traps - b.traps; }
+    return b.bestStreak - a.bestStreak;
+  }
+
+  function sameStats(a, b){
+    return a.score === b.score && a.found === b.found &&
+      a.traps === b.traps && a.bestStreak === b.bestStreak;
+  }
+
+  function rankedPlayers(){
+    return state.players
+      .map((player, index) => ({ player: player, index: index }))
+      .sort((a, b) => comparePlayers(a.player, b.player));
+  }
+
+  function displayStreak(streak){
+    return Math.max(1, Math.min(streak, 5));
+  }
 
   function clearPresenterHint(){
     clearTimeout(presenterHintTimer);
@@ -1040,6 +1087,10 @@
     return { name: name, score: 0, found: 0, traps: 0, bestStreak: 0, hints: 1, time: 1, spark: 1 };
   }
 
+  function defaultPlayers(){
+    return [createPlayer('Jugador 1'), createPlayer('Jugador 2')];
+  }
+
   function resetPlayerStats(){
     state.players.forEach((p) => {
       p.score = 0; p.found = 0; p.traps = 0; p.bestStreak = 0;
@@ -1082,9 +1133,9 @@
       state.seconds = sanitizeSeconds(saved.seconds);
       state.powersEnabled = normalizePowers(saved.powersEnabled);
       state.players = saved.names.slice(0, MAX_PLAYERS).map((n) => createPlayer(String(n || '').slice(0, 14)));
-      if(state.players.length < 2) state.players = [createPlayer('Jugador 1'), createPlayer('Jugador 2')];
+      if(state.players.length < 2) state.players = defaultPlayers();
     } else {
-      state.players = [createPlayer('Jugador 1'), createPlayer('Jugador 2')];
+      state.players = defaultPlayers();
     }
   }
 
@@ -1285,7 +1336,7 @@
     state.dynamic = saved.dynamic;
     state.rounds = saved.rounds;
     state.seconds = saved.seconds;
-    state.powersEnabled = saved.powersEnabled || normalizePowers(null);
+    state.powersEnabled = normalizePowers(saved.powersEnabled);
     state.totalTurns = saved.totalTurns;
     state.turnIndex = saved.turnIndex;
     state.pool = saved.pool.length ? saved.pool.slice() : shuffle(preparedCategories.slice());
@@ -1959,7 +2010,7 @@
 
   function startTurn(){
     unlockAudio();
-    const p = state.players[state.currentPlayerIndex];
+    const p = currentPlayer();
     const isPresenter = state.dynamic === 'presenter';
     const resuming = state.resumePending && state.cat && Array.isArray(state.slots) && state.slots.length === SLOTS;
     state.resumePending = false;
@@ -2106,7 +2157,6 @@
       } else {
         el.innerHTML = '<div class="slot-num">' + (i + 1) + '</div><div class="slot-lock">🔒</div>';
       }
-      el.dataset.index = String(i);
       grid.appendChild(el);
     });
   }
@@ -2126,7 +2176,6 @@
       btn.type = 'button';
       btn.className = 'presenter-answer' + (found ? ' found' : '') + (state.presenterHint === answer && !found ? ' hint-pulse' : '');
       btn.disabled = !state.running || found;
-      btn.dataset.answer = answer;
       btn.innerHTML = '<span class="pa-word">' + escapeHtml(answer) + '</span>' +
         (found ? '<span class="check">✓</span>' : '') +
         '<span class="pa-pts">+' + points + ' pts</span>';
@@ -2174,21 +2223,21 @@
 
   function updateProgress(){
     const n = state.foundList.length;
-    $('foundCount').textContent = n + '/9';
+    $('foundCount').textContent = n + '/' + SLOTS;
   }
 
   function updateStreakBadge(){
     const badge = $('streakBadge');
     if(state.mode === 'racha' && state.streak > 0){
       badge.classList.remove('hidden');
-      badge.textContent = '🔥 x' + Math.min(state.streak + 1, 5);
+      badge.textContent = '🔥 x' + displayStreak(state.streak + 1);
     } else {
       badge.classList.add('hidden');
     }
   }
 
   function updatePowerButtons(){
-    const p = state.players[state.currentPlayerIndex];
+    const p = currentPlayer();
     if(!p){ return; }
     const powers = state.powersEnabled;
     const hintBtn = document.querySelector('[data-power="hint"]');
@@ -2250,7 +2299,7 @@
   }
 
   function revealAnswer(canonical, viaSpark){
-    const p = state.players[state.currentPlayerIndex];
+    const p = currentPlayer();
     let slotIndex = -1;
     if(!viaSpark){
       slotIndex = state.slots.findIndex((s) => s.state === 'hinted' && s.hintAnswer === canonical);
@@ -2308,7 +2357,7 @@
   }
 
   function applyTrap(raw){
-    const p = state.players[state.currentPlayerIndex];
+    const p = currentPlayer();
     p.score -= 75;
     p.traps += 1;
     state.turnPoints -= 75;
@@ -2338,7 +2387,7 @@
 
   function usePower(type){
     if(!state.running || state.ended || !state.cat){ return; }
-    const p = state.players[state.currentPlayerIndex];
+    const p = currentPlayer();
 
     if(type === 'time'){
       if(p.time <= 0){ return; }
@@ -2411,7 +2460,7 @@
     }
     updatePowerButtons();
 
-    const p = state.players[state.currentPlayerIndex];
+    const p = currentPlayer();
     let bonus = 0;
     if(reason === 'full'){
       bonus = state.mode === 'racha' ? 500 : 250;
@@ -2457,17 +2506,17 @@
   }
 
   function renderSummary(reason, bonus){
-    const p = state.players[state.currentPlayerIndex];
+    const p = currentPlayer();
     const pleno = reason === 'full';
     $('sumEmoji').textContent = pleno ? '🎉' : '⏰';
     $('sumTitle').textContent = pleno ? '¡PLENO PERFECTO!' : '¡SE ACABÓ EL TIEMPO!';
     $('sumTitle').style.color = pleno ? '#db2777' : '#e11d48';
-    $('sumSub').textContent = p.name + ' ha encontrado ' + state.turnFound + ' de 9 respuestas.';
+    $('sumSub').textContent = p.name + ' ha encontrado ' + state.turnFound + ' de ' + SLOTS + ' respuestas.';
     $('sumPoints').textContent = (state.turnPoints >= 0 ? '+' : '') + nf.format(state.turnPoints);
     $('sumPoints').style.color = state.turnPoints >= 0 ? '#db2777' : '#e11d48';
     $('sumFound').textContent = String(state.turnFound);
     $('sumTraps').textContent = String(state.turnTraps);
-    $('sumStreak').textContent = 'x' + Math.max(1, Math.min(state.turnBestStreak, 5));
+    $('sumStreak').textContent = 'x' + displayStreak(state.turnBestStreak);
 
     const bonusEl = $('sumBonus');
     if(pleno){
@@ -2501,46 +2550,16 @@
     prepareTurn();
   }
 
-  function showResults(){
-    stopTimer();
-    releaseWakeLock();
-    state.running = false;
-    state.resumePending = false;
-    clearSavedGame();
-
-    const sorted = state.players.map((p, i) => ({ player: p, index: i })).sort((a, b) => {
-      if(b.player.score !== a.player.score){ return b.player.score - a.player.score; }
-      if(b.player.found !== a.player.found){ return b.player.found - a.player.found; }
-      if(a.player.traps !== b.player.traps){ return a.player.traps - b.player.traps; }
-      return b.player.bestStreak - a.player.bestStreak;
-    });
-    const sameStats = (a, b) => a.score === b.score && a.found === b.found &&
-      a.traps === b.traps && a.bestStreak === b.bestStreak;
+  function buildRanks(sorted){
     const ranks = new Map();
     sorted.forEach((entry, i) => {
       const prev = sorted[i - 1];
       ranks.set(entry, prev && sameStats(entry.player, prev.player) ? ranks.get(prev) : i + 1);
     });
-    const winner = sorted[0];
-    const tied = sorted.filter((entry) => sameStats(entry.player, winner.player));
-    const tie = tied.length > 1;
-    const scoreTied = sorted.filter((entry) => entry.player.score === winner.player.score);
-    let tieNote = '';
-    if(scoreTied.length > 1 && !tie){
-      if(scoreTied.some((entry) => entry.player.found !== winner.player.found)){ tieNote = ' · desempate por más aciertos'; }
-      else if(scoreTied.some((entry) => entry.player.traps !== winner.player.traps)){ tieNote = ' · desempate por menos trampas'; }
-      else if(scoreTied.some((entry) => entry.player.bestStreak !== winner.player.bestStreak)){ tieNote = ' · desempate por mejor racha'; }
-    }
-    $('resultsTitle').textContent = tie ? '¡TENEMOS EMPATE!' : '¡TENEMOS GANADOR!';
-    $('winnerBanner').innerHTML = tie
-      ? '🤝 ¡EMPATE EN LA CIMA! ' + tied.map((entry) => escapeHtml(entry.player.name)).join(', ') + ' con ' + nf.format(winner.player.score) + ' pts'
-      : '👑 ¡' + escapeHtml(winner.player.name) + ' gana la fiesta con ' + nf.format(winner.player.score) + ' pts!' + tieNote;
+    return ranks;
+  }
 
-    const mostFound = state.players.slice().sort((a, b) => b.found - a.found)[0];
-    $('mostFound').textContent = mostFound.name + ' · ' + mostFound.found + ' aciertos';
-    const bestStreak = state.players.slice().sort((a, b) => b.bestStreak - a.bestStreak)[0];
-    $('bestStreak').textContent = bestStreak.name + ' · x' + Math.max(1, Math.min(bestStreak.bestStreak, 5));
-
+  function renderPodium(sorted, ranks){
     const podium = $('podium');
     podium.innerHTML = '';
     const top = sorted.slice(0, 3);
@@ -2565,7 +2584,9 @@
         '<div class="font-extrabold text-xs leading-none">' + nf.format(pl.score) + '</div>';
       podium.appendChild(block);
     });
+  }
 
+  function renderRanking(sorted, ranks){
     const ranking = $('fullRanking');
     ranking.innerHTML = '';
     const rest = sorted.slice(3);
@@ -2581,11 +2602,44 @@
         '<div class="avatar w-6 h-6 text-sm" style="background:' + AVATAR_BG[entry.index % AVATAR_BG.length] + '">' + AVATARS[entry.index % AVATARS.length] + '</div>' +
         '<div class="flex-1 min-w-0">' +
           '<div class="font-extrabold text-xs truncate">' + escapeHtml(pl.name) + '</div>' +
-          '<div class="text-[8px] font-bold text-white/55 truncate">' + rank.emoji + ' ' + rank.title + ' · 🎯 ' + pl.found + ' · 🔥 x' + Math.max(1, Math.min(pl.bestStreak, 5)) + '</div>' +
+          '<div class="text-[8px] font-bold text-white/55 truncate">' + rank.emoji + ' ' + rank.title + ' · 🎯 ' + pl.found + ' · 🔥 x' + displayStreak(pl.bestStreak) + '</div>' +
         '</div>' +
         '<div class="font-extrabold text-sm text-yellow-300 whitespace-nowrap">' + nf.format(pl.score) + '<span class="text-[8px] text-white/50"> pts</span></div>';
       ranking.appendChild(row);
     });
+  }
+
+  function showResults(){
+    stopTimer();
+    releaseWakeLock();
+    state.running = false;
+    state.resumePending = false;
+    clearSavedGame();
+
+    const sorted = rankedPlayers();
+    const ranks = buildRanks(sorted);
+    const winner = sorted[0];
+    const tied = sorted.filter((entry) => sameStats(entry.player, winner.player));
+    const tie = tied.length > 1;
+    const scoreTied = sorted.filter((entry) => entry.player.score === winner.player.score);
+    let tieNote = '';
+    if(scoreTied.length > 1 && !tie){
+      if(scoreTied.some((entry) => entry.player.found !== winner.player.found)){ tieNote = ' · desempate por más aciertos'; }
+      else if(scoreTied.some((entry) => entry.player.traps !== winner.player.traps)){ tieNote = ' · desempate por menos trampas'; }
+      else if(scoreTied.some((entry) => entry.player.bestStreak !== winner.player.bestStreak)){ tieNote = ' · desempate por mejor racha'; }
+    }
+    $('resultsTitle').textContent = tie ? '¡TENEMOS EMPATE!' : '¡TENEMOS GANADOR!';
+    $('winnerBanner').innerHTML = tie
+      ? '🤝 ¡EMPATE EN LA CIMA! ' + tied.map((entry) => escapeHtml(entry.player.name)).join(', ') + ' con ' + nf.format(winner.player.score) + ' pts'
+      : '👑 ¡' + escapeHtml(winner.player.name) + ' gana la fiesta con ' + nf.format(winner.player.score) + ' pts!' + tieNote;
+
+    const mostFound = state.players.slice().sort((a, b) => b.found - a.found)[0];
+    $('mostFound').textContent = mostFound.name + ' · ' + mostFound.found + ' aciertos';
+    const bestStreak = state.players.slice().sort((a, b) => b.bestStreak - a.bestStreak)[0];
+    $('bestStreak').textContent = bestStreak.name + ' · x' + displayStreak(bestStreak.bestStreak);
+
+    renderPodium(sorted, ranks);
+    renderRanking(sorted, ranks);
 
     showScreen('screen-results');
     updateInstallButton();
@@ -2595,12 +2649,7 @@
   }
 
   async function shareResults(){
-    const sorted = state.players.map((p) => p).sort((a, b) => {
-      if(b.score !== a.score){ return b.score - a.score; }
-      if(b.found !== a.found){ return b.found - a.found; }
-      if(a.traps !== b.traps){ return a.traps - b.traps; }
-      return b.bestStreak - a.bestStreak;
-    });
+    const sorted = state.players.slice().sort(comparePlayers);
     const lines = sorted.map((p, i) => (i + 1) + '. ' + p.name + ' — ' + nf.format(p.score) + ' pts');
     const text = '🎉 Adivina9 — Resultados de la fiesta:\n' + lines.join('\n') + '\n¿Puedes superarnos? 🚀';
     if(navigator.share){

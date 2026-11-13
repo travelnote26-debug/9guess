@@ -19,13 +19,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *{ -webkit-tap-highlight-color: transparent; }
-  html{ scroll-behavior: smooth; }
+  html{ scroll-behavior: smooth; overscroll-behavior-y: none; }
   body{
     font-family:'Baloo 2', 'Fredoka', ui-rounded, system-ui, sans-serif;
     background: linear-gradient(150deg, #4f46e5 0%, #7c3aed 45%, #9333ea 75%, #db2777 100%);
     min-height: 100dvh;
     color:#fff;
     overflow-x:hidden;
+    overscroll-behavior-y: none;
     padding-top: env(safe-area-inset-top, 0px);
     padding-right: env(safe-area-inset-right, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -88,13 +89,6 @@
     box-shadow: 0 7px 0 #155e75, 0 16px 26px -8px rgba(0,0,0,.45);
   }
   .btn-cyan:active{ box-shadow: 0 2px 0 #155e75, 0 6px 10px -4px rgba(0,0,0,.4); }
-  .btn-ghost{
-    color:#fff;
-    background:rgba(255,255,255,.12);
-    border:2px solid rgba(255,255,255,.3);
-    box-shadow: 0 6px 0 rgba(76,29,149,.55);
-  }
-  .btn-ghost:active{ box-shadow: 0 1px 0 rgba(76,29,149,.55); }
 
   .avatar{
     border-radius:9999px; display:flex; align-items:center; justify-content:center;
@@ -179,7 +173,7 @@
   }
 
   .slot{
-    position:relative; min-height:3.55rem; border-radius:.9rem; padding:.35rem .4rem;
+    position:relative; min-height:3rem; border-radius:.9rem; padding:.35rem .4rem;
     display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
     border:2px dashed rgba(255,255,255,.25); background:rgba(255,255,255,.08);
     transition: all .25s ease; overflow:hidden;
@@ -254,11 +248,13 @@
   .presenter-trap.used{ opacity:.4; text-decoration:line-through; background:rgba(244,63,94,.12); }
   .presenter-trap:disabled{ cursor:not-allowed; }
 
-  #screen-game{ height:calc(100dvh - 3rem); }
+  #screen-game{ height:calc(100dvh - 3rem); padding-top:2.5rem; }
   #categoryCard{ flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
   #presenterPanel:not(.hidden){ flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
   #presenterAnswers{ flex:1 1 auto; min-height:0; }
-  #slotsGrid:not(.hidden){ flex:1 1 auto; min-height:0; grid-auto-rows:minmax(0,1fr); }
+  #slotsGrid:not(.hidden){ min-height:0; }
+  #screen-game.solo #slotsGrid{ flex:0 0 auto; grid-auto-rows:minmax(2.6rem,auto); align-content:start; }
+  #screen-game.solo #powerRow{ margin-top:auto; }
   .presenter-answer, .presenter-trap{ flex:1 1 0; min-height:2rem; }
 
   .power-btn{
@@ -318,8 +314,6 @@
 
   .pop-in{ animation: popIn .42s cubic-bezier(.2,.9,.3,1.25) both; }
   @keyframes popIn{ 0%{ transform:scale(.72) translateY(24px); opacity:0; } 60%{ transform:scale(1.03); } 100%{ transform:scale(1); opacity:1; } }
-  .card-in{ animation: cardIn .38s ease-out both; }
-  @keyframes cardIn{ 0%{ transform:scale(.96) translateY(16px); opacity:.2; } 100%{ transform:scale(1) translateY(0); opacity:1; } }
   .shake{ animation: shake .42s ease-in-out; }
   @keyframes shake{ 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-9px); } 40%{ transform:translateX(9px); } 60%{ transform:translateX(-6px); } 80%{ transform:translateX(6px); } }
 
@@ -331,7 +325,7 @@
   }
 
   @media (max-height: 620px){
-    #screen-game{ padding-top:0; padding-bottom:0; }
+    #screen-game{ padding-top:2.5rem; padding-bottom:0; }
     #categoryCard{ padding:.5rem .65rem; }
     #presenterAnswers{ gap:.2rem; }
     .presenter-answer, .presenter-trap{ min-height:1.65rem; padding:.12rem .5rem; font-size:clamp(.92rem,min(5.1vw,3.05vh),1.2rem); }
@@ -361,11 +355,13 @@
 <main class="relative z-10 min-h-[100dvh] flex items-start sm:items-center justify-center px-4 py-6">
 
   <!-- ================= HOME ================= -->
-  <section id="screen-home" class="screen w-full max-w-md mx-auto text-center flex flex-col justify-center min-h-[calc(100dvh-3rem)]">
-    <h1 class="logo-text logo-main">Adivina9</h1>
-    <p class="mt-2 text-sm font-semibold text-white/70">Nombra 9 respuestas. Pasa el móvil. Gana la fiesta.</p>
+  <section id="screen-home" class="screen w-full max-w-md mx-auto text-center flex flex-col justify-center min-h-[calc(100dvh-3rem)] py-6">
+    <div class="shrink-0">
+      <h1 class="logo-text logo-main">Adivina9</h1>
+      <p class="mt-4 text-sm font-semibold text-white/70 leading-snug">Nombra 9 respuestas. Pasa el móvil. Gana la fiesta.</p>
+    </div>
 
-    <div id="resumeCard" class="hidden glass rounded-2xl p-4 mt-6 text-left">
+    <div id="resumeCard" class="hidden glass rounded-2xl p-4 mt-8 text-left">
       <div class="flex items-start justify-between gap-2">
         <div class="min-w-0">
           <div class="text-[10px] font-extrabold uppercase tracking-[.2em] text-cyan-200">Partida guardada</div>
@@ -379,13 +375,15 @@
       </button>
     </div>
 
-    <button id="homeStartBtn" type="button" class="btn-3d btn-party mt-6 w-full px-8 py-4 text-xl">
-      🎊 EMPEZAR
-    </button>
-    <button id="homeHowBtn" type="button" class="btn-3d btn-cyan mt-3 w-full px-8 py-3.5 text-lg">
-      📖 INSTRUCCIONES
-    </button>
-    <button id="installBtn" type="button" class="mt-4 inline-flex items-center justify-center gap-2 text-[11px] font-extrabold text-white/60 hover:text-white underline underline-offset-4">
+    <div class="mt-8 space-y-3">
+      <button id="homeStartBtn" type="button" class="btn-3d btn-party w-full px-8 py-4 text-xl">
+        🎊 EMPEZAR
+      </button>
+      <button id="homeHowBtn" type="button" class="btn-3d btn-cyan w-full px-8 py-3.5 text-lg">
+        📖 INSTRUCCIONES
+      </button>
+    </div>
+    <button id="installBtn" type="button" class="mt-6 inline-flex items-center justify-center gap-2 text-[11px] font-extrabold text-white/60 hover:text-white underline underline-offset-4">
       📲 Instalar app
     </button>
   </section>
@@ -934,7 +932,6 @@
     turnFound: 0,
     turnTraps: 0,
     turnBestStreak: 0,
-    lastFoundSlot: -1,
     timeLeft: 0,
     timerId: null,
     lastTick: 0,
@@ -949,6 +946,13 @@
   let flashTimer = null;
   let presenterHintTimer = null;
   let deferredInstallPrompt = null;
+  let wakeLock = null;
+  let hiddenPause = false;
+
+  function clearPresenterHint(){
+    clearTimeout(presenterHintTimer);
+    state.presenterHint = null;
+  }
 
   function normalize(str){
     return String(str || '')
@@ -1004,10 +1008,14 @@
     });
   }
 
+  function answerTier(cat, index){
+    return Math.min(2, Math.floor(index * 3 / cat.answers.length));
+  }
+
   function pointsForAnswer(cat, answer){
     const index = cat.answers.indexOf(answer);
     if(index < 0){ return 75; }
-    const tier = Math.min(2, Math.floor(index * 3 / cat.answers.length));
+    const tier = answerTier(cat, index);
     return tier === 0 ? 50 : (tier === 1 ? 75 : 100);
   }
 
@@ -1015,8 +1023,7 @@
     const trap = cat.traps.length ? cat.traps[Math.floor(Math.random() * cat.traps.length)] : null;
     const buckets = [[], [], []];
     cat.answers.forEach((answer, i) => {
-      const tier = Math.min(2, Math.floor(i * 3 / cat.answers.length));
-      buckets[tier].push(answer);
+      buckets[answerTier(cat, i)].push(answer);
     });
     const chosen = [];
     buckets.forEach((bucket) => {
@@ -1047,6 +1054,11 @@
     return { hint: src.hint !== false, time: src.time !== false, spark: src.spark !== false };
   }
 
+  function sanitizeMode(value){ return value === 'racha' ? 'racha' : 'fiesta'; }
+  function sanitizeDynamic(value){ return value === 'individual' ? 'individual' : 'presenter'; }
+  function sanitizeRounds(value){ return Number.isInteger(value) && value >= 1 && value <= MAX_ROUNDS ? value : 2; }
+  function sanitizeSeconds(value){ return [45, 60, 90].indexOf(value) >= 0 ? value : 60; }
+
   function saveSetup(){
     try{
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -1064,10 +1076,10 @@
     let saved = null;
     try{ saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); }catch(err){}
     if(saved && Array.isArray(saved.names) && saved.names.length >= 2){
-      state.mode = saved.mode === 'racha' ? 'racha' : 'fiesta';
-      state.dynamic = saved.dynamic === 'individual' ? 'individual' : 'presenter';
-      state.rounds = Number.isInteger(saved.rounds) && saved.rounds >= 1 && saved.rounds <= MAX_ROUNDS ? saved.rounds : 2;
-      state.seconds = [45, 60, 90].indexOf(saved.seconds) >= 0 ? saved.seconds : 60;
+      state.mode = sanitizeMode(saved.mode);
+      state.dynamic = sanitizeDynamic(saved.dynamic);
+      state.rounds = sanitizeRounds(saved.rounds);
+      state.seconds = sanitizeSeconds(saved.seconds);
       state.powersEnabled = normalizePowers(saved.powersEnabled);
       state.players = saved.names.slice(0, MAX_PLAYERS).map((n) => createPlayer(String(n || '').slice(0, 14)));
       if(state.players.length < 2) state.players = [createPlayer('Jugador 1'), createPlayer('Jugador 2')];
@@ -1081,8 +1093,9 @@
     return preparedCategories.find((c) => c.prompt === prompt) || null;
   }
 
-  function saveCurrentGame(phase){
+  function saveCurrentGame(phase, turnIndexOverride){
     if(!state.players.length){ return null; }
+    const turnIndex = Number.isInteger(turnIndexOverride) ? turnIndexOverride : state.turnIndex;
     const snapshot = {
       version: SAVE_VERSION,
       savedAt: Date.now(),
@@ -1094,7 +1107,7 @@
       powersEnabled: { ...state.powersEnabled },
       players: state.players.map((p) => ({ ...p })),
       totalTurns: state.totalTurns,
-      turnIndex: state.turnIndex,
+      turnIndex: turnIndex,
       currentPlayerIndex: state.currentPlayerIndex,
       presenterIndex: state.presenterIndex,
       pool: state.pool.map((c) => c.prompt),
@@ -1112,7 +1125,6 @@
       turnFound: 0,
       turnTraps: 0,
       turnBestStreak: 0,
-      lastFoundSlot: -1,
       timeLeft: 0,
       lastTick: 0
     };
@@ -1130,7 +1142,6 @@
       snapshot.turnFound = state.turnFound;
       snapshot.turnTraps = state.turnTraps;
       snapshot.turnBestStreak = state.turnBestStreak;
-      snapshot.lastFoundSlot = state.lastFoundSlot;
       snapshot.timeLeft = state.timeLeft;
       snapshot.lastTick = state.lastTick;
     }
@@ -1164,8 +1175,8 @@
       };
     });
 
-    const rounds = Number.isInteger(raw.rounds) && raw.rounds >= 1 && raw.rounds <= MAX_ROUNDS ? raw.rounds : 2;
-    const seconds = [45, 60, 90].indexOf(raw.seconds) >= 0 ? raw.seconds : 60;
+    const rounds = sanitizeRounds(raw.rounds);
+    const seconds = sanitizeSeconds(raw.seconds);
     const totalTurns = players.length * rounds;
     const turnIndex = Number.isInteger(raw.turnIndex) && raw.turnIndex >= 0 && raw.turnIndex < totalTurns ? raw.turnIndex : null;
     if(turnIndex === null) return null;
@@ -1181,8 +1192,8 @@
       powersEnabled: normalizePowers(raw.powersEnabled),
       totalTurns,
       turnIndex,
-      mode: raw.mode === 'racha' ? 'racha' : 'fiesta',
-      dynamic: raw.dynamic === 'individual' ? 'individual' : 'presenter',
+      mode: sanitizeMode(raw.mode),
+      dynamic: sanitizeDynamic(raw.dynamic),
       pool,
       lastCategory,
       phase
@@ -1220,7 +1231,6 @@
       saved.turnFound = Math.max(0, toNum(raw.turnFound, 0));
       saved.turnTraps = Math.max(0, toNum(raw.turnTraps, 0));
       saved.turnBestStreak = Math.max(0, toNum(raw.turnBestStreak, 0));
-      saved.lastFoundSlot = Number.isInteger(raw.lastFoundSlot) ? raw.lastFoundSlot : -1;
       saved.timeLeft = Math.min(timeLeft, seconds);
       saved.lastTick = toNum(raw.lastTick, Math.ceil(saved.timeLeft));
     } else {
@@ -1286,23 +1296,18 @@
     state.foundSet = saved.foundSet ? new Set(saved.foundSet) : new Set();
     state.foundList = saved.foundList ? saved.foundList.slice() : [];
     state.usedTraps = saved.usedTraps ? new Set(saved.usedTraps) : new Set();
-    state.presenterHint = null;
-    clearTimeout(presenterHintTimer);
+    clearPresenterHint();
     state.streak = saved.streak || 0;
     state.turnPoints = saved.turnPoints || 0;
     state.turnFound = saved.turnFound || 0;
     state.turnTraps = saved.turnTraps || 0;
     state.turnBestStreak = saved.turnBestStreak || 0;
-    state.lastFoundSlot = Number.isInteger(saved.lastFoundSlot) ? saved.lastFoundSlot : -1;
     state.timeLeft = saved.timeLeft || 0;
     state.lastTick = saved.lastTick || 0;
     state.running = false;
     state.ended = false;
     state.resumePending = saved.phase === 'playing';
-    $('summaryModal').classList.add('hidden');
-    $('exitModal').classList.add('hidden');
-    $('installModal').classList.add('hidden');
-    $('instructionsModal').classList.add('hidden');
+    hideAllModals();
     saveSetup();
     renderPlayersSetup();
     syncSetupUI();
@@ -1347,43 +1352,45 @@
     exitWasRunning = false;
   }
 
+  function exitToHome(){
+    $('exitModal').classList.add('hidden');
+    exitWasRunning = false;
+    state.running = false;
+    state.ended = false;
+    state.resumePending = false;
+    releaseWakeLock();
+    showScreen('screen-home');
+  }
+
   function saveAndExit(){
     const phase = exitPhase;
     if(state.running){
       state.running = false;
       stopTimer();
     }
-    clearTimeout(presenterHintTimer);
-    state.presenterHint = null;
+    clearPresenterHint();
     const saved = saveCurrentGame(phase);
     if(!saved){
       showToast('No se pudo guardar la partida. Revisa el almacenamiento e inténtalo de nuevo 😕');
       return;
     }
-    $('exitModal').classList.add('hidden');
-    exitWasRunning = false;
-    state.running = false;
-    state.ended = false;
-    state.resumePending = false;
-    showScreen('screen-home');
+    exitToHome();
     showToast(phase === 'playing' ? '💾 Partida guardada. Puedes continuarla desde el inicio.' : '💾 Partida guardada para el próximo turno.');
   }
 
   function discardAndExit(){
     const hadSave = !!loadSavedGame();
-    $('exitModal').classList.add('hidden');
-    exitWasRunning = false;
-    state.running = false;
-    state.ended = false;
-    state.resumePending = false;
     stopTimer();
-    clearTimeout(presenterHintTimer);
-    state.presenterHint = null;
-    showScreen('screen-home');
+    clearPresenterHint();
+    exitToHome();
     showToast(hadSave ? 'Saliste sin guardar. La partida guardada sigue disponible.' : 'Partida descartada. No se ha guardado.');
   }
 
   /* ================= UI HELPERS ================= */
+  function hideAllModals(){
+    ['summaryModal', 'exitModal', 'installModal', 'instructionsModal'].forEach((id) => $(id).classList.add('hidden'));
+  }
+
   function showScreen(id){
     $('confirmModal').classList.add('hidden');
     document.querySelectorAll('.screen').forEach((s) => s.classList.add('hidden'));
@@ -1772,33 +1779,33 @@
       }
     });
   });
+  function closeInstall(){ $('installModal').classList.add('hidden'); }
+
+  function bindBackdropClose(modalId, closeAttr, onClose){
+    $(modalId).addEventListener('click', (e) => {
+      if(e.target.hasAttribute(closeAttr)) onClose();
+    });
+  }
+
   $('confirmModalOk').addEventListener('click', acceptConfirm);
   $('confirmModalCancel').addEventListener('click', closeConfirm);
-  $('confirmModal').addEventListener('click', (e) => {
-    if(e.target.hasAttribute('data-close-confirm')) closeConfirm();
-  });
+  bindBackdropClose('confirmModal', 'data-close-confirm', closeConfirm);
   $('saveExitTopBtn').addEventListener('click', () => { sfxClick(); openExitModal(); });
   $('saveExitBtn').addEventListener('click', () => { sfxClick(); saveAndExit(); });
   $('discardExitBtn').addEventListener('click', () => { sfxClick(); discardAndExit(); });
   $('cancelExitBtn').addEventListener('click', cancelExit);
-  $('exitModal').addEventListener('click', (e) => {
-    if(e.target.hasAttribute('data-close-exit')) cancelExit();
-  });
+  bindBackdropClose('exitModal', 'data-close-exit', cancelExit);
   document.addEventListener('keydown', (e) => {
     if(e.key === 'Escape' && !$('confirmModal').classList.contains('hidden')){ closeConfirm(); return; }
     if(e.key === 'Escape' && !$('exitModal').classList.contains('hidden')){ cancelExit(); }
   });
   $('instructionsCloseBtn').addEventListener('click', closeInstructions);
   $('instructionsPlayBtn').addEventListener('click', closeInstructions);
-  $('instructionsModal').addEventListener('click', (e) => {
-    if(e.target.hasAttribute('data-close-instructions')) closeInstructions();
-  });
+  bindBackdropClose('instructionsModal', 'data-close-instructions', closeInstructions);
 
   $('installBtn').addEventListener('click', promptInstall);
-  $('installCloseBtn').addEventListener('click', () => $('installModal').classList.add('hidden'));
-  $('installModal').addEventListener('click', (e) => {
-    if(e.target.hasAttribute('data-close-install')) $('installModal').classList.add('hidden');
-  });
+  $('installCloseBtn').addEventListener('click', closeInstall);
+  bindBackdropClose('installModal', 'data-close-install', closeInstall);
 
   $('muteBtn').addEventListener('click', () => {
     muted = !muted;
@@ -1817,6 +1824,7 @@
   $('shareBtn').addEventListener('click', shareResults);
   $('changeBtn').addEventListener('click', () => {
     stopTimer();
+    releaseWakeLock();
     state.running = false;
     renderPlayersSetup();
     syncSetupUI();
@@ -1841,6 +1849,36 @@
     });
   }
 
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden){
+      autoSaveProgress();
+      if(state.running && !state.ended){
+        hiddenPause = true;
+        state.running = false;
+        stopTimer();
+        updatePowerButtons();
+      }
+      releaseWakeLock();
+      return;
+    }
+    if(hiddenPause){
+      hiddenPause = false;
+      if(!state.ended && state.cat && !$('screen-game').classList.contains('hidden')){
+        state.running = true;
+        startTimer();
+        updatePowerButtons();
+      }
+    }
+    if(!$('screen-game').classList.contains('hidden') || !$('screen-pass').classList.contains('hidden')){
+      requestWakeLock();
+    }
+  });
+
+  window.addEventListener('pagehide', () => {
+    autoSaveProgress();
+    releaseWakeLock();
+  });
+
   /* ================= GAME FLOW ================= */
   function startGame(){
     unlockAudio();
@@ -1860,16 +1898,13 @@
     state.cat = null;
     state.presenterIndex = null;
     state.usedTraps = new Set();
-    state.presenterHint = null;
-    clearTimeout(presenterHintTimer);
+    clearPresenterHint();
     state.running = false;
     state.ended = false;
-    $('summaryModal').classList.add('hidden');
-    $('installModal').classList.add('hidden');
-    $('instructionsModal').classList.add('hidden');
-    $('exitModal').classList.add('hidden');
+    hideAllModals();
     sfxStart();
     prepareTurn();
+    saveCurrentGame('pass');
   }
 
   function prepareTurn(){
@@ -1904,6 +1939,7 @@
     }
 
     showScreen('screen-pass');
+    requestWakeLock();
   }
 
   function pickCategory(){
@@ -1938,15 +1974,13 @@
       state.turnFound = 0;
       state.turnTraps = 0;
       state.turnBestStreak = 0;
-      state.lastFoundSlot = -1;
       state.timeLeft = state.seconds;
       state.lastTick = state.seconds;
     } else if(!(state.timeLeft > 0)){
       state.timeLeft = state.seconds;
       state.lastTick = state.seconds;
     }
-    state.presenterHint = null;
-    clearTimeout(presenterHintTimer);
+    clearPresenterHint();
     state.running = true;
     state.ended = false;
 
@@ -1960,6 +1994,7 @@
     $('submitAnswer').disabled = isPresenter;
 
     $('slotsGrid').classList.toggle('hidden', isPresenter);
+    $('screen-game').classList.toggle('solo', !isPresenter);
     $('presenterPanel').classList.toggle('hidden', !isPresenter);
     $('soloInputRow').classList.toggle('hidden', isPresenter);
 
@@ -1973,6 +2008,8 @@
     updateTimerUI();
     showScreen('screen-game');
     startTimer();
+    requestWakeLock();
+    saveCurrentGame('playing');
     sfxStart();
     if(resuming){ showFlash('💾 Turno recuperado', 'info'); }
 
@@ -2001,6 +2038,45 @@
 
   function stopTimer(){
     if(state.timerId){ clearInterval(state.timerId); state.timerId = null; }
+  }
+
+  async function requestWakeLock(){
+    try{
+      if(!('wakeLock' in navigator) || document.visibilityState !== 'visible'){ return; }
+      if(wakeLock && !wakeLock.released){ return; }
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    }catch(err){
+      wakeLock = null;
+    }
+  }
+
+  function releaseWakeLock(){
+    if(!wakeLock){ return; }
+    try{ wakeLock.release(); }catch(err){}
+    wakeLock = null;
+  }
+
+  function autoSaveProgress(){
+    const onPass = !$('screen-pass').classList.contains('hidden');
+    const onGame = !$('screen-game').classList.contains('hidden');
+    if(!onPass && !onGame){ return; }
+    if(onPass){
+      const keepTurn = state.resumePending && state.cat && Array.isArray(state.slots) &&
+        state.slots.length === SLOTS && state.timeLeft > 0;
+      saveCurrentGame(keepTurn ? 'playing' : 'pass');
+      return;
+    }
+    if(state.ended){
+      if(state.turnIndex + 1 < state.totalTurns){
+        saveCurrentGame('pass', state.turnIndex + 1);
+      } else {
+        clearSavedGame();
+      }
+      return;
+    }
+    const canResumeTurn = state.cat && Array.isArray(state.slots) && state.slots.length === SLOTS && state.timeLeft > 0;
+    saveCurrentGame(canResumeTurn ? 'playing' : 'pass');
   }
 
   function updateTimerUI(){
@@ -2035,13 +2111,17 @@
     });
   }
 
+  function answerPoints(answer){
+    return (state.cat.points && state.cat.points.get(answer)) || 75;
+  }
+
   function renderPresenterAnswers(){
     if(!state.cat) return;
     const list = $('presenterAnswers');
     list.innerHTML = '';
     state.cat.answers.forEach((answer) => {
       const found = state.foundSet.has(answer);
-      const points = state.cat.points ? (state.cat.points.get(answer) || 75) : 75;
+      const points = answerPoints(answer);
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'presenter-answer' + (found ? ' found' : '') + (state.presenterHint === answer && !found ? ' hint-pulse' : '');
@@ -2050,7 +2130,7 @@
       btn.innerHTML = '<span class="pa-word">' + escapeHtml(answer) + '</span>' +
         (found ? '<span class="check">✓</span>' : '') +
         '<span class="pa-pts">+' + points + ' pts</span>';
-      btn.addEventListener('click', () => markPresenterAnswer(answer, btn));
+      btn.addEventListener('click', () => markPresenterAnswer(answer));
       list.appendChild(btn);
     });
     state.cat.traps.forEach((trap) => {
@@ -2065,14 +2145,14 @@
     });
   }
 
-  function markPresenterAnswer(answer, el){
+  function markPresenterAnswer(answer){
     if(!state.running || state.ended || !state.cat) return;
     if(state.foundSet.has(answer)){
       showFlash('😉 Ya la tenías: ' + answer, 'dup');
       sfxWrong();
       return;
     }
-    revealAnswer(answer, false, el);
+    revealAnswer(answer, false);
   }
 
   function markPresenterTrap(trap){
@@ -2169,7 +2249,7 @@
     if(state.running && state.dynamic === 'individual'){ input.focus(); }
   }
 
-  function revealAnswer(canonical, viaSpark, sourceEl){
+  function revealAnswer(canonical, viaSpark){
     const p = state.players[state.currentPlayerIndex];
     let slotIndex = -1;
     if(!viaSpark){
@@ -2186,14 +2266,13 @@
     state.slots[slotIndex] = { state: 'found', answer: canonical };
     state.foundSet.add(canonical);
     state.foundList.push(canonical);
-    state.lastFoundSlot = slotIndex;
 
     state.streak += 1;
     state.turnBestStreak = Math.max(state.turnBestStreak, state.streak);
     p.bestStreak = Math.max(p.bestStreak, state.streak);
 
     const mult = state.mode === 'racha' ? Math.min(state.streak, 5) : 1;
-    const base = state.cat.points ? (state.cat.points.get(canonical) || 75) : 75;
+    const base = answerPoints(canonical);
     const gain = viaSpark ? 50 : base * mult;
     p.score += gain;
     p.found += 1;
@@ -2418,32 +2497,44 @@
       showResults();
       return;
     }
+    saveCurrentGame('pass');
     prepareTurn();
   }
 
   function showResults(){
     stopTimer();
+    releaseWakeLock();
     state.running = false;
     state.resumePending = false;
     clearSavedGame();
 
     const sorted = state.players.map((p, i) => ({ player: p, index: i })).sort((a, b) => {
       if(b.player.score !== a.player.score){ return b.player.score - a.player.score; }
-      return b.player.found - a.player.found;
+      if(b.player.found !== a.player.found){ return b.player.found - a.player.found; }
+      if(a.player.traps !== b.player.traps){ return a.player.traps - b.player.traps; }
+      return b.player.bestStreak - a.player.bestStreak;
     });
+    const sameStats = (a, b) => a.score === b.score && a.found === b.found &&
+      a.traps === b.traps && a.bestStreak === b.bestStreak;
     const ranks = new Map();
     sorted.forEach((entry, i) => {
       const prev = sorted[i - 1];
-      const sameAsPrev = prev && entry.player.score === prev.player.score && entry.player.found === prev.player.found;
-      ranks.set(entry, sameAsPrev ? ranks.get(prev) : i + 1);
+      ranks.set(entry, prev && sameStats(entry.player, prev.player) ? ranks.get(prev) : i + 1);
     });
     const winner = sorted[0];
-    const tied = sorted.filter((entry) => entry.player.score === winner.player.score && entry.player.found === winner.player.found);
+    const tied = sorted.filter((entry) => sameStats(entry.player, winner.player));
     const tie = tied.length > 1;
+    const scoreTied = sorted.filter((entry) => entry.player.score === winner.player.score);
+    let tieNote = '';
+    if(scoreTied.length > 1 && !tie){
+      if(scoreTied.some((entry) => entry.player.found !== winner.player.found)){ tieNote = ' · desempate por más aciertos'; }
+      else if(scoreTied.some((entry) => entry.player.traps !== winner.player.traps)){ tieNote = ' · desempate por menos trampas'; }
+      else if(scoreTied.some((entry) => entry.player.bestStreak !== winner.player.bestStreak)){ tieNote = ' · desempate por mejor racha'; }
+    }
     $('resultsTitle').textContent = tie ? '¡TENEMOS EMPATE!' : '¡TENEMOS GANADOR!';
     $('winnerBanner').innerHTML = tie
       ? '🤝 ¡EMPATE EN LA CIMA! ' + tied.map((entry) => escapeHtml(entry.player.name)).join(', ') + ' con ' + nf.format(winner.player.score) + ' pts'
-      : '👑 ¡' + escapeHtml(winner.player.name) + ' gana la fiesta con ' + nf.format(winner.player.score) + ' pts!';
+      : '👑 ¡' + escapeHtml(winner.player.name) + ' gana la fiesta con ' + nf.format(winner.player.score) + ' pts!' + tieNote;
 
     const mostFound = state.players.slice().sort((a, b) => b.found - a.found)[0];
     $('mostFound').textContent = mostFound.name + ' · ' + mostFound.found + ' aciertos';
@@ -2504,7 +2595,12 @@
   }
 
   async function shareResults(){
-    const sorted = state.players.map((p) => p).sort((a, b) => b.score - a.score || b.found - a.found);
+    const sorted = state.players.map((p) => p).sort((a, b) => {
+      if(b.score !== a.score){ return b.score - a.score; }
+      if(b.found !== a.found){ return b.found - a.found; }
+      if(a.traps !== b.traps){ return a.traps - b.traps; }
+      return b.bestStreak - a.bestStreak;
+    });
     const lines = sorted.map((p, i) => (i + 1) + '. ' + p.name + ' — ' + nf.format(p.score) + ' pts');
     const text = '🎉 Adivina9 — Resultados de la fiesta:\n' + lines.join('\n') + '\n¿Puedes superarnos? 🚀';
     if(navigator.share){
